@@ -138,7 +138,11 @@ Object.assign(PROPS, {
     pb.box(0.06, 0.42, 0.9, body, -0.97, 0.42, 0); pb.box(0.06, 0.42, 0.9, body, 0.97, 0.42, 0);
     pb.box(1.9, 0.02, 0.8, Mat.color('#bcd6e8', 0.3), 0, 0.42, 0);
     pb.box(2.0, 0.1, 0.9, Mat.color('#2f63a8', 0.5), 0, 0, 0);
-    pb.box(2.04, 0.05, 0.94, Mat.color('#c9cdd1', 0.3, 0.7), 0, 0.82, 0);
+    // Rim frame only (open top) so the stock inside stays visible; faint glass sliding lids.
+    const rim = Mat.color('#c9cdd1', 0.3, 0.7);
+    pb.box(2.04, 0.05, 0.07, rim, 0, 0.82, -0.435); pb.box(2.04, 0.05, 0.07, rim, 0, 0.82, 0.435);
+    pb.box(0.07, 0.05, 0.94, rim, -0.985, 0.82, 0); pb.box(0.07, 0.05, 0.94, rim, 0.985, 0.82, 0); pb.box(0.04, 0.05, 0.8, rim, 0, 0.82, 0);
+    pb.box(1.9, 0.01, 0.8, Mat.get('frzglass', () => new THREE.MeshStandardMaterial({ color: '#d8ecf7', roughness: 0.05, metalness: 0.1, transparent: true, opacity: 0.16, depthWrite: false })), 0, 0.85, 0);
     return pb.build();
   },
   'prop.checkout': (o) => {
