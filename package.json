@@ -1,0 +1,24 @@
+{
+  "name": "artimed.official-gmail.com",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/artimedofficial/artimed.official-gmail.com.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/artimedofficial/artimed.official-gmail.com/issues"
+  },
+  "homepage": "https://github.com/artimedofficial/artimed.official-gmail.com#readme",
+  "devDependencies": {
+    "esbuild": "^0.24.0",
+    "three": "^0.170.0"
+  }
+}

@@ -1,0 +1,20 @@
+import { launch, boot, report } from './lib.mjs';
+const { browser, page, errs } = await launch();
+const t0 = Date.now();
+await boot(page);
+console.log('boot ms', Date.now() - t0);
+console.log(await page.evaluate(() => ({ mode: HH.Game.mode, q: HH.P.settings.quality, bench: HH.Game.bench, last: window.HH_LAST_ERROR || null })));
+await page.waitForTimeout(1500);
+await page.screenshot({ path: 'shots/menu.png' });
+// UI path: New Life → char select → start
+await page.click('text=เริ่มชีวิตใหม่');
+await page.waitForSelector('.charsel');
+await page.screenshot({ path: 'shots/charsel.png' });
+await page.click('.bgcard >> nth=1');
+await page.click('text=เริ่มชีวิต >> nth=-1');
+await page.waitForFunction(() => HH.Game.mode === 'play');
+await page.waitForTimeout(2500);
+await page.screenshot({ path: 'shots/home-day.png' });
+console.log(await page.evaluate(() => ({ calls: HH.Render.renderer.info.render.calls, tris: HH.Render.renderer.info.render.triangles, fps: HH.Render.fps.value, last: window.HH_LAST_ERROR || null })));
+report(errs);
+await browser.close();

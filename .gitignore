@@ -1,0 +1,4 @@
+node_modules/
+shots/
+tools/.check.js
+tools/vendor.three.js
