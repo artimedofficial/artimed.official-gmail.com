@@ -178,6 +178,8 @@ button, input, select { font-family: inherit; font-size: inherit; }
 .dragghost img { position: absolute; left: 50%; top: 50%; opacity: .9; }
 .placemark { position: absolute; pointer-events: none; border-radius: 4px; z-index: 3; }
 .placemark.ok { background: rgba(127,191,95,.28); border: 2px solid #7fbf5f; } .placemark.no { background: rgba(214,90,90,.28); border: 2px solid #d65a5a; }
+.storehint { font-size: 12px; color: var(--dim); margin: 0 0 6px; line-height: 1.5; }
+.sel.goto { border-color: var(--amber2); color: var(--amber); }
 .invhint { grid-column: 1 / 3; color: var(--dim); font-size: 12px; text-align: center; }
 @media (max-width: 1100px) { .needs { left: 10px; top: 128px; } .bgcards { grid-template-columns: repeat(2, 1fr); } }
 </style>
@@ -4160,6 +4162,13 @@ const STR = {
   drinkTap: 'ดื่มน้ำ',
   inspect: 'ตรวจดู',
   cannotReach: 'ไปที่นั่นไม่ได้',
+  goUp: 'ขึ้นบันไดไปชั้นบน',
+  goDown: 'ลงบันไดไปชั้นล่าง',
+  clickToOpen: 'คลิกเพื่อเปิด',
+  goToStorage: 'ไปที่ที่เก็บของ…',
+  nearbyStorage: 'ที่เก็บใกล้ตัว',
+  storeHint: 'วิธีย้ายของไปเก็บ: ลากของจากฝั่งซ้าย (ตัวคุณ) มาวางในช่องของตู้ทางขวา หรือกด "เก็บทั้งหมด" · ถ้ายังไม่มีตู้ให้เลือกจากเมนู "ไปที่ที่เก็บของ…" หรือคลิกตู้/ชั้นวางในบ้าน',
+  welcomeTip: 'เคล็ดลับ: คลิกตู้/ชั้นวางเพื่อเปิดดูของ · คลิกบันไดเพื่อขึ้น-ลงชั้น · กด I เพื่อเปิดกระเป๋า',
   tooHeavyToMove: 'ของหนักเกินไป ขยับไม่ได้ ลองวางของบางส่วนลง',
   // Inventory UI
   invTitle: 'กระเป๋าและภาชนะ',
@@ -7014,7 +7023,9 @@ const HomeWorld = {
     const rail = Mat.color('#4a3426', 0.5);
     for (let i = 0; i <= n; i += 3) pb.box(0.03, 0.9, 0.03, Mat.color('#2a2a2a', 0.5, 0.6), s.x0 + 0.03, rise * i, s.zBottom + run * i);
     pb.geo(new THREE.BoxGeometry(0.05, 0.05, len), rail, s.x0 + 0.03, H / 2 + 0.92, (s.zBottom + s.zTop) / 2, [-ang, 0, 0]);
-    W.floors[0].group.add(pb.build());
+    W.stairsObj = pb.build();
+    W.stairsObj.userData.stairs = true;
+    W.floors[0].group.add(W.stairsObj);
     // Upper floor railing around the stairwell
     const up = new PB('rail2');
     up.box(0.05, 0.05, s.zTop - s.zBottom, rail, s.x0 - 0.03, H + 0.95, (s.zBottom + s.zTop) / 2);
@@ -7700,6 +7711,12 @@ const Render = {
       }
       ground = { x: gp.x, z: gp.z, floor: this.viewFloor, dist: this.ray.ray.origin.distanceTo(gp) };
     }
+    // Stairs: clicking the steps means "go to the other floor".
+    const sh = W.stairsObj ? this.ray.intersectObject(W.stairsObj, true)[0] : null;
+    if (sh && (!furnHit || sh.distance < furnHit.dist) && (!ground || sh.distance <= ground.dist + 0.5)) return { kind: 'stairs', ground };
+    // Upper floor: a click inside the stairwell opening also means "use the stairs".
+    const st = HOME.stairs;
+    if (ground && this.viewFloor === 1 && ground.x > st.x0 - 0.1 && ground.x < st.x1 + 0.1 && ground.z > st.zBottom && ground.z < st.zTop) return { kind: 'stairs', ground };
     if (furnHit && (!ground || furnHit.dist <= ground.dist + 0.5)) return { kind: 'furn', uid: furnHit.uid, ground };
     return ground ? { kind: 'ground', ground } : null;
   },
@@ -8134,6 +8151,7 @@ const HomeScene = {
       this.doAction(f, acts[0].key, mode);
       return;
     }
+    if (hit.kind === 'stairs') { this.useStairs(mode); return; }
     const g = hit.ground;
     const pile = this.pileNear(g.floor, g.x, g.z, false);
     if (pile && Math.hypot(pile.x - g.x, pile.z - g.z) < 0.5) {
@@ -8145,11 +8163,22 @@ const HomeScene = {
     if (ok) { Render.cam.follow = true; Render.flashClick(g.x, HomeWorld.groundY(g.x, g.z, g.floor), g.z); }
     else Bus.emit('toast', { kind: 'warn', msg: STR.cannotReach });
   },
+  /** Walk to the other floor via the stairs (target just past the far landing). */
+  useStairs(mode = 'walk') {
+    const d = S.chars[S.active];
+    const up = d.pos.floor === 0;
+    const t = up ? { x: Nav.stair.top.x - 0.6, z: Nav.stair.top.z + 0.1, floor: 1 } : { x: Nav.stair.bottom.x - 0.7, z: Nav.stair.bottom.z, floor: 0 };
+    const ok = this.avatar.goTo(t, mode, null);
+    if (!ok) Bus.emit('toast', { kind: 'warn', msg: STR.cannotReach });
+    else { Render.cam.follow = true; Toast.show(up ? STR.goUp : STR.goDown, 'info', 1500); }
+  },
   contextMenu(ev) {
     const hit = Render.pick(ev.clientX, ev.clientY);
     if (!hit) return;
     let items = [];
-    if (hit.kind === 'furn') {
+    if (hit.kind === 'stairs') {
+      items = [{ label: S.chars[S.active].pos.floor === 0 ? STR.goUp : STR.goDown, fn: () => this.useStairs() }];
+    } else if (hit.kind === 'furn') {
       const f = this.furn(hit.uid);
       if (f) items = this.actions(f).map((a) => ({ label: a.label, fn: () => this.doAction(f, a.key) }));
     } else {
@@ -8170,7 +8199,8 @@ const HomeScene = {
       Render.showHover(uid ? this.W.furn.get(uid) : null);
     }
     const f = uid && this.furn(uid);
-    return f ? f.label : null;
+    if (hit && hit.kind === 'stairs') return S.chars[S.active].pos.floor === 0 ? STR.goUp : STR.goDown;
+    return f ? f.label + (f.inv ? ' — ' + STR.clickToOpen : '') : null;
   },
 
   update(realDt, simDt) {
@@ -8428,6 +8458,13 @@ const InvUI = {
     this.tabs = [];
     if (furn && furn.inv) this.tabs.push({ key: 'main', label: furn.label, c: furn.inv });
     if (furn && furn.sub) this.tabs.push({ key: 'sub', label: furn.sub.label, c: furn.sub });
+    // Storage within arm's reach (same floor, ≤ 2.2 m) opens as extra tabs — no extra walking.
+    for (const f of S.home.furniture) {
+      if (f === furn || !f.inv || f.floor !== ch.d.pos.floor) continue;
+      if (Math.hypot(f.x - ch.d.pos.x, f.z - ch.d.pos.z) > 2.2) continue;
+      this.tabs.push({ key: 'near:' + f.uid, label: f.label, c: f.inv });
+      if (f.sub) this.tabs.push({ key: 'nears:' + f.uid, label: f.sub.label, c: f.sub });
+    }
     this.tabs.push({ key: 'ground', label: STR.ground, c: this.ground.inv });
     this.tab = 0;
     U.$('#inv').hidden = false;
@@ -8496,8 +8533,9 @@ const InvUI = {
       U.el('button.btn.sm', { on: { click: () => this.sort(c) } }, STR.autoSort),
       U.el('button.btn.sm.accent', { title: STR.smartLootCats, on: { click: () => this.takeAll((it) => P.settings.smartLoot.includes(itemDef(it.id).cat)) } }, STR.smartLoot),
       U.el('input.search', { placeholder: STR.search, value: this.qRight, on: { input: (e) => { this.qRight = e.target.value; this.applyFilter(); } } }),
+      this.storageSelect(),
     );
-    right.append(U.el('div.invhead', null, U.el('h3', null, STR.invTitle), U.el('button.mclose', { title: STR.close, on: { click: () => this.close() } }, '✕')), tabs, tools);
+    right.append(U.el('div.invhead', null, U.el('h3', null, STR.invTitle), U.el('button.mclose', { title: STR.close, on: { click: () => this.close() } }, '✕')), tabs, tools, U.el('div.storehint', null, STR.storeHint));
     right.appendChild(U.el('div.gridlist', null, c ? this.renderGrid(c, this.tabs[this.tab].label, 'R') : U.el('p.dim', null, STR.noContainer)));
     root.append(left, right, U.el('div.invhint', null, STR.hintsInv));
     this.applyFilter();
@@ -8563,6 +8601,21 @@ const InvUI = {
       const q = (g.side === 'L' ? this.qLeft : this.qRight).trim().toLowerCase();
       for (const el of g.el.querySelectorAll('.item')) el.classList.toggle('dimmed', !!q && !el.dataset.name.includes(q));
     }
+  },
+
+  /** Dropdown of every storage piece in the home: pick one → walk there and open it. */
+  storageSelect() {
+    const opts = [U.el('option', { value: '' }, STR.goToStorage)];
+    for (const f of S.home.furniture) {
+      if (!f.inv) continue;
+      const room = HomeWorld.roomAt(f.floor, f.x, f.z);
+      opts.push(U.el('option', { value: f.uid }, f.label + ' · ' + (room ? room.name : STR.floors[f.floor]) + (f.floor === 1 ? ' (' + STR.floors[1] + ')' : '')));
+    }
+    return U.el('select.sel.goto', { on: { change: (e) => {
+      const f = HomeScene.furn(e.target.value); if (!f) return;
+      this.close();
+      HomeScene.doAction(f, 'open');
+    } } }, ...opts);
   },
 
   /* ---------- Tooltip ---------- */
@@ -9162,6 +9215,7 @@ const Game = {
     Render.cam.follow = true;
     Render.cam.dist = 17; Render.cam.yaw = 0; Render.cam.yawIdx = 0;
     Save.saveRun('enter');
+    setTimeout(() => Toast.show(STR.welcomeTip, 'info', 9000), 600);
   },
   newRun(opts) {
     Save.deleteRun();

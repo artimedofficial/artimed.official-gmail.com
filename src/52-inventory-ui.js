@@ -26,6 +26,13 @@ const InvUI = {
     this.tabs = [];
     if (furn && furn.inv) this.tabs.push({ key: 'main', label: furn.label, c: furn.inv });
     if (furn && furn.sub) this.tabs.push({ key: 'sub', label: furn.sub.label, c: furn.sub });
+    // Storage within arm's reach (same floor, ≤ 2.2 m) opens as extra tabs — no extra walking.
+    for (const f of S.home.furniture) {
+      if (f === furn || !f.inv || f.floor !== ch.d.pos.floor) continue;
+      if (Math.hypot(f.x - ch.d.pos.x, f.z - ch.d.pos.z) > 2.2) continue;
+      this.tabs.push({ key: 'near:' + f.uid, label: f.label, c: f.inv });
+      if (f.sub) this.tabs.push({ key: 'nears:' + f.uid, label: f.sub.label, c: f.sub });
+    }
     this.tabs.push({ key: 'ground', label: STR.ground, c: this.ground.inv });
     this.tab = 0;
     U.$('#inv').hidden = false;
@@ -94,8 +101,9 @@ const InvUI = {
       U.el('button.btn.sm', { on: { click: () => this.sort(c) } }, STR.autoSort),
       U.el('button.btn.sm.accent', { title: STR.smartLootCats, on: { click: () => this.takeAll((it) => P.settings.smartLoot.includes(itemDef(it.id).cat)) } }, STR.smartLoot),
       U.el('input.search', { placeholder: STR.search, value: this.qRight, on: { input: (e) => { this.qRight = e.target.value; this.applyFilter(); } } }),
+      this.storageSelect(),
     );
-    right.append(U.el('div.invhead', null, U.el('h3', null, STR.invTitle), U.el('button.mclose', { title: STR.close, on: { click: () => this.close() } }, '✕')), tabs, tools);
+    right.append(U.el('div.invhead', null, U.el('h3', null, STR.invTitle), U.el('button.mclose', { title: STR.close, on: { click: () => this.close() } }, '✕')), tabs, tools, U.el('div.storehint', null, STR.storeHint));
     right.appendChild(U.el('div.gridlist', null, c ? this.renderGrid(c, this.tabs[this.tab].label, 'R') : U.el('p.dim', null, STR.noContainer)));
     root.append(left, right, U.el('div.invhint', null, STR.hintsInv));
     this.applyFilter();
@@ -161,6 +169,21 @@ const InvUI = {
       const q = (g.side === 'L' ? this.qLeft : this.qRight).trim().toLowerCase();
       for (const el of g.el.querySelectorAll('.item')) el.classList.toggle('dimmed', !!q && !el.dataset.name.includes(q));
     }
+  },
+
+  /** Dropdown of every storage piece in the home: pick one → walk there and open it. */
+  storageSelect() {
+    const opts = [U.el('option', { value: '' }, STR.goToStorage)];
+    for (const f of S.home.furniture) {
+      if (!f.inv) continue;
+      const room = HomeWorld.roomAt(f.floor, f.x, f.z);
+      opts.push(U.el('option', { value: f.uid }, f.label + ' · ' + (room ? room.name : STR.floors[f.floor]) + (f.floor === 1 ? ' (' + STR.floors[1] + ')' : '')));
+    }
+    return U.el('select.sel.goto', { on: { change: (e) => {
+      const f = HomeScene.furn(e.target.value); if (!f) return;
+      this.close();
+      HomeScene.doAction(f, 'open');
+    } } }, ...opts);
   },
 
   /* ---------- Tooltip ---------- */

@@ -106,6 +106,7 @@ const Game = {
     Render.cam.follow = true;
     Render.cam.dist = 17; Render.cam.yaw = 0; Render.cam.yawIdx = 0;
     Save.saveRun('enter');
+    setTimeout(() => Toast.show(STR.welcomeTip, 'info', 9000), 600);
   },
   newRun(opts) {
     Save.deleteRun();

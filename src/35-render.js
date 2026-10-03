@@ -284,6 +284,12 @@ const Render = {
       }
       ground = { x: gp.x, z: gp.z, floor: this.viewFloor, dist: this.ray.ray.origin.distanceTo(gp) };
     }
+    // Stairs: clicking the steps means "go to the other floor".
+    const sh = W.stairsObj ? this.ray.intersectObject(W.stairsObj, true)[0] : null;
+    if (sh && (!furnHit || sh.distance < furnHit.dist) && (!ground || sh.distance <= ground.dist + 0.5)) return { kind: 'stairs', ground };
+    // Upper floor: a click inside the stairwell opening also means "use the stairs".
+    const st = HOME.stairs;
+    if (ground && this.viewFloor === 1 && ground.x > st.x0 - 0.1 && ground.x < st.x1 + 0.1 && ground.z > st.zBottom && ground.z < st.zTop) return { kind: 'stairs', ground };
     if (furnHit && (!ground || furnHit.dist <= ground.dist + 0.5)) return { kind: 'furn', uid: furnHit.uid, ground };
     return ground ? { kind: 'ground', ground } : null;
   },

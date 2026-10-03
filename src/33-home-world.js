@@ -290,7 +290,9 @@ const HomeWorld = {
     const rail = Mat.color('#4a3426', 0.5);
     for (let i = 0; i <= n; i += 3) pb.box(0.03, 0.9, 0.03, Mat.color('#2a2a2a', 0.5, 0.6), s.x0 + 0.03, rise * i, s.zBottom + run * i);
     pb.geo(new THREE.BoxGeometry(0.05, 0.05, len), rail, s.x0 + 0.03, H / 2 + 0.92, (s.zBottom + s.zTop) / 2, [-ang, 0, 0]);
-    W.floors[0].group.add(pb.build());
+    W.stairsObj = pb.build();
+    W.stairsObj.userData.stairs = true;
+    W.floors[0].group.add(W.stairsObj);
     // Upper floor railing around the stairwell
     const up = new PB('rail2');
     up.box(0.05, 0.05, s.zTop - s.zBottom, rail, s.x0 - 0.03, H + 0.95, (s.zBottom + s.zTop) / 2);

@@ -114,6 +114,7 @@ const HomeScene = {
       this.doAction(f, acts[0].key, mode);
       return;
     }
+    if (hit.kind === 'stairs') { this.useStairs(mode); return; }
     const g = hit.ground;
     const pile = this.pileNear(g.floor, g.x, g.z, false);
     if (pile && Math.hypot(pile.x - g.x, pile.z - g.z) < 0.5) {
@@ -125,11 +126,22 @@ const HomeScene = {
     if (ok) { Render.cam.follow = true; Render.flashClick(g.x, HomeWorld.groundY(g.x, g.z, g.floor), g.z); }
     else Bus.emit('toast', { kind: 'warn', msg: STR.cannotReach });
   },
+  /** Walk to the other floor via the stairs (target just past the far landing). */
+  useStairs(mode = 'walk') {
+    const d = S.chars[S.active];
+    const up = d.pos.floor === 0;
+    const t = up ? { x: Nav.stair.top.x - 0.6, z: Nav.stair.top.z + 0.1, floor: 1 } : { x: Nav.stair.bottom.x - 0.7, z: Nav.stair.bottom.z, floor: 0 };
+    const ok = this.avatar.goTo(t, mode, null);
+    if (!ok) Bus.emit('toast', { kind: 'warn', msg: STR.cannotReach });
+    else { Render.cam.follow = true; Toast.show(up ? STR.goUp : STR.goDown, 'info', 1500); }
+  },
   contextMenu(ev) {
     const hit = Render.pick(ev.clientX, ev.clientY);
     if (!hit) return;
     let items = [];
-    if (hit.kind === 'furn') {
+    if (hit.kind === 'stairs') {
+      items = [{ label: S.chars[S.active].pos.floor === 0 ? STR.goUp : STR.goDown, fn: () => this.useStairs() }];
+    } else if (hit.kind === 'furn') {
       const f = this.furn(hit.uid);
       if (f) items = this.actions(f).map((a) => ({ label: a.label, fn: () => this.doAction(f, a.key) }));
     } else {
@@ -150,7 +162,8 @@ const HomeScene = {
       Render.showHover(uid ? this.W.furn.get(uid) : null);
     }
     const f = uid && this.furn(uid);
-    return f ? f.label : null;
+    if (hit && hit.kind === 'stairs') return S.chars[S.active].pos.floor === 0 ? STR.goUp : STR.goDown;
+    return f ? f.label + (f.inv ? ' — ' + STR.clickToOpen : '') : null;
   },
 
   update(realDt, simDt) {
