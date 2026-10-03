@@ -71,7 +71,7 @@ const Encounters = {
   },
   spawnStreet() {
     const night = Render.nightAt(S.time.min) > 0.5;
-    const n = Math.round(2 + Danger.level(S.travel.to) * 5 + (night ? 2 : 0));
+    const n = Math.round(2 + Danger.level(S.travel ? S.travel.to : 'conv') * 5 + (night ? 2 : 0));
     const rng = RNG.local('streetspawn|' + S.time.min);
     for (let i = 0; i < n; i++) {
       let p = null;

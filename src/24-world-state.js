@@ -148,6 +148,7 @@ const Travel = {
   /** Advance the clock through the trip (all systems tick), then enter the destination. */
   async go(to, pace) {
     if (S.scene === 'street') { Bus.emit('toast', { kind: 'warn', msg: STR.finishStreetFirst }); return; }
+    if (!LOCATIONS[to] || LOCATIONS[to].hidden || to === S.scene) return;
     const from = S.scene, mins = this.minutes(from, to, pace);
     const d = S.chars[S.active];
     const enc = Encounters.roll(from, to, pace);

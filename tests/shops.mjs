@@ -8,7 +8,7 @@ await page.waitForTimeout(500);
 await page.keyboard.press('KeyM'); await page.waitForSelector('.mapwrap'); await page.waitForTimeout(300);
 await page.screenshot({ path: 'shots/map.png' });
 await page.keyboard.press('Escape');
-const ids = await page.evaluate(() => HH.LOCATIONS && Object.keys(HH.LOCATIONS).filter((k) => k !== 'home'));
+const ids = await page.evaluate(() => HH.LOCATIONS && Object.keys(HH.LOCATIONS).filter((k) => k !== 'home' && !HH.LOCATIONS[k].hidden));
 for (const id of ids) {
   await page.evaluate((id) => { HH.S.time.min = 1440 * 0 + 11 * 60; return HH.Travel.go(id, 'walk'); }, id);
   await page.waitForFunction((id) => HH.S.scene === id && document.getElementById('travel').hidden, id, { timeout: 60000 });
