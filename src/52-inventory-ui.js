@@ -209,7 +209,9 @@ const InvUI = {
     rows.push(`<div class="tt-r"><span>${STR.ttSize}</span><b>${d.size[0]}×${d.size[1]}</b></div>`);
     if (d.price) rows.push(`<div class="tt-r"><span>${STR.ttPrice}</span><b>${U.money(d.price)}</b></div>`);
     if (it.unpaid) rows.push(`<div class="tt-r"><span style="color:#ffb0a8">${STR.unpaidTag}</span><b>${U.money(d.price * it.qty)}</b></div>`);
-    if (it.cond != null) rows.push(`<div class="tt-r"><span>${STR.ttCond}</span><b>${Math.round(it.cond * 100)}%</b></div>`);
+    if (it.cond != null) rows.push(`<div class="tt-r"><span>${STR.ttCond}</span><b>${Math.round(it.cond * 100)}% · ${STR.durState[Durability.state(it)]}</b></div>`);
+    if (it.cap != null && it.cap < 1) rows.push(`<div class="tt-r warn"><span>${STR.ttCap}</span><b>${Math.round(it.cap * 100)}% (${STR.repairsN(it.repairs || 0)})</b></div>`);
+    if (WEAPONS[it.id]) { const w = WEAPONS[it.id]; rows.push(`<div class="tt-sub">${STR.wpnLine(Math.round(w.dmg * Combat.condMul(it)), w.reach, w.speed, w.noise)}</div>`); }
     if (it.uses != null) rows.push(`<div class="tt-r"><span>${STR.ttUses}</span><b>${it.uses}</b></div>`);
     if (d.grid) rows.push(`<div class="tt-r"><span>${STR.ttCapacity}</span><b>${d.grid[0]}×${d.grid[1]} · ${d.limit} กก.</b></div>`);
     if (d.per) {
@@ -237,6 +239,7 @@ const InvUI = {
     }
     if (src.slot && (d.tags.includes('electrolyte') || d.tags.includes('diarrhea')) && !d.per) items.push({ label: STR.use, fn: () => { if (Illness.treat(activeChar().d, it)) { if (it.uses != null) it.uses--; if (it.uses == null || it.uses <= 0) { if (it.qty > 1) { it.qty--; if (d.uses) it.uses = d.uses; } else Inv.remove(src.c, src.slot); } logEvent(STR.usedMed(d.name)); } this.changed(); } });
     if (src.slot && d.installs) items.push({ label: STR.installAct, fn: () => InstallUI.open(src.c, src.slot) });
+    if (WEAPONS[it.id] && WEAPONS[it.id].mat && d.dura) items.push({ label: STR.repairAct + ' (' + REPAIRS[WEAPONS[it.id].mat].name + ')', fn: () => { if (Durability.repair(activeChar(), it)) Toast.show(STR.repaired(d.name, Math.round(it.cap * 100)), 'good'); this.changed(); } });
     if (it.inv) items.push({ label: STR.openBag, fn: () => this.openBag(it) });
     if (src.slot && d.equip && !ch.d.equip[d.equip]) items.push({ label: STR.equip, fn: () => this.equipFrom(src.c, src.slot, d.equip) });
     if (src.slot && d.cat === 'weapon' && !ch.d.equip.weapon) items.push({ label: STR.equip, fn: () => this.equipFrom(src.c, src.slot, 'weapon') });

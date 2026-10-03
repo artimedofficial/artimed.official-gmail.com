@@ -147,22 +147,38 @@ const Travel = {
   },
   /** Advance the clock through the trip (all systems tick), then enter the destination. */
   async go(to, pace) {
+    if (S.scene === 'street') { Bus.emit('toast', { kind: 'warn', msg: STR.finishStreetFirst }); return; }
     const from = S.scene, mins = this.minutes(from, to, pace);
     const d = S.chars[S.active];
+    const enc = Encounters.roll(from, to, pace);
+    const half = enc ? Math.max(1, Math.floor(mins / 2)) : mins;
     TravelUI.show(locDef(to).name, mins);
     d._moving = pace === 'run' ? 'run' : 'walk';
     const t0 = S.time.min;
-    let done = 0;
-    while (done < mins) {
-      const step = Math.min(mins - done, Math.max(1, Math.ceil(mins / 30)));
-      GameClock.advance(step); done += step;
-      TravelUI.progress(done / mins, S.time.min);
-      await new Promise((r) => requestAnimationFrame(r));
+    const run = async (n) => {
+      let done = 0;
+      while (done < n && d.alive) {
+        const step = Math.min(n - done, Math.max(1, Math.ceil(mins / 30)));
+        GameClock.advance(step); done += step;
+        TravelUI.progress((S.time.min - t0) / mins, S.time.min);
+        await new Promise((r) => requestAnimationFrame(r));
+      }
+    };
+    await run(half);
+    if (pace === 'run') d.needs.stamina = Math.max(0, d.needs.stamina - Math.min(80, mins * 2.2));
+    S.travelLog = { from, to, at: t0, mins, enc };
+    if (!d.alive) { TravelUI.hide(); return; }
+    if (enc === 'zombies') { d._moving = null; TravelUI.hide(); Encounters.startStreet({ from, to, pace, left: mins - half }); return; }
+    if (enc === 'ambush') {
+      TravelUI.hide();
+      logEvent(STR.ambushTitle, 'bad');
+      await new Promise((res) => AmbushUI.open({ from, to }, res));
+      if (!d.alive) return;
+      TravelUI.show(locDef(to).name, mins);
+      await run(mins - half);
     }
     d._moving = null;
-    if (pace === 'run') d.needs.stamina = Math.max(0, d.needs.stamina - Math.min(80, mins * 2.2));
-    S.travelLog = { from, to, at: t0, mins };
     TravelUI.hide();
-    Scene.enter(to);
+    if (d.alive) Scene.enter(to);
   },
 };

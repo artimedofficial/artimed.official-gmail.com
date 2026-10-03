@@ -8,17 +8,18 @@ const Scene = {
   W: null, avatar: null, hover: null, pileObjs: new Map(), stockObjs: new Map(),
 
   /** The furniture list of the current place. */
-  furnList() { return S.scene === 'home' ? S.home.furniture : (World.loc(S.scene) || { furniture: [] }).furniture; },
+  furnList() { return S.scene === 'home' ? S.home.furniture : S.scene === 'street' ? [] : (World.loc(S.scene) || { furniture: [] }).furniture; },
   piles() {
     if (S.scene === 'home') { if (!Array.isArray(S.home.piles)) S.home.piles = []; return S.home.piles; }
+    if (S.scene === 'street') { if (!Array.isArray(this._streetPiles)) this._streetPiles = []; return this._streetPiles; }
     return World.loc(S.scene).piles;
   },
-  setPiles(list) { if (S.scene === 'home') S.home.piles = list; else World.loc(S.scene).piles = list; },
+  setPiles(list) { if (S.scene === 'home') S.home.piles = list; else if (S.scene === 'street') this._streetPiles = list; else World.loc(S.scene).piles = list; },
   isHome() { return S.scene === 'home'; },
 
   build() {
-    if (S.scene !== 'home') World.ensureLoc(S.scene);
-    this.W = S.scene === 'home' ? HomeWorld.build(Render.scene) : LocationWorld.build(Render.scene, S.scene);
+    if (S.scene !== 'home' && S.scene !== 'street') World.ensureLoc(S.scene);
+    this.W = S.scene === 'home' ? HomeWorld.build(Render.scene) : S.scene === 'street' ? StreetWorld.build(Render.scene) : LocationWorld.build(Render.scene, S.scene);
     for (const f of this.furnList()) this.addFurniture(f);
     Nav.build(this.W, this.furnList());
     Render.setWorld(this.W);
@@ -28,9 +29,12 @@ const Scene = {
     Render.setViewFloor(S.chars[S.active].pos.floor);
     Render.cam.tx = S.chars[S.active].pos.x; Render.cam.tz = S.chars[S.active].pos.z;
     Render.cam.ctx = Render.cam.tx; Render.cam.ctz = Render.cam.tz;
+    Zombies.grid = null;
+    if (this.isHome()) { Barricades.renderAll(); Zombies.rebuildGrid(); }
   },
   dispose() {
     const W = this.W; if (!W) return;
+    Zombies.clear(); Combat.stop();
     Render.scene.remove(W.root);
     Render.scene.remove(this.avatar.obj);
     W.root.traverse((o) => { if (o.isMesh || o.isLineSegments) o.geometry.dispose(); });
@@ -44,11 +48,13 @@ const Scene = {
     if (InvUI.isOpen) InvUI.close();
     this.dispose();
     S.scene = id;
-    if (id !== 'home') { const st = World.ensureLoc(id); World.deplete(id); st.visits++; st.lastVisit = S.time.min; }
+    if (id !== 'home' && id !== 'street') { const st = World.ensureLoc(id); World.deplete(id); st.visits++; st.lastVisit = S.time.min; }
     const d = S.chars[S.active];
-    const tmpW = id === 'home' ? { x: 2.8, z: HOME.lot.z1 - 1.2, rot: Math.PI } : { x: locDef(id).doorX, z: locDef(id).room.z1 - 0.9, rot: Math.PI };
+    const tmpW = id === 'home' ? { x: 2.8, z: HOME.lot.z1 - 1.2, rot: Math.PI } : id === 'street' ? { x: -17, z: 0.3, rot: Math.PI / 2 } : { x: locDef(id).doorX, z: locDef(id).room.z1 - 0.9, rot: Math.PI };
     d.pos.x = tmpW.x; d.pos.z = tmpW.z; d.pos.floor = 0; d.pos.rot = tmpW.rot;
+    if (id === 'street') this._streetPiles = [];
     this.build();
+    if (id === 'street') Encounters.spawnStreet(); else Zombies.populate(id);
     Render.cam.follow = true;
     logEvent(STR.arrived(locDef(id).name), 'info');
     Bus.emit('scene:changed', id);
@@ -187,13 +193,15 @@ const Scene = {
   isExitPoint(g) {
     if (g.floor !== 0) return false;
     if (this.isHome()) return g.z > HOME.lot.z1 + 0.6 && g.x > HOME.gate.x0 - 1 && g.x < HOME.gate.x1 + 1;
+    if (S.scene === 'street') return g.x > 16.3;
     const r = locDef(S.scene).room;
     return g.z > r.z1 + 0.6;
   },
   /** Walk to the exit, then open the city map. */
   leave(mode = 'walk') {
     const e = this.W.exit;
-    const ok = this.avatar.goTo({ x: e.x, z: e.z, floor: 0 }, mode, () => MapUI.open(true));
+    const after = S.scene === 'street' ? () => Encounters.finish() : () => MapUI.open(true);
+    const ok = this.avatar.goTo({ x: e.x, z: e.z, floor: 0 }, mode, after);
     if (!ok) Bus.emit('toast', { kind: 'warn', msg: STR.cannotReach });
     else Render.cam.follow = true;
     return ok;
@@ -204,6 +212,8 @@ const Scene = {
     const hit = Render.pick(ev.clientX, ev.clientY);
     if (!hit) return;
     const mode = ev.shiftKey ? 'sneak' : (ev.ctrlKey || isDouble) ? 'run' : 'walk';
+    Combat.stop();
+    if (hit.kind === 'zombie') { Combat.engage(hit.z); return; }
     if (hit.kind === 'furn') {
       const f = this.furn(hit.uid); if (!f) return;
       const acts = this.actions(f);
@@ -263,6 +273,7 @@ const Scene = {
     }
     const f = uid && this.furn(uid);
     if (hit && hit.kind === 'stairs') return S.chars[S.active].pos.floor === 0 ? STR.goUp : STR.goDown;
+    if (hit && hit.kind === 'zombie') return ZOMBIES[hit.z.type].name + ' — ' + STR.clickAttack;
     if (hit && hit.kind === 'ground' && this.isExitPoint(hit.ground)) return STR.leaveAct;
     if (f && FURNITURE[f.type].act === 'checkout') return f.label + ' — ' + STR.checkoutAct;
     return f ? f.label + (f.inv ? ' — ' + STR.clickToOpen : '') : null;

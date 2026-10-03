@@ -32,7 +32,7 @@ function createCharacterData({ name, bg, profileSkills }) {
   };
 }
 /** Create a character record with its nutrition state initialised. */
-function newCharacter(opts) { const d = createCharacterData(opts); Body.init(d); return d; }
+function newCharacter(opts) { const d = createCharacterData(opts); Body.init(d); Health.init(d); return d; }
 
 class Character {
   constructor(data) { this.d = data; }
@@ -85,6 +85,7 @@ class Character {
     f *= 0.45 + 0.55 * legF;
     if (this.d.needs.energy < 15) f *= 0.8;
     if (this.d.nut) f *= Body.effects(this.d).speed;
+    if (this.d.meds) f *= Health.effects(this.d).speed;
     return Math.max(0, f * this.cartFactor());
   }
   health() {

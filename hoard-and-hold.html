@@ -91,7 +91,9 @@ button, input, select { font-family: inherit; font-size: inherit; }
 .fl.on { border-color: var(--amber); color: var(--amber); }
 .fl.locked { opacity: .45; cursor: not-allowed; font-size: 11px; }
 .power { font-size: 12px; color: var(--good); }
-.bottombar { bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; padding: 6px; }
+.bottombar { bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; padding: 5px; flex-wrap: wrap; justify-content: center; max-width: calc(100vw - 20px); }
+.btn.hb { padding: 5px 9px; font-size: 13px; } .btn.hb.icon { padding: 5px 8px; }
+@media (max-width: 1200px) { .btn.hb span { display: none; } }
 .hint { position: absolute; bottom: 64px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,.6); padding: 4px 12px; border-radius: 12px; color: var(--amber); font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none !important; }
 .sleepover { position: absolute; inset: 0; background: radial-gradient(ellipse, rgba(5,8,20,.25), rgba(5,8,20,.7)); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 120px; color: #c9d6ff; font-size: 18px; cursor: pointer; }
 .fps { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,.65); color: #9fd18a; font: 12px monospace; padding: 4px 8px; border-radius: 6px; pointer-events: none !important; }
@@ -220,6 +222,20 @@ button, input, select { font-family: inherit; font-size: inherit; }
 .rdetail h3 { margin: 0; color: var(--amber); } .rdetail .slot { display: grid; grid-template-columns: 150px 1fr auto; gap: 8px; align-items: center; margin: 6px 0; } .slot.miss .sl { color: var(--bad); } .amt { display: flex; gap: 4px; align-items: center; }
 .pv { background: #1d1812; border: 1px solid var(--line); border-radius: 8px; padding: 8px; margin: 8px 0; }
 .drow { display: grid; grid-template-columns: 50px 1fr 220px 90px; gap: 10px; align-items: center; margin: 6px 0; } .drow img { width: 48px; height: 36px; }
+#hurt { position: fixed; inset: 0; pointer-events: none; z-index: 9; box-shadow: inset 0 0 160px rgba(200,20,20,0); }
+#hurt.on { animation: hurt .6s ease-out; } @keyframes hurt { 0% { box-shadow: inset 0 0 180px rgba(200,20,20,.75); } 100% { box-shadow: inset 0 0 160px rgba(200,20,20,0); } }
+.health { display: grid; grid-template-columns: 200px 1fr; gap: 16px; } .hleft { display: flex; flex-direction: column; gap: 6px; align-items: stretch; } .hleft svg { align-self: center; }
+.hright { max-height: 60vh; overflow: auto; } .hpart { margin-top: 8px; border-bottom: 1px solid #2c241a; }
+.wound { background: #1d1812; border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; margin: 4px 0; font-size: 13px; } .wound .row { margin-top: 4px; }
+.wound.inf-fever { border-color: var(--warn); } .wound.inf-weak, .wound.inf-crit { border-color: var(--bad); } .wound .inf { color: var(--warn); }
+.btn.dis { opacity: .45; }
+.death { width: min(720px, 92vw); margin: 0 auto; background: rgba(20,8,8,.92); border: 1px solid #6a2a2a; border-radius: 14px; padding: 26px; text-align: center; }
+.death h1 { color: #e05a5a; margin: 0 0 6px; font-size: 38px; } .death .cause { font-size: 18px; color: #ffb0a8; } .dskills { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.dskill { background: #2a1a14; border: 1px solid var(--line); border-radius: 6px; padding: 3px 8px; } .lives { margin: 0 auto; border-collapse: collapse; font-size: 13px; } .lives td { padding: 3px 10px; border-bottom: 1px solid #3a2222; }
+.brow { display: grid; grid-template-columns: 170px 1fr 1.4fr 80px; gap: 10px; align-items: center; padding: 6px 0; border-bottom: 1px solid #2c241a; font-size: 13px; } .brow .small { font-size: 11px; color: var(--dim); }
+.givegrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: 6px; max-height: 46vh; overflow: auto; margin: 8px 0; }
+.givecell { background: #1d1812; border: 1px solid var(--line); border-radius: 6px; color: var(--text); cursor: pointer; display: flex; flex-direction: column; align-items: center; padding: 4px; } .givecell img { width: 40px; height: 40px; object-fit: contain; } .givecell.on { border-color: var(--amber); background: #3a2a16; }
+.slider { display: grid; grid-template-columns: 90px 1fr; gap: 8px; align-items: center; margin: 4px 0; }
 .invhint { grid-column: 1 / 3; color: var(--dim); font-size: 12px; text-align: center; }
 @media (max-width: 1100px) { .needs { left: 10px; top: 128px; } .bgcards { grid-template-columns: repeat(2, 1fr); } }
 </style>
@@ -232,6 +248,7 @@ button, input, select { font-family: inherit; font-size: inherit; }
 <div id="modals"></div>
 <div id="toasts"></div>
 <div id="tooltip"></div>
+<div id="hurt"></div>
 <div id="travel" hidden></div>
 <div id="loading">กำลังสร้างโลก…</div>
 <div id="fatal" hidden></div>
@@ -4073,7 +4090,7 @@ void main() {
    Everything here is plain data so the owner can tweak without touching logic.
    ========================================================================== */
 
-const BUILD = '1C.0.1';
+const BUILD = '1D.0.1';
 
 /**
  * ASSET_OVERRIDES — swap any procedural asset for an external file.
@@ -4251,6 +4268,7 @@ const STR = {
   satietyShort: 'อิ่ม', microThaw: 'ละลายด้วยไมโครเวฟ', reserve: 'ตั้งเป็นของสำรอง (ไม่ใช้ใน "กินมื้ออาหาร")', unreserve: 'ยกเลิกของสำรอง',
   exclude: 'ห้ามใช้ในมื้ออัตโนมัติ', unexclude: 'อนุญาตให้ใช้ในมื้ออัตโนมัติ', usedMed: (n) => 'ใช้ ' + n, installAct: 'ติดตั้งที่บ้าน…',
   freezeSkipped: (n) => 'ข้าม ' + n + ' ชิ้นที่แช่แข็งไม่ได้ (ลากใส่เองเพื่อยืนยัน)',
+  btnHealth: 'สุขภาพ (H)', btnBuild: 'สร้าง (B)', hbInv: 'กระเป๋า', hbMap: 'แผนที่', hbCook: 'ทำอาหาร', hbHealth: 'สุขภาพ', hbBuild: 'สร้าง',
   btnEatMeal: 'กินมื้อ', btnNutrition: 'โภชนาการ', btnStock: 'เสบียง', btnCook: 'ทำอาหาร (C)', rationShort: 'ปันส่วน',
   orderDelivery: 'สั่งเครื่องใช้ไฟฟ้า (ส่งถึงบ้าน)', genAct: 'ใช้เครื่องปั่นไฟ', cookAct: 'ทำอาหาร', siphonAct: 'ดูดน้ำมันจากรถ (ต้องมีแกลลอน)', siphoned: (l) => 'ดูดน้ำมันจากรถได้ ' + l + ' ลิตร', carEmpty: 'น้ำมันในรถหมดแล้ว', needJerry: 'ต้องมีแกลลอนน้ำมันเปล่าติดตัว',
   // Map & travel (1B)
@@ -4418,8 +4436,9 @@ const STR = {
     ['ล้อเมาส์', 'ซูม'],
     ['Q / E', 'หมุนกล้อง 90°'],
     ['I', 'กระเป๋า'],
-    ['H', 'สุขภาพ (Phase 1D)'],
-    ['M / B / C', 'แผนที่ / สร้าง / คราฟต์ (Phase 1B–1D)'],
+    ['คลิกซ้ายที่ซอมบี้', 'โจมตี (เดินเข้าไปเองเมื่ออยู่ไกล) · V = ผลักออก'],
+    ['H', 'สุขภาพและรักษาแผล'],
+    ['M / B / C / N', 'แผนที่ / สร้างสิ่งกีดขวาง / ทำอาหาร / โภชนาการ'],
     ['Space', 'หยุดเวลา / ตื่นนอน'],
     ['1 – 4', 'ความเร็วเวลา 0.5× / 1× / 2× / 4×'],
     ['R', 'หมุนของขณะลาก'],
@@ -4437,7 +4456,39 @@ const STR = {
   dbgSpeed: 'เร่งเวลา',
   dbgCash: 'เพิ่มเงิน ฿10,000',
   dbgAssets: 'รายการ assetId ทั้งหมด',
-  dbgNotYet: 'เกิดซอมบี้ / อมตะ — เปิดใช้งานใน Phase 1D',
+  dbgSustain: 'ระหว่างกระโดดเวลา ประคองความหิว/น้ำ/พลังงานไว้ (ไม่ตายระหว่างทดสอบ)',
+  dbgCombat: 'ซอมบี้และการต่อสู้', dbgSpawn3: 'เกิดวอล์กเกอร์ 3 ตัว', dbgSpawnRunner: 'เกิดรันเนอร์', dbgKillAll: 'ฆ่าซอมบี้ทั้งหมด', dbgInvuln: 'อมตะ (สลับ)', dbgBite: 'ทดสอบโดนกัดแขนซ้าย', dbgHeal: 'รักษาเต็ม',
+  audioTitle: 'เสียง', volMaster: 'เสียงรวม', volMusic: 'ดนตรี', volSfx: 'เอฟเฟกต์',
+  // Combat / health (1D)
+  clickAttack: 'คลิกเพื่อโจมตี', tooTired: 'เหนื่อยเกินไป', wokeByZombies: 'สะดุ้งตื่น! มีซอมบี้อยู่ใกล้หรือกำลังพังสิ่งกีดขวาง',
+  bitten: (p) => 'โดนกัดที่' + p + '! รีบทำความสะอาด ปิดแผล และกินยาลดไข้', fractured: (p) => 'กระดูก' + p + 'หัก! ใส่เฝือกและพัก',
+  weaponBroke: (n) => n + ' พังแล้ว!', noRepairNeeded: 'ยังไม่ต้องซ่อม', repairNeeds: (s) => 'ต้องใช้ ' + s, repaired: (n, c) => 'ซ่อม ' + n + ' แล้ว (ความทนทานสูงสุดเหลือ ' + c + '%)',
+  repairAct: 'ซ่อม', ttCap: 'ความทนทานสูงสุด', repairsN: (n) => 'ซ่อมมาแล้ว ' + n + ' ครั้ง', durState: { good: 'ดี', cracked: 'ร้าว', bad: 'ใกล้พัง', broken: 'พัง' },
+  wpnLine: (d, r, s, n) => 'ดาเมจ ' + d + ' · ระยะ ' + r + ' ม. · ' + s + ' วิ/ครั้ง · เสียง ' + n + ' ม.',
+  blood: 'เลือด', painkillerOn: 'ยาแก้ปวด/ลดไข้', antibioticOn: 'ยาปฏิชีวนะ', takePain: 'กินยาแก้ปวด/ลดไข้', takeAbx: 'กินยาปฏิชีวนะ',
+  bleeding: (p) => 'เลือดออก ' + p + '%', flagCleaned: 'ทำความสะอาดแล้ว', flagDressed: 'ปิดแผลแล้ว', flagStale: 'ผ้าปิดแผลเก่า ควรเปลี่ยน', flagSutured: 'เย็บแล้ว', flagSplinted: 'ใส่เฝือกแล้ว', flagTq: 'รัดห้ามเลือด',
+  woundName: { bruise: 'ฟกช้ำ', laceration: 'แผลฉีกขาด', bite: 'แผลถูกกัด', fracture: 'กระดูกหัก', burn: 'แผลไหม้' },
+  severity: (p) => 'รุนแรง ' + p + '%', infection: (p) => 'ติดเชื้อ ' + p + '%', infStage: { fever: 'มีไข้', weak: 'อ่อนแรง', crit: 'วิกฤต' },
+  noWounds: 'ไม่มีบาดแผล', healthTitle: 'สุขภาพและบาดแผล (H)',
+  biteHint: 'ขั้นตอนรักษาแผลถูกกัด: (1) ทำความสะอาดด้วยยาฆ่าเชื้อ (2) ปิดแผลด้วยผ้าก๊อซปลอดเชื้อและเปลี่ยนทุก 24 ชม. (3) กินยาลดไข้ 1–2 วัน (4) ยาปฏิชีวนะช่วยมากในรายที่รุนแรง ยิ่งรักษาเร็วยิ่งดี',
+  trPressure: 'กดห้ามเลือด', trClean: 'ทำความสะอาด', trDress: 'ปิดแผล', trRedress: 'เปลี่ยนผ้าปิดแผล', trSuture: 'เย็บแผล', trTourniquet: 'รัดห้ามเลือด', trSplint: 'ใส่เฝือก', trSplintImpro: 'ทำเฝือกจากไม้+ผ้า/เทป',
+  trMissing: 'ไม่มีอุปกรณ์ที่ต้องใช้', treated: (p, w) => 'รักษา' + w + 'ที่' + p, tookMed: (n) => 'กิน ' + n,
+  causeHead: 'บาดเจ็บสาหัสที่ศีรษะ', causeTorso: 'บาดเจ็บสาหัสที่ลำตัว', causeBlood: 'เสียเลือดมากเกินไป', causeInfection: 'ติดเชื้อรุนแรงจากบาดแผล', causeThirst: 'ขาดน้ำรุนแรง', causeStarve: 'ขาดอาหารจนร่างกายล้มเหลว',
+  died: (c) => 'เสียชีวิต: ' + c, youDied: 'คุณเสียชีวิตแล้ว', daysSurvived: (d) => 'รอดชีวิตได้ ' + d + ' วัน', skillsKept: 'ทักษะที่ติดตัวไปชีวิตหน้า (100%)', livesLog: 'บันทึกชีวิตที่ผ่านมา', toMenu: 'เมนูหลัก',
+  // Barricades
+  windowAt: (i) => 'หน้าต่าง #' + i, doorAt: (i) => 'ประตู #' + i, gateName: 'ประตูรั้วหน้าบ้าน', breached: (n) => 'ซอมบี้พัง' + n + 'เข้ามาได้แล้ว!',
+  barMax: 'เสริมได้สูงสุดแล้ว', barNeeds: (s) => 'วัสดุไม่พอ ต้องใช้: ' + s, needHammer: 'ต้องมีค้อนเพื่อตอกตะปู', barRepaired: (n) => 'ซ่อม' + n + 'แล้ว', barBuilt: (n, l) => 'เสริม' + n + 'แล้ว (ชั้นที่ ' + l + ')',
+  buildHomeOnly: 'สร้าง/เสริมได้เฉพาะที่บ้าน', buildTitle: 'สร้างสิ่งกีดขวาง (B)',
+  buildHint: 'ปิดหน้าต่างด้วยไม้และตะปู เสริมประตู และปิดประตูรั้ว ซอมบี้จะพุ่งเข้าหาจุดที่อ่อนที่สุด งานภายในบ้านไม่มีเสียงรบกวน แต่การตอกที่รั้วนอกบ้านมีเสียงดัง',
+  barStatus: (l, m, hp, max) => 'เสริม ' + l + '/' + m + ' ชั้น · ' + hp + '/' + max + ' HP', barGlassOnly: 'มีแค่กระจก (พังง่าย)', barBroken: 'พังแล้ว เปิดโล่ง!', barDoorOnly: 'ประตูไม้ธรรมดา', barOpen: 'เปิดโล่ง',
+  barCost: (a, b) => 'ใช้ ' + a + ' หรือ ' + b, barBuildBtn: 'เสริม', barRepairBtn: 'ซ่อม',
+  // Encounters
+  encZombies: 'ซอมบี้ขวางทางอยู่บนถนน! ฝ่าไปให้ถึงปลายถนน (ลูกศรสีส้ม) หรือสู้', finishStreetFirst: 'ต้องฝ่าถนนนี้ไปให้ได้ก่อน',
+  ambushTitle: 'ถูกดักปล้น!', ambushText: (n) => 'ผู้รอดชีวิตติดอาวุธ ' + n + ' คนขวางทางคุณไว้ พวกเขาต้องการเสบียง',
+  ambushDemand: (v) => 'พวกเขาเรียกของมูลค่าราว ' + v, ambushOdds: (f, r) => 'โอกาสชนะถ้าสู้ ~' + f + '% · โอกาสหนีพ้น ~' + r + '%',
+  ambFight: 'สู้', ambGive: 'ยอมให้ของ', ambFlee: 'หนี', ambWon: (n) => 'ชนะการต่อสู้! ได้ ' + n + ' จากพวกมัน แต่ได้รับบาดเจ็บ',
+  ambLost: (n) => 'แพ้! ถูกทำร้ายและถูกชิงของไป ' + n + ' รายการ', ambFled: 'หนีพ้นมาได้', ambFledDrop: (n) => 'หนีพ้นแต่ทำของหล่น ' + n + ' รายการ', ambCaught: 'หนีไม่พ้น! ถูกต้อนจนมุม ต้องสู้',
+  ambHand: 'ส่งของให้', ambGiveTotal: (v, d) => 'มูลค่าที่เลือก ' + v + ' / ต้องการ ' + d, ambGiveHint: 'เลือกของที่จะยอมให้ (คลิกเพื่อเลือก/ยกเลิก)', ambGave: 'ยอมส่งของให้ไป พวกมันปล่อยคุณไป', ambNothing: 'คุณไม่มีอะไรจะให้ ต้องสู้หรือหนี',
   dbgUtilities: 'ไฟฟ้าและน้ำประปา', dbgFailDay: (d) => 'ล่มถาวรวันที่ ' + d, dbgBeforeBrown: 'ก่อนไฟตก', dbgBrown: 'เริ่มไฟตก', dbgFail: 'ไฟล่มถาวร', dbgCutGrid: 'ตัดไฟหลวงทันที (สลับ)',
   // Death (1D) / misc
   outbreakToast: 'การระบาดเริ่มขึ้นแล้ว! ร้านค้าปิดหมด เงินสดแทบไม่มีค่าอีกต่อไป',
@@ -5612,6 +5663,91 @@ const DELIVERY = {
 /** Appliance loads in watts for the load-management panel. */
 const LOADS = { lights: 160, fan: 45 };
 
+/* ===== 16-data-combat.js ===== */
+/* ==========================================================================
+   16 · COMBAT, ZOMBIES, INJURY, MEDICINE & BARRICADE DATA (§5.4–5.5, §7, §8, §9.1)
+   ========================================================================== */
+
+/**
+ * Melee stats. dmg: base damage; reach (m); speed: seconds per swing; stam: stamina per swing;
+ * wear: durability lost per hit; noise: radius (m) per hit outdoors; mat: repair family;
+ * broken: item produced when it snaps (or 'scrap').
+ */
+const WEAPONS = {
+  _fists:        { dmg: 4,  reach: 0.9, speed: 0.8, stam: 4,  wear: 0,   noise: 3,  mat: null },
+  baseball_bat:  { dmg: 22, reach: 1.35, speed: 1.05, stam: 9, wear: 1.4, noise: 6, mat: 'wood', broken: 'broken_bat' },
+  broken_bat:    { dmg: 12, reach: 1.0, speed: 0.9, stam: 6,  wear: 2.5, noise: 5,  mat: 'wood', broken: 'scrap_wood' },
+  frying_pan:    { dmg: 16, reach: 1.0, speed: 1.0, stam: 8,  wear: 0.5, noise: 9,  mat: 'metal' },
+  kitchen_knife: { dmg: 14, reach: 0.85, speed: 0.6, stam: 5, wear: 2.2, noise: 2,  mat: 'blade', broken: 'scrap_metal' },
+  hammer:        { dmg: 18, reach: 0.95, speed: 0.85, stam: 7, wear: 0.8, noise: 6, mat: 'metal' },
+  crowbar:       { dmg: 24, reach: 1.2, speed: 1.1, stam: 10, wear: 0.4, noise: 7,  mat: 'metal' },
+  machete:       { dmg: 28, reach: 1.15, speed: 0.95, stam: 9, wear: 1.6, noise: 4, mat: 'blade', broken: 'scrap_metal' },
+  axe:           { dmg: 34, reach: 1.25, speed: 1.35, stam: 13, wear: 1.2, noise: 6, mat: 'blade', broken: 'scrap_wood' },
+  pipe_wrench:   { dmg: 21, reach: 1.1, speed: 1.05, stam: 9, wear: 0.3, noise: 7,  mat: 'metal' },
+  shovel:        { dmg: 20, reach: 1.5, speed: 1.25, stam: 11, wear: 1.0, noise: 7, mat: 'metal', broken: 'scrap_wood' },
+  steel_pipe:    { dmg: 19, reach: 1.45, speed: 1.15, stam: 10, wear: 0.4, noise: 8, mat: 'metal' },
+  golf_club:     { dmg: 15, reach: 1.4, speed: 0.9, stam: 7,  wear: 2.6, noise: 5,  mat: 'metal', broken: 'scrap_metal' },
+  screwdriver:   { dmg: 9,  reach: 0.8, speed: 0.55, stam: 4, wear: 2.0, noise: 2,  mat: 'metal' },
+};
+defItem('broken_bat', 'ไม้เบสบอลหัก (อาวุธชั่วคราว)', 'weapon', 1, 2, 0.5, 1, 0, { tags: ['blunt', 'makeshift'], dura: 40, icon: { k: 'bat', c: '#b8894e', c2: '#3a2a1a' } });
+/** Repair recipes by material family (§7.2): items consumed, durability restored to the (reduced) cap. */
+const REPAIRS = {
+  wood:  { tools: [], uses: [['duct_tape', 1], ['wood_glue', 1]], any: true, capLoss: 0.14, name: 'พันเทป/ทากาว' },
+  metal: { tools: [], uses: [['duct_tape', 1]], any: true, capLoss: 0.08, name: 'พันด้ามด้วยเทป' },
+  blade: { tools: [], uses: [['sharpening_stone', 1]], any: true, capLoss: 0.06, name: 'ลับคม' },
+};
+
+/** Zombie types (§8.2). Unlock day; Phase 1 spawns walkers and (optionally) night runners. */
+const ZOMBIES = {
+  walker: { name: 'วอล์กเกอร์', hp: 70, headHp: 28, speed: [0.55, 0.9], dmg: [6, 11], bite: 0.16, sight: 9, hear: 1.0, unlock: 1, attackCd: 1.7 },
+  runner: { name: 'รันเนอร์', hp: 55, headHp: 24, speed: [2.0, 2.6], dmg: [5, 9], bite: 0.14, sight: 12, hear: 1.2, unlock: 14, attackCd: 1.3, nightOnly: true, share: 0.18 },
+};
+const ZOMBIE_LOOKS = {
+  skin: ['#8a9a88', '#7a8a7a', '#9a9c8c', '#86907e', '#a09a88'],
+  shirt: ['#5a4a3a', '#3a4a5a', '#6a3a3a', '#4a5a4a', '#7a6a5a', '#2a2a2a', '#8a8a7a'],
+  pants: ['#2a2a30', '#3a3328', '#40403a', '#2c3440', '#4a3a30'],
+  hair: ['#1a1410', '#2a2018', '#3a3a3a', '#5a4a3a'],
+};
+
+/** Injury tuning (§5.4). Rates are per hour unless noted. */
+const INJURY = {
+  bloodLossPerSev: 12,         // blood points per hour at bleed severity 1
+  bloodRegen: 1.2,             // per hour when not bleeding
+  deathBlood: 12,
+  hpRegen: 0.6,                // body-part HP per hour (× nutrition heal × treatment)
+  infectRate: { bite: 0.012, laceration: 0.003, burn: 0.005 },
+  infectCleanMul: 0.3, infectDressMul: 0.55, infectStaleMul: 1.6, dressingLifeH: 24,
+  immunity: 0.012,             // natural infection fight-off per hour when treated & fed
+  antibiotic: 0.05,            // infection reduction per hour while on antibiotics
+  feverStage: 0.3, weakStage: 0.6, critStage: 0.9,
+  fractureHealH: 24 * 18,
+  dehydrateDamage: 3,          // torso HP per hour at hydration 0
+  starveDeath: -60000,
+};
+/** Medical items → treatment capabilities (§5.5). */
+const MED = {
+  clean: ['povidone', 'alcohol_70', 'saline'],
+  dress: ['sterile_gauze', 'gauze_set', 'first_aid_kit'],
+  smallDress: ['plasters', 'medical_tape'],
+  bandage: ['elastic_bandage', 'gauze_set', 'sterile_gauze', 'cloth_rag', 'first_aid_kit'],
+  suture: ['suture_kit'],
+  tourniquet: ['tourniquet'],
+  splint: ['splint'],
+  painkiller: ['paracetamol', 'ibuprofen'],
+  antibiotic: ['antibiotic'],
+};
+
+/** Barricades (§9.1). Per layer: materials + time; HP scales with carpentry. */
+const BARRICADE = {
+  window: { layers: 3, uses: [['plank', 2], ['nails_1kg', 8]], alt: [['plywood', 1], ['nails_1kg', 10]], hp: 120, minutes: 20 },
+  door:   { layers: 2, uses: [['plank', 2], ['nails_1kg', 10]], alt: [['plywood', 1], ['nails_1kg', 12]], hp: 160, minutes: 25 },
+  gate:   { layers: 2, uses: [['chain', 1], ['padlock', 1]], alt: [['plank', 3], ['nails_1kg', 12]], hp: 200, minutes: 15, outdoor: true },
+  perCarpentry: 0.08,
+};
+
+/** Hostile survivor ambush (§8.5). */
+const AMBUSH = { baseChance: 0.06, nightMul: 2.2, haulMul: 0.000015, demandFrac: [0.2, 0.4] };
+
 /* ===== 20-inventory.js ===== */
 /* ==========================================================================
    20 · INVENTORY MODEL — grid containers, item instances, transfers
@@ -5881,7 +6017,7 @@ function createCharacterData({ name, bg, profileSkills }) {
   };
 }
 /** Create a character record with its nutrition state initialised. */
-function newCharacter(opts) { const d = createCharacterData(opts); Body.init(d); return d; }
+function newCharacter(opts) { const d = createCharacterData(opts); Body.init(d); Health.init(d); return d; }
 
 class Character {
   constructor(data) { this.d = data; }
@@ -5934,6 +6070,7 @@ class Character {
     f *= 0.45 + 0.55 * legF;
     if (this.d.needs.energy < 15) f *= 0.8;
     if (this.d.nut) f *= Body.effects(this.d).speed;
+    if (this.d.meds) f *= Health.effects(this.d).speed;
     return Math.max(0, f * this.cartFactor());
   }
   health() {
@@ -6096,6 +6233,7 @@ const Sanitize = {
     if (it.st != null && typeof it.st !== 'object') delete it.st;
     if (it.unpaid != null && !LOCATIONS[it.unpaid]) delete it.unpaid;
     if (it.age != null) it.age = U.num(it.age, 0, 0, 3);
+    if (it.cap != null) it.cap = U.num(it.cap, 1, 0.2, 1);
     if (it.frz != null) it.frz = U.num(it.frz, 0, 0, 1);
     if (it.st && it.st.nut && typeof it.st.nut !== 'object') delete it.st.nut;
     return it;
@@ -6130,6 +6268,7 @@ const Sanitize = {
     c.sleeping = false;
     c.alive = c.alive !== false;
     Body.init(c);
+    Health.init(c);
     c.ill = c.ill.filter((x) => x && typeof x.type === 'string').map((x) => ({ type: x.type, sev: U.num(x.sev, 0.3, 0, 1), h: U.num(x.h, 6, 0, 500) }));
     return c;
   },
@@ -6157,7 +6296,7 @@ const Sanitize = {
     st.log = st.log.filter((e) => e && typeof e.t === 'number' && typeof e.msg === 'string').slice(-200);
     if (typeof st.flags !== 'object' || !st.flags) st.flags = { outbreak: false };
     st.flags.outbreak = !!st.flags.outbreak;
-    if (st.scene !== 'home' && !LOC_IDS.includes(st.scene)) st.scene = 'home';
+    if (st.scene !== 'home' && st.scene !== 'street' && !LOC_IDS.includes(st.scene)) st.scene = 'home';
     const pileList = (arr) => (Array.isArray(arr) ? arr : []).filter((p) => p && typeof p === 'object').map((p) => ({
       uid: typeof p.uid === 'string' ? p.uid : U.uid(), floor: U.num(p.floor, 0, 0, 1) | 0, x: U.num(p.x, 0, -60, 60), z: U.num(p.z, 0, -60, 60),
       inv: Object.assign(Sanitize.container(p.inv, STR.ground), { w: 8, h: 6, limit: 200 }),
@@ -6178,7 +6317,8 @@ const Sanitize = {
       locs[id] = { genAt: U.num(L.genAt, 0, 0, 1e9), furniture: furn, piles: pileList(L.piles), initial: U.num(L.initial, 1, 1, 1e6), depletedTo: U.num(L.depletedTo, 1, 0, 1), visits: U.num(L.visits, 0, 0, 1e6) | 0, lastVisit: L.lastVisit == null ? null : U.num(L.lastVisit, 0, 0, 1e9) };
     }
     st.locs = locs;
-    if (st.scene !== 'home' && !st.locs[st.scene]) st.scene = 'home';
+    if (st.scene !== 'home' && st.scene !== 'street' && !st.locs[st.scene]) st.scene = 'home';
+    if (st.scene === 'street' && !st.travel) st.scene = 'home';
     // Furniture: rebuild from layout if missing/garbled; keep containers by matching type+position.
     const fresh = buildHomeFurniture(st.worldSeed);
     const old = Array.isArray(st.home.furniture) ? st.home.furniture.filter((f) => f && FURNITURE[f.type]) : [];
@@ -6207,6 +6347,17 @@ const Sanitize = {
     st.home.lightsOn = st.home.lightsOn !== false;
     st.home.gas = U.num(st.home.gas, 70, 0, 100);
     st.home.carFuel = U.num(st.home.carFuel, 24, 0, 60);
+    if (!st.home.barr || typeof st.home.barr !== 'object' || Array.isArray(st.home.barr)) st.home.barr = {};
+    for (const k of Object.keys(st.home.barr)) {
+      const b = st.home.barr[k];
+      if (!b || typeof b !== 'object') { delete st.home.barr[k]; continue; }
+      for (const f of ['layers', 'layersMax']) b[f] = U.num(b[f], 0, 0, 3) | 0;
+      for (const f of ['hp', 'max', 'glass', 'door']) b[f] = U.num(b[f], 0, 0, 2000);
+    }
+    if (st.scene === 'street') st.scene = st.travel && LOCATIONS[st.travel.to] ? 'street' : 'home';
+    if (st.travel && (typeof st.travel !== 'object' || !LOCATIONS[st.travel.to])) st.travel = null;
+    if (st.travel) st.travel.left = U.num(st.travel.left, 10, 0, 1000);
+    st.flags.invulnerable = !!st.flags.invulnerable;
     if (!st.home.loads || typeof st.home.loads !== 'object' || Array.isArray(st.home.loads)) st.home.loads = {};
     st.food.reserve = Array.isArray(st.food.reserve) ? st.food.reserve.filter((x) => ITEMS[x]) : [];
     st.food.exclude = Array.isArray(st.food.exclude) ? st.food.exclude.filter((x) => ITEMS[x]) : [];
@@ -6392,6 +6543,7 @@ const Needs = {
         for (const k of ['satiety', 'hydration', 'energy', 'stamina']) n[k] = U.clamp(n[k], 0, 100);
         n.stamina = Math.min(n.stamina, fx.staminaMax);
         Body.minute(d, d.sleeping ? 'sleep' : moving || 'idle');
+        if (S.flags.debugSustain) { n.satiety = Math.max(n.satiety, 50); n.hydration = Math.max(n.hydration, 50); n.energy = Math.max(n.energy, 40); d.nut.reserve = Math.max(d.nut.reserve, -1000); }
         Illness.minute(d);
         // Walking with a load trains fitness/strength (§5.6).
         if (moving) {
@@ -6592,23 +6744,39 @@ const Travel = {
   },
   /** Advance the clock through the trip (all systems tick), then enter the destination. */
   async go(to, pace) {
+    if (S.scene === 'street') { Bus.emit('toast', { kind: 'warn', msg: STR.finishStreetFirst }); return; }
     const from = S.scene, mins = this.minutes(from, to, pace);
     const d = S.chars[S.active];
+    const enc = Encounters.roll(from, to, pace);
+    const half = enc ? Math.max(1, Math.floor(mins / 2)) : mins;
     TravelUI.show(locDef(to).name, mins);
     d._moving = pace === 'run' ? 'run' : 'walk';
     const t0 = S.time.min;
-    let done = 0;
-    while (done < mins) {
-      const step = Math.min(mins - done, Math.max(1, Math.ceil(mins / 30)));
-      GameClock.advance(step); done += step;
-      TravelUI.progress(done / mins, S.time.min);
-      await new Promise((r) => requestAnimationFrame(r));
+    const run = async (n) => {
+      let done = 0;
+      while (done < n && d.alive) {
+        const step = Math.min(n - done, Math.max(1, Math.ceil(mins / 30)));
+        GameClock.advance(step); done += step;
+        TravelUI.progress((S.time.min - t0) / mins, S.time.min);
+        await new Promise((r) => requestAnimationFrame(r));
+      }
+    };
+    await run(half);
+    if (pace === 'run') d.needs.stamina = Math.max(0, d.needs.stamina - Math.min(80, mins * 2.2));
+    S.travelLog = { from, to, at: t0, mins, enc };
+    if (!d.alive) { TravelUI.hide(); return; }
+    if (enc === 'zombies') { d._moving = null; TravelUI.hide(); Encounters.startStreet({ from, to, pace, left: mins - half }); return; }
+    if (enc === 'ambush') {
+      TravelUI.hide();
+      logEvent(STR.ambushTitle, 'bad');
+      await new Promise((res) => AmbushUI.open({ from, to }, res));
+      if (!d.alive) return;
+      TravelUI.show(locDef(to).name, mins);
+      await run(mins - half);
     }
     d._moving = null;
-    if (pace === 'run') d.needs.stamina = Math.max(0, d.needs.stamina - Math.min(80, mins * 2.2));
-    S.travelLog = { from, to, at: t0, mins };
     TravelUI.hide();
-    Scene.enter(to);
+    if (d.alive) Scene.enter(to);
   },
 };
 
@@ -7434,6 +7602,220 @@ const Cook = {
     if (Food.isRaw(it)) it.st.thawedRaw = true;
     logEvent(STR.microThawed(itemDef(it.id).name), 'info');
     return true;
+  },
+};
+
+/* ===== 29-health.js ===== */
+/* ==========================================================================
+   29 · HEALTH — regional injuries, bleeding, infection stages, step-by-step
+   treatment with real supplies, death conditions (§5.4, §5.5).
+   Wound: { id, t: 'bruise'|'laceration'|'bite'|'fracture'|'burn', sev 0..1, bleed 0..1,
+            infect 0..1, cleaned, dressedAt, sutured, splinted, at }
+   Character extras: d.blood (0..100), d.meds { painUntil, abxUntil }
+   ========================================================================== */
+
+const Health = {
+  init(d) {
+    d.blood = U.num(d.blood, 100, 0, 100);
+    if (!d.meds || typeof d.meds !== 'object') d.meds = {};
+    d.meds.painUntil = U.num(d.meds.painUntil, 0, 0, 1e9);
+    d.meds.abxUntil = U.num(d.meds.abxUntil, 0, 0, 1e9);
+    for (const k in BODY_PARTS) {
+      const p = d.body[k];
+      p.cond = (Array.isArray(p.cond) ? p.cond : []).filter((w) => w && typeof w === 'object' && ['bruise', 'laceration', 'bite', 'fracture', 'burn'].includes(w.t)).map((w) => ({
+        id: typeof w.id === 'string' ? w.id : U.uid(), t: w.t, sev: U.num(w.sev, 0.3, 0, 1), bleed: U.num(w.bleed, 0, 0, 1), infect: U.num(w.infect, 0, 0, 1),
+        cleaned: !!w.cleaned, dressedAt: w.dressedAt == null ? null : U.num(w.dressedAt, 0, 0, 1e9), sutured: !!w.sutured, splinted: !!w.splinted, tq: !!w.tq, at: U.num(w.at, 0, 0, 1e9),
+      }));
+    }
+    return d;
+  },
+  wounds(d) { const out = []; for (const k in BODY_PARTS) for (const w of d.body[k].cond) out.push({ part: k, w }); return out; },
+  /** Apply damage to a body part and create the matching wound (§5.4). kind: blunt | scratch | bite | blade | fall */
+  damage(d, part, amount, kind) {
+    if (S.flags.invulnerable) return;
+    const p = d.body[part];
+    p.hp = Math.max(0, p.hp - amount);
+    const sev = U.clamp(amount / 30, 0.1, 1);
+    const w = { id: U.uid(), t: 'bruise', sev, bleed: 0, infect: 0, cleaned: false, dressedAt: null, sutured: false, splinted: false, tq: false, at: S.time.min };
+    if (kind === 'bite') { w.t = 'bite'; w.bleed = 0.45 + sev * 0.35; w.infect = 0.03; }
+    else if (kind === 'scratch' || kind === 'blade') { w.t = 'laceration'; w.bleed = 0.2 + sev * (kind === 'blade' ? 0.6 : 0.35); }
+    else if (kind === 'blunt' && ['armL', 'armR', 'legL', 'legR'].includes(part) && amount > 12 && RNG.next('combat') < 0.12 + sev * 0.2) w.t = 'fracture';
+    // Merge minor bruises on the same part
+    const ex = p.cond.find((x) => x.t === w.t && w.t === 'bruise');
+    if (ex) ex.sev = Math.min(1, ex.sev + sev * 0.5); else p.cond.push(w);
+    Bus.emit('hurt', { part, amount, kind });
+    if (w.t === 'bite') { logEvent(STR.bitten(BODY_PARTS[part].name), 'bad'); Bus.emit('toast', { kind: 'bad', msg: STR.bitten(BODY_PARTS[part].name), dur: 6000 }); }
+    else if (w.t === 'fracture') { logEvent(STR.fractured(BODY_PARTS[part].name), 'bad'); Bus.emit('toast', { kind: 'bad', msg: STR.fractured(BODY_PARTS[part].name) }); }
+    this.checkDeath(d);
+  },
+  infectStage(w) { return w.infect >= INJURY.critStage ? 'crit' : w.infect >= INJURY.weakStage ? 'weak' : w.infect >= INJURY.feverStage ? 'fever' : null; },
+  worstInfection(d) { return this.wounds(d).reduce((m, x) => Math.max(m, x.w.infect), 0); },
+  /** Movement / attack multipliers from injuries (§5.4 regional effects). */
+  effects(d) {
+    let speed = 1, attack = 1, pain = 0;
+    for (const { part, w } of this.wounds(d)) {
+      if (w.t === 'fracture') {
+        if (part.startsWith('leg')) speed *= w.splinted ? 0.75 : 0.5;
+        if (part.startsWith('arm')) attack *= w.splinted ? 0.7 : 0.5;
+      }
+      pain += w.sev * (w.t === 'fracture' ? 1.5 : w.t === 'bite' ? 1 : 0.5);
+    }
+    const inf = this.worstInfection(d);
+    if (inf >= INJURY.weakStage) { speed *= 0.7; attack *= 0.7; }
+    const relieved = S && d.meds.painUntil > S.time.min;
+    pain *= relieved ? 0.4 : 1;
+    if (pain > 1) { speed *= Math.max(0.7, 1 - (pain - 1) * 0.1); attack *= Math.max(0.7, 1 - (pain - 1) * 0.1); }
+    return { speed, attack, pain };
+  },
+  /** Per-minute update (bleeding, infection, fever, healing, vital checks). */
+  minute(d) {
+    if (!d.alive) return;
+    const h = 1 / 60;
+    const ch = new Character(d);
+    const heal = Body.effects(d).heal;
+    const infMul = Body.effects(d).infection * difficultyOf(S.difficulty).infection * (ch.hasTrait('clinical') ? 0.8 : 1);
+    const med = 1 + ch.skill('medicine') * 0.05;
+    const onAbx = d.meds.abxUntil > S.time.min, onPain = d.meds.painUntil > S.time.min;
+    let bleeding = 0;
+    for (const k in BODY_PARTS) {
+      const p = d.body[k];
+      for (const w of p.cond) {
+        // Bleeding (minor wounds clot on their own; dressings & sutures stop it)
+        if (w.bleed > 0) {
+          bleeding += w.bleed;
+          const clot = w.sutured || w.tq ? 1 : w.dressedAt != null ? 0.5 : w.bleed < 0.35 ? 0.15 : w.bleed < 0.7 ? 0.1 : 0.03;
+          w.bleed = Math.max(0, w.bleed - clot * h * med);
+        }
+        // Infection for open wounds
+        const base = INJURY.infectRate[w.t];
+        if (base) {
+          const stale = w.dressedAt != null && S.time.min - w.dressedAt > INJURY.dressingLifeH * 60;
+          let r = base * infMul * (w.cleaned ? INJURY.infectCleanMul : 1) * (w.dressedAt == null ? 1 : stale ? INJURY.infectStaleMul : INJURY.infectDressMul);
+          if (w.infect < 0.02 && w.cleaned && w.dressedAt != null && !stale) r *= 0.3;
+          w.infect = Math.min(1, w.infect + r * h * (w.sev + 0.3));
+          const fight = (w.cleaned && w.dressedAt != null && !stale ? INJURY.immunity * heal * med : 0) + (onAbx ? INJURY.antibiotic * med : 0);
+          if (w.infect < INJURY.weakStage || onAbx) w.infect = Math.max(0, w.infect - fight * h);
+        }
+        // Healing of the wound itself
+        const treated = (w.t !== 'fracture' || w.splinted) && (w.dressedAt != null || w.t === 'bruise' || w.t === 'fracture') && w.infect < INJURY.feverStage;
+        const ratePerH = w.t === 'fracture' ? (w.splinted ? 1 : 0.15) / INJURY.fractureHealH : treated ? 0.025 : 0.004;
+        w.sev = Math.max(0, w.sev - ratePerH * h * heal);
+      }
+      p.cond = p.cond.filter((w) => w.sev > 0.01 || w.bleed > 0.01 || w.infect > 0.05);
+      // Part HP regenerates slowly when not actively bleeding/infected
+      const busy = p.cond.some((w) => w.bleed > 0.05 || w.infect > INJURY.feverStage);
+      if (!busy) p.hp = Math.min(BODY_PARTS[k].hp, p.hp + INJURY.hpRegen * heal * h * (d.sleeping ? 2 : 1));
+    }
+    // Blood
+    if (bleeding > 0) d.blood = Math.max(0, d.blood - bleeding * INJURY.bloodLossPerSev * h);
+    else d.blood = Math.min(100, d.blood + INJURY.bloodRegen * h * heal);
+    // Fever & infection stages
+    const inf = this.worstInfection(d);
+    if (inf >= INJURY.feverStage) {
+      const f = onPain ? 0.4 : 1;
+      d.needs.energy = Math.max(0, d.needs.energy - 0.03 * f);
+      d.needs.hydration = Math.max(0, d.needs.hydration - 0.025 * f);
+    }
+    if (inf >= INJURY.critStage) d.body.torso.hp = Math.max(0, d.body.torso.hp - 2.2 * h);
+    // Dehydration / starvation
+    if (d.needs.hydration <= 0) d.body.torso.hp = Math.max(0, d.body.torso.hp - INJURY.dehydrateDamage * h);
+    this.checkDeath(d);
+  },
+  checkDeath(d) {
+    if (!d.alive || S.flags.invulnerable) return;
+    let cause = null;
+    if (d.body.head.hp <= 0) cause = STR.causeHead;
+    else if (d.body.torso.hp <= 0) cause = this.worstInfection(d) >= INJURY.critStage ? STR.causeInfection : d.needs.hydration <= 0 ? STR.causeThirst : STR.causeTorso;
+    else if (d.blood <= INJURY.deathBlood) cause = STR.causeBlood;
+    else if (d.nut && d.nut.reserve <= INJURY.starveDeath) cause = STR.causeStarve;
+    if (cause) Death.trigger(d, cause);
+  },
+  /** Find a carried/home item from a list of ids. */
+  findItem(ch, ids) {
+    const sources = [...ch.containers()];
+    if (S.scene === 'home') for (const f of S.home.furniture) { if (f.inv) sources.push(f.inv); }
+    for (const c of sources) {
+      let hit = null;
+      Inv.walk(c, (it, cc, slot) => { if (!hit && ids.includes(it.id) && (it.uses == null || it.uses > 0)) hit = { it, c: cc, slot }; });
+      if (hit) return hit;
+    }
+    return null;
+  },
+  /** Use one 'use' (or one unit) of an item. */
+  spend(found) {
+    const it = found.it, d = itemDef(it.id);
+    if (it.uses != null) { it.uses -= 1; if (it.uses > 0) return; }
+    if (it.qty > 1) { it.qty -= 1; if (d.uses) it.uses = d.uses; } else Inv.remove(found.c, found.slot);
+  },
+  /** Available treatment actions for a wound → [{key, label, ids, ok}] */
+  actions(ch, part, w) {
+    const out = [];
+    const add = (key, label, ids, cond = true) => { if (!cond) return; const f = ids ? this.findItem(ch, ids) : true; out.push({ key, label, ok: !!f, need: ids ? ids.map((i) => itemDef(i).name).slice(0, 3).join(' / ') : '' }); };
+    const open = w.t === 'bite' || w.t === 'laceration' || w.t === 'burn';
+    add('pressure', STR.trPressure, null, w.bleed > 0.05 && !w.sutured);
+    add('clean', STR.trClean, MED.clean, open && !w.cleaned);
+    add('dress', w.dressedAt != null ? STR.trRedress : STR.trDress, w.sev < 0.3 && w.t !== 'bite' ? [...MED.smallDress, ...MED.dress] : MED.dress, open);
+    add('suture', STR.trSuture, MED.suture, (w.t === 'laceration' || w.t === 'bite') && w.bleed > 0.3 && !w.sutured);
+    add('tourniquet', STR.trTourniquet, MED.tourniquet, w.bleed > 0.6 && part !== 'head' && part !== 'torso' && !w.tq);
+    add('splint', STR.trSplint, MED.splint, w.t === 'fracture' && !w.splinted);
+    add('splint_impro', STR.trSplintImpro, ['plank', 'scrap_wood'], w.t === 'fracture' && !w.splinted);
+    return out;
+  },
+  /** Perform a treatment step (§5.5). Returns true if done. */
+  treat(ch, part, woundId, key) {
+    const d = ch.d, p = d.body[part], w = p.cond.find((x) => x.id === woundId);
+    if (!w) return false;
+    const med = 1 + ch.skill('medicine') * 0.05;
+    const use = (ids) => { const f = this.findItem(ch, ids); if (!f) { Bus.emit('toast', { kind: 'warn', msg: STR.trMissing }); return false; } this.spend(f); return true; };
+    let minutes = 3;
+    switch (key) {
+      case 'pressure': w.bleed *= 0.55; minutes = 4; break;
+      case 'clean': if (!use(MED.clean)) return false; w.cleaned = true; if (S.time.min - w.at < 90) w.infect *= 0.4; w.infect *= 0.8; minutes = 5; break;
+      case 'dress': if (!use(w.sev < 0.3 && w.t !== 'bite' ? [...MED.smallDress, ...MED.dress] : MED.dress)) return false; w.dressedAt = S.time.min; w.bleed *= 0.3 / med; minutes = 6; break;
+      case 'suture': if (!use(MED.suture)) return false; w.sutured = true; w.bleed = 0; if (!w.cleaned) w.infect += 0.08; minutes = 20; break;
+      case 'tourniquet': if (!use(MED.tourniquet)) return false; w.tq = true; w.bleed = 0; minutes = 2; break;
+      case 'splint': if (!use(MED.splint)) return false; w.splinted = true; minutes = 10; break;
+      case 'splint_impro': {
+        const wood = this.findItem(ch, ['plank', 'scrap_wood']), wrap = this.findItem(ch, ['duct_tape', 'elastic_bandage', 'cloth_rag', 'rope']);
+        if (!wood || !wrap) { Bus.emit('toast', { kind: 'warn', msg: STR.trMissing }); return false; }
+        this.spend(wood); this.spend(wrap); w.splinted = true; minutes = 15; break;
+      }
+      default: return false;
+    }
+    GameClock.advance(minutes);
+    Skills.gain(ch, 'medicine', 3 + w.sev * 4);
+    logEvent(STR.treated(BODY_PARTS[part].name, STR.woundName[w.t]), 'info');
+    return true;
+  },
+  /** Medication taken orally (painkiller / fever reducer, antibiotic). */
+  takeMed(ch, kind) {
+    const ids = kind === 'antibiotic' ? MED.antibiotic : MED.painkiller;
+    const f = this.findItem(ch, ids);
+    if (!f) { Bus.emit('toast', { kind: 'warn', msg: STR.trMissing }); return false; }
+    this.spend(f);
+    if (kind === 'antibiotic') ch.d.meds.abxUntil = Math.max(ch.d.meds.abxUntil, S.time.min) + 24 * 60;
+    else ch.d.meds.painUntil = S.time.min + 6 * 60;
+    logEvent(STR.tookMed(itemDef(f.it.id).name), 'info');
+    GameClock.advance(1);
+    return true;
+  },
+  initHooks() { GameClock.onMinute(() => { for (const d of S.chars) this.minute(d); }); },
+};
+
+/** Death → rebirth with 100% skill retention (§1 pillar 5, §11.1). */
+const Death = {
+  trigger(d, cause) {
+    if (!d.alive) return;
+    d.alive = false;
+    const day = Math.floor(S.time.min / 1440);
+    for (const k in d.skills) Profile.recordSkill(k, d.skills[k].lv, d.skills[k].xp);
+    P.lives.push({ n: S.life, bg: d.bg, name: d.name, days: day, cause, endedAt: Date.now() });
+    P.stats.deaths = (P.stats.deaths || 0) + 1;
+    P.stats.totalDays = (P.stats.totalDays || 0) + day;
+    Save.saveProfile();
+    Save.deleteRun();
+    logEvent(STR.died(cause), 'bad');
+    Bus.emit('death', { d, cause, day });
   },
 };
 
@@ -8388,9 +8770,22 @@ class Humanoid {
   }
 
   /** Attach / detach visible gear (backpack, hand bag). */
-  setGear({ back, hand }) {
+  setGear({ back, hand, weapon }) {
     if (this.backpackMesh) { this.chest.remove(this.backpackMesh); this.backpackMesh = null; }
     if (this.handMesh) { this.arms[1].hand.remove(this.handMesh); this.handMesh = null; }
+    if (this.weaponMesh) { this.arms[1].hand.remove(this.weaponMesh); this.weaponMesh = null; }
+    if (weapon && !hand) {
+      const d = itemDef(weapon.id), ic = d.icon || {};
+      const pb = new PB('wp' + weapon.id);
+      const len = d.size[1] * 0.22;
+      if (ic.k === 'pan') { pb.cyl(0.03, 0.03, 0.3, Mat.color('#3a2a1a', 0.6), 0, -0.36, 0.0); pb.cyl(0.13, 0.11, 0.04, Mat.color(ic.c || '#222', 0.4, 0.6), 0, -0.58, 0.1, 16, [Math.PI / 2, 0, 0]); }
+      else if (ic.k === 'knife') { pb.box(0.03, 0.12, 0.03, Mat.color(ic.c2 || '#222', 0.6), 0, -0.1, 0); pb.box(0.012, len, 0.035, Mat.color(ic.c || '#ccc', 0.2, 0.9), 0, -0.16 - len, 0); }
+      else if (ic.k === 'hammer') { pb.cyl(0.018, 0.018, len, Mat.color(ic.c2 || '#8a5a2a', 0.6), 0, -0.05 - len, 0, 8); pb.box(0.06, 0.06, 0.16, Mat.color(ic.c || '#333', 0.3, 0.8), 0, -0.08 - len, 0); }
+      else { pb.cyl(0.035, 0.018, len, Mat.color(ic.c || '#a87a42', 0.55, ic.k === 'bat' && (ic.c || '').startsWith('#c9c') ? 0.8 : 0), 0, -0.05 - len, 0, 8); }
+      this.weaponMesh = pb.build();
+      this.weaponMesh.rotation.x = -0.6;
+      this.arms[1].hand.add(this.weaponMesh);
+    }
     if (back) {
       const d = itemDef(back.id), ic = d.icon || {};
       const big = d.grid ? d.grid[0] * d.grid[1] / 30 : 0.5;
@@ -8452,6 +8847,26 @@ class Humanoid {
       arm.upper.rotation.x = carrying ? -0.05 : -Math.sin(ph) * swing * 0.85 - 0.1 * r + Math.sin(this.t * 1.8) * 0.02;
       arm.upper.rotation.z = arm.s * (0.08 + (carrying ? 0.12 : 0) + 0.04 * r);
       arm.elbow.rotation.x = carrying ? -0.1 : -(0.15 + 0.25 * w + 1.2 * r + 0.6 * s + Math.max(0, Math.sin(ph)) * 0.3 * mv);
+      if (st.zombie) {
+        // Shambling posture: arms reaching forward, stiff elbows, lurching
+        const reach = st.lunge ? 1.7 : 1.25;
+        arm.upper.rotation.x = -reach + Math.sin(this.t * 2 + arm.s) * 0.08;
+        arm.upper.rotation.z = arm.s * 0.12;
+        arm.elbow.rotation.x = -0.2;
+      }
+    }
+    if (st.zombie) {
+      this.spine.rotation.x += 0.22; this.neck.rotation.x += 0.25; this.head.rotation.z = Math.sin(this.t * 0.7) * 0.18;
+      this.hips.rotation.z = Math.sin(p) * 0.06;
+    }
+    // Attack swing (right arm): wind-up then strike
+    if (this.swing > 0) {
+      this.swing = Math.max(0, this.swing - dt / 0.35);
+      const k = 1 - this.swing;
+      const a = this.arms[1];
+      a.upper.rotation.x = k < 0.35 ? -2.4 * (k / 0.35) : -2.4 + 3.0 * ((k - 0.35) / 0.65);
+      a.elbow.rotation.x = -0.4;
+      this.spine.rotation.y += Math.sin(k * Math.PI) * 0.4;
     }
   }
   poseSleep() {
@@ -9363,6 +9778,8 @@ const Render = {
     const az = U.lerp(-1.2, 1.2, U.clamp(dayT, 0, 1));
     return { elev, az, dayT };
   },
+  /** Night factor (0 day … 1 night) for any game minute, independent of rendering. */
+  nightAt(min) { const { elev } = this.sunState(min); return 1 - U.clamp(elev * 4 + 0.35, 0, 1); },
   updateDayNight(min) {
     const { elev, az } = this.sunState(min);
     const day = U.clamp(elev * 3, 0, 1), dusk = U.clamp(1 - Math.abs(elev) * 4, 0, 1) * (elev > -0.25 ? 1 : 0);
@@ -9462,6 +9879,14 @@ const Render = {
       }
       ground = { x: gp.x, z: gp.z, floor: this.viewFloor, dist: this.ray.ray.origin.distanceTo(gp) };
     }
+    // Zombies (attack target)
+    const zobjs = Zombies.alive().map((z) => z.obj);
+    if (zobjs.length) {
+      const zh = this.ray.intersectObjects(zobjs, true)[0];
+      if (zh) { const zid = zh.object.userData.zombieId; const z = Zombies.list.find((q) => q.id === zid); if (z && !z.dead) return { kind: 'zombie', z, ground }; }
+      // Generous target: a click on the ground right next to a zombie also selects it
+      if (ground) { const z = Zombies.alive().find((q) => Math.hypot(q.x - ground.x, q.z - ground.z) < 0.75); if (z) return { kind: 'zombie', z, ground }; }
+    }
     // Stairs: clicking the steps means "go to the other floor".
     const sh = W.stairsObj ? this.ray.intersectObject(W.stairsObj, true)[0] : null;
     if (sh && (!furnHit || sh.distance < furnHit.dist) && (!ground || sh.distance <= ground.dist + 0.5)) return { kind: 'stairs', ground };
@@ -9539,6 +9964,7 @@ class Avatar {
     this.onArrive = null;
     this.stairFrom = null;
     this.bed = null;
+    this._chaseT = 0;
     this.syncFromData();
     this.refreshGear();
   }
@@ -9547,7 +9973,7 @@ class Avatar {
     this.obj.position.set(p.x, Scene.W.groundY(p.x, p.z, p.floor), p.z);
     this.obj.rotation.y = p.rot;
   }
-  refreshGear() { this.h.setGear({ back: this.d.equip.back, hand: this.d.equip.hand }); }
+  refreshGear() { this.h.setGear({ back: this.d.equip.back, hand: this.d.equip.hand, weapon: this.d.equip.weapon }); }
   get floor() { return this.d.pos.floor; }
   isMoving() { return this.path.length > 0; }
 
@@ -9822,17 +10248,18 @@ const Scene = {
   W: null, avatar: null, hover: null, pileObjs: new Map(), stockObjs: new Map(),
 
   /** The furniture list of the current place. */
-  furnList() { return S.scene === 'home' ? S.home.furniture : (World.loc(S.scene) || { furniture: [] }).furniture; },
+  furnList() { return S.scene === 'home' ? S.home.furniture : S.scene === 'street' ? [] : (World.loc(S.scene) || { furniture: [] }).furniture; },
   piles() {
     if (S.scene === 'home') { if (!Array.isArray(S.home.piles)) S.home.piles = []; return S.home.piles; }
+    if (S.scene === 'street') { if (!Array.isArray(this._streetPiles)) this._streetPiles = []; return this._streetPiles; }
     return World.loc(S.scene).piles;
   },
-  setPiles(list) { if (S.scene === 'home') S.home.piles = list; else World.loc(S.scene).piles = list; },
+  setPiles(list) { if (S.scene === 'home') S.home.piles = list; else if (S.scene === 'street') this._streetPiles = list; else World.loc(S.scene).piles = list; },
   isHome() { return S.scene === 'home'; },
 
   build() {
-    if (S.scene !== 'home') World.ensureLoc(S.scene);
-    this.W = S.scene === 'home' ? HomeWorld.build(Render.scene) : LocationWorld.build(Render.scene, S.scene);
+    if (S.scene !== 'home' && S.scene !== 'street') World.ensureLoc(S.scene);
+    this.W = S.scene === 'home' ? HomeWorld.build(Render.scene) : S.scene === 'street' ? StreetWorld.build(Render.scene) : LocationWorld.build(Render.scene, S.scene);
     for (const f of this.furnList()) this.addFurniture(f);
     Nav.build(this.W, this.furnList());
     Render.setWorld(this.W);
@@ -9842,9 +10269,12 @@ const Scene = {
     Render.setViewFloor(S.chars[S.active].pos.floor);
     Render.cam.tx = S.chars[S.active].pos.x; Render.cam.tz = S.chars[S.active].pos.z;
     Render.cam.ctx = Render.cam.tx; Render.cam.ctz = Render.cam.tz;
+    Zombies.grid = null;
+    if (this.isHome()) { Barricades.renderAll(); Zombies.rebuildGrid(); }
   },
   dispose() {
     const W = this.W; if (!W) return;
+    Zombies.clear(); Combat.stop();
     Render.scene.remove(W.root);
     Render.scene.remove(this.avatar.obj);
     W.root.traverse((o) => { if (o.isMesh || o.isLineSegments) o.geometry.dispose(); });
@@ -9858,11 +10288,13 @@ const Scene = {
     if (InvUI.isOpen) InvUI.close();
     this.dispose();
     S.scene = id;
-    if (id !== 'home') { const st = World.ensureLoc(id); World.deplete(id); st.visits++; st.lastVisit = S.time.min; }
+    if (id !== 'home' && id !== 'street') { const st = World.ensureLoc(id); World.deplete(id); st.visits++; st.lastVisit = S.time.min; }
     const d = S.chars[S.active];
-    const tmpW = id === 'home' ? { x: 2.8, z: HOME.lot.z1 - 1.2, rot: Math.PI } : { x: locDef(id).doorX, z: locDef(id).room.z1 - 0.9, rot: Math.PI };
+    const tmpW = id === 'home' ? { x: 2.8, z: HOME.lot.z1 - 1.2, rot: Math.PI } : id === 'street' ? { x: -17, z: 0.3, rot: Math.PI / 2 } : { x: locDef(id).doorX, z: locDef(id).room.z1 - 0.9, rot: Math.PI };
     d.pos.x = tmpW.x; d.pos.z = tmpW.z; d.pos.floor = 0; d.pos.rot = tmpW.rot;
+    if (id === 'street') this._streetPiles = [];
     this.build();
+    if (id === 'street') Encounters.spawnStreet(); else Zombies.populate(id);
     Render.cam.follow = true;
     logEvent(STR.arrived(locDef(id).name), 'info');
     Bus.emit('scene:changed', id);
@@ -10001,13 +10433,15 @@ const Scene = {
   isExitPoint(g) {
     if (g.floor !== 0) return false;
     if (this.isHome()) return g.z > HOME.lot.z1 + 0.6 && g.x > HOME.gate.x0 - 1 && g.x < HOME.gate.x1 + 1;
+    if (S.scene === 'street') return g.x > 16.3;
     const r = locDef(S.scene).room;
     return g.z > r.z1 + 0.6;
   },
   /** Walk to the exit, then open the city map. */
   leave(mode = 'walk') {
     const e = this.W.exit;
-    const ok = this.avatar.goTo({ x: e.x, z: e.z, floor: 0 }, mode, () => MapUI.open(true));
+    const after = S.scene === 'street' ? () => Encounters.finish() : () => MapUI.open(true);
+    const ok = this.avatar.goTo({ x: e.x, z: e.z, floor: 0 }, mode, after);
     if (!ok) Bus.emit('toast', { kind: 'warn', msg: STR.cannotReach });
     else Render.cam.follow = true;
     return ok;
@@ -10018,6 +10452,8 @@ const Scene = {
     const hit = Render.pick(ev.clientX, ev.clientY);
     if (!hit) return;
     const mode = ev.shiftKey ? 'sneak' : (ev.ctrlKey || isDouble) ? 'run' : 'walk';
+    Combat.stop();
+    if (hit.kind === 'zombie') { Combat.engage(hit.z); return; }
     if (hit.kind === 'furn') {
       const f = this.furn(hit.uid); if (!f) return;
       const acts = this.actions(f);
@@ -10077,6 +10513,7 @@ const Scene = {
     }
     const f = uid && this.furn(uid);
     if (hit && hit.kind === 'stairs') return S.chars[S.active].pos.floor === 0 ? STR.goUp : STR.goDown;
+    if (hit && hit.kind === 'zombie') return ZOMBIES[hit.z.type].name + ' — ' + STR.clickAttack;
     if (hit && hit.kind === 'ground' && this.isExitPoint(hit.ground)) return STR.leaveAct;
     if (f && FURNITURE[f.type].act === 'checkout') return f.label + ' — ' + STR.checkoutAct;
     return f ? f.label + (f.inv ? ' — ' + STR.clickToOpen : '') : null;
@@ -10442,6 +10879,964 @@ Object.assign(PROPS, {
 });
 for (const id of ['prop.chest_freezer', 'prop.large_freezer', 'prop.generator']) AssetRegistry.register(id, PROPS[id]);
 
+/* ===== 41-zombies.js ===== */
+/* ==========================================================================
+   41 · ZOMBIES, NOISE & COMBAT (§8)
+   Zombies live only in the active scene. They perceive by sight (vision cone,
+   shorter at night), by outdoor noise, and by lit windows at night (home).
+   At home they path on a zombie nav layer where unboarded broken windows are
+   passable and barricaded doors/gate are not; blocked zombies bash barricades.
+   ========================================================================== */
+
+const NoiseBus = {
+  /** Emit a sound. Indoor sounds (inside the house/shop) never reach zombies (§8.3). */
+  emit(x, z, radius, floor = 0, outdoorOverride = false) {
+    if (!Scene.W || radius <= 0) return 0;
+    const indoor = Scene.W.isIndoor(x, z, floor);
+    if (indoor && !outdoorOverride) return 0;
+    let n = 0;
+    for (const zb of Zombies.list) {
+      if (zb.dead) continue;
+      const d = Math.hypot(zb.x - x, zb.z - z);
+      if (d <= radius * zb.t.hear) { zb.hearAt(x, z); n++; }
+    }
+    Bus.emit('noise', { x, z, radius, heard: n });
+    return n;
+  },
+};
+
+class Zombie {
+  constructor(type, x, z, seed) {
+    const T = ZOMBIES[type] || ZOMBIES.walker;
+    const rng = U.makeRng(U.hashSeed('z' + seed));
+    this.id = 'z' + seed; this.type = type; this.t = T;
+    this.x = x; this.z = z; this.floor = 0; this.rot = rng() * Math.PI * 2;
+    this.hp = T.hp; this.headHp = T.headHp;
+    this.speed = U.range(rng, T.speed[0], T.speed[1]);
+    this.state = 'wander'; this.path = []; this.repath = 0; this.atkT = rng(); this.wanderT = 0; this.stagger = 0;
+    this.target = null; this.deadT = 0; this.dead = false; this.flash = 0; this.groanT = 2 + rng() * 6;
+    this.rng = rng;
+    this.h = new Humanoid({
+      skin: U.pick(rng, ZOMBIE_LOOKS.skin), shirt: U.pick(rng, ZOMBIE_LOOKS.shirt), pants: U.pick(rng, ZOMBIE_LOOKS.pants),
+      hair: U.pick(rng, ZOMBIE_LOOKS.hair), hairStyle: rng() < 0.4 ? 1 : 0, build: 0.92 + rng() * 0.16, height: 0.95 + rng() * 0.1,
+    });
+    // Torn clothing: darker stains
+    this.h.mats.shirt.color.multiplyScalar(0.8); this.h.mats.skin.roughness = 0.8;
+    this.h.root.traverse((o) => { if (o.isMesh) o.userData.zombieId = this.id; });
+    this.obj = this.h.root;
+    this.limp = rng() * 0.6;
+    this.sync();
+  }
+  sync() { this.obj.position.set(this.x, Scene.W.groundY(this.x, this.z, this.floor), this.z); this.obj.rotation.y = this.rot; }
+  hearAt(x, z) { if (this.dead) return; if (this.state === 'wander' || this.state === 'investigate') { this.state = 'investigate'; this.goal = { x, z }; this.repath = 0; } }
+  /** Can this zombie see the player? */
+  sees(px, pz, pfloor) {
+    if (pfloor !== this.floor) return false;
+    const dx = px - this.x, dz = pz - this.z, d = Math.hypot(dx, dz);
+    const night = Render.night > 0.5;
+    const d0 = S.chars[S.active];
+    let range = this.t.sight * (night ? 0.55 : 1) * (d0._moving === 'sneak' ? 0.55 - new Character(d0).skill('stealth') * 0.02 : 1);
+    if (Scene.W.isIndoor(px, pz, pfloor) !== Scene.W.isIndoor(this.x, this.z, 0) && Scene.isHome()) range *= 0.35; // walls & windows
+    if (d > range) return false;
+    if (d < 1.6) return true;
+    const ang = Math.atan2(dx, dz) - this.rot;
+    const a = Math.atan2(Math.sin(ang), Math.cos(ang));
+    if (Math.abs(a) > 1.0) return false;
+    return Zombies.los(this.x, this.z, px, pz);
+  }
+  damage(amount, head) {
+    if (this.dead) return;
+    this.flash = 0.18;
+    this.stagger = 0.45;
+    if (head) this.headHp -= amount; else this.hp -= amount;
+    if (this.hp <= 0 || this.headHp <= 0) this.die();
+    else if (this.state !== 'attack') this.state = 'chase';
+  }
+  die() {
+    this.dead = true; this.deadT = 0; this.state = 'dead';
+    Bus.emit('zombie:killed', this);
+    Snd.play('zdie', this.x, this.z);
+  }
+  update(dt, player) {
+    if (this.dead) {
+      this.deadT += dt;
+      const t = Math.min(1, this.deadT / 0.7);
+      this.obj.rotation.order = 'YXZ';
+      this.obj.rotation.x = -Math.PI / 2 * U.smooth(t);
+      this.obj.position.y = Scene.W.groundY(this.x, this.z, 0) + 0.15 * t;
+      this.h.update(dt * 0.2, { mode: 'idle', speed: 0 });
+      return;
+    }
+    if (this.flash > 0) { this.flash -= dt; const k = Math.max(0, this.flash) * 4; this.h.mats.skin.emissive.setRGB(k * 0.6, 0, 0); this.h.mats.shirt.emissive.setRGB(k * 0.4, 0, 0); }
+    this.groanT -= dt;
+    if (this.groanT <= 0) { this.groanT = 4 + this.rng() * 8; Snd.play('groan', this.x, this.z); }
+    if (this.stagger > 0) { this.stagger -= dt; this.h.update(dt, { mode: 'idle', speed: 0, zombie: true }); return; }
+    const p = player.d.pos;
+    const dist = Math.hypot(p.x - this.x, p.z - this.z);
+    const alive = player.d.alive;
+    // Perception
+    if (alive && this.state !== 'attack' && this.sees(p.x, p.z, p.floor)) { if (this.state !== 'chase') Bus.emit('zombie:spotted', this); this.state = 'chase'; }
+    if (this.state === 'chase' && (!alive || (dist > this.t.sight * 1.6 && !this.sees(p.x, p.z, p.floor)))) { this.state = 'investigate'; this.goal = { x: p.x, z: p.z }; }
+    let moveTo = null, speed = this.speed;
+    if (this.state === 'chase') {
+      if (dist < 0.95 && p.floor === this.floor) this.state = 'attack';
+      else moveTo = { x: p.x, z: p.z };
+    }
+    if (this.state === 'attack') {
+      this.rot = Math.atan2(p.x - this.x, p.z - this.z);
+      this.atkT -= dt;
+      if (dist > 1.25) this.state = 'chase';
+      else if (this.atkT <= 0) { this.atkT = this.t.attackCd; Combat.zombieHits(this, player); }
+      this.h.update(dt, { mode: 'idle', speed: 0, zombie: true, lunge: this.atkT > this.t.attackCd - 0.35 });
+      this.sync();
+      return;
+    }
+    if (this.state === 'bash') {
+      const b = Barricades.get(this.bashKey);
+      if (!b || Barricades.passable(this.bashKey)) { this.state = 'wander'; Zombies.rebuildGrid(); }
+      else {
+        this.atkT -= dt;
+        if (this.atkT <= 0) { this.atkT = this.t.attackCd * 1.2; Barricades.hit(this.bashKey, U.range(this.rng, 6, 11)); }
+        if (alive && this.sees(p.x, p.z, p.floor) && Zombies.reachable(this, p)) this.state = 'chase';
+      }
+      this.h.update(dt, { mode: 'idle', speed: 0, zombie: true, lunge: this.atkT > this.t.attackCd - 0.35 });
+      this.sync();
+      return;
+    }
+    if (this.state === 'investigate') {
+      moveTo = this.goal;
+      if (!moveTo || Math.hypot(moveTo.x - this.x, moveTo.z - this.z) < 0.6) { this.state = Scene.isHome() && S.flags.outbreak && Render.night > 0.4 ? 'siege' : 'wander'; moveTo = null; }
+    }
+    if (this.state === 'siege') {
+      // Drawn to the house (lit windows / noise): head for the nearest barricade or breach.
+      const tgt = Barricades.nearestTarget(this.x, this.z);
+      if (tgt) {
+        if (Math.hypot(tgt.x - this.x, tgt.z - this.z) < 0.9) { this.state = 'bash'; this.bashKey = tgt.key; this.atkT = 1; }
+        else moveTo = tgt;
+      } else this.state = 'wander';
+    }
+    if (this.state === 'wander') {
+      this.wanderT -= dt; speed *= 0.5;
+      if (this.wanderT <= 0 || !this.goal) { this.wanderT = 4 + this.rng() * 6; this.goal = Zombies.randomPoint(this.rng, this.x, this.z, 5); }
+      moveTo = this.goal;
+      if (Scene.isHome() && S.flags.outbreak && Render.night > 0.4 && Barricades.attraction() > this.rng() * 3) this.state = 'siege';
+    }
+    // Movement along a (re)planned path on the zombie nav layer
+    if (moveTo) {
+      this.repath -= dt;
+      if (this.repath <= 0 || !this.path.length) {
+        this.repath = 0.9 + this.rng() * 0.4;
+        const route = Zombies.route(this.x, this.z, moveTo.x, moveTo.z);
+        this.path = route || [];
+        if (!route && this.state === 'chase') {
+          // Can't reach the player: go to the barricade that blocks the way.
+          const tgt = Barricades.nearestTarget(this.x, this.z);
+          if (tgt) { this.state = Math.hypot(tgt.x - this.x, tgt.z - this.z) < 0.9 ? 'bash' : 'siege'; this.bashKey = tgt.key; this.atkT = 1; }
+        }
+      }
+      let budget = speed * dt;
+      while (budget > 0 && this.path.length) {
+        const wp = this.path[0];
+        const dx = wp.x - this.x, dz = wp.z - this.z, dd = Math.hypot(dx, dz);
+        if (dd < 0.05) { this.path.shift(); continue; }
+        const st = Math.min(dd, budget);
+        this.x += (dx / dd) * st; this.z += (dz / dd) * st; budget -= st;
+        const want = Math.atan2(dx, dz);
+        this.rot += Math.atan2(Math.sin(want - this.rot), Math.cos(want - this.rot)) * Math.min(1, dt * 6);
+        if (st >= dd - 1e-6) this.path.shift();
+      }
+      this.h.update(dt, { mode: speed > 1.6 ? 'run' : 'walk', speed: speed * (1 - this.limp * 0.3), zombie: true });
+    } else this.h.update(dt, { mode: 'idle', speed: 0, zombie: true });
+    this.sync();
+  }
+}
+
+const Zombies = {
+  list: [], grid: null, spawnT: 0,
+  clear() {
+    for (const z of this.list) { Render.scene.remove(z.obj); z.h.dispose(); }
+    this.list = [];
+  },
+  spawn(type, x, z) {
+    const zb = new Zombie(type, x, z, (S.time.min * 31 + this.list.length * 7 + Math.floor(Math.random() * 1e6)) >>> 0);
+    this.list.push(zb);
+    Render.scene.add(zb.obj);
+    return zb;
+  },
+  alive() { return this.list.filter((z) => !z.dead); },
+  /** Zombie nav layer: player grid ± breaches (unboarded broken windows) and barricaded doors/gate. */
+  rebuildGrid() {
+    const g = Nav.grids[0]; if (!g) return;
+    this.grid = { floor: 0, x0: g.x0, z0: g.z0, nx: g.nx, nz: g.nz, block: g.block.slice() };
+    if (!Scene.isHome()) return;
+    for (const b of Barricades.list()) {
+      const rect = b.rect;
+      const passable = Barricades.passable(b.key);
+      const setV = (v) => {
+        for (let iz = 0; iz < g.nz; iz++) for (let ix = 0; ix < g.nx; ix++) {
+          const x = g.x0 + (ix + 0.5) * Nav.cell, z = g.z0 + (iz + 0.5) * Nav.cell;
+          if (x > rect.x0 && x < rect.x1 && z > rect.z0 && z < rect.z1) this.grid.block[iz * g.nx + ix] = v;
+        }
+      };
+      if (b.kind === 'window') { if (passable) setV(0); }
+      else if (!passable) setV(1);
+    }
+  },
+  route(x, z, tx, tz) {
+    if (!this.grid) this.rebuildGrid();
+    const saved = Nav.grids[0];
+    Nav.grids[0] = this.grid;
+    let p = null;
+    try { p = Nav.astar(0, x, z, tx, tz); } finally { Nav.grids[0] = saved; }
+    return p ? p.slice(1) : null;
+  },
+  reachable(zb, p) { return !!this.route(zb.x, zb.z, p.x, p.z); },
+  los(x0, z0, x1, z1) {
+    const g = this.grid || Nav.grids[0];
+    const d = Math.hypot(x1 - x0, z1 - z0), n = Math.ceil(d / 0.2);
+    for (let i = 1; i < n; i++) {
+      const t = i / n, x = U.lerp(x0, x1, t), z = U.lerp(z0, z1, t);
+      const ix = Math.floor((x - g.x0) / Nav.cell), iz = Math.floor((z - g.z0) / Nav.cell);
+      if (ix < 0 || iz < 0 || ix >= g.nx || iz >= g.nz) return false;
+      if (Nav.grids[0].block[iz * g.nx + ix] && this.isWallCell(x, z)) return false;
+    }
+    return true;
+  },
+  /** Blockers that stop sight are walls (not furniture): approximate via the static wall list. */
+  isWallCell(x, z) {
+    const W = Scene.W;
+    for (const r of W.blockers[0]) if (x > r.x0 && x < r.x1 && z > r.z0 && z < r.z1) return true;
+    return false;
+  },
+  randomPoint(rng, x, z, r) {
+    for (let i = 0; i < 8; i++) {
+      const a = rng() * Math.PI * 2, d = 1 + rng() * r;
+      const p = { x: x + Math.cos(a) * d, z: z + Math.sin(a) * d };
+      if (Nav.walkable(0, p.x, p.z)) return p;
+    }
+    return { x, z };
+  },
+  /** Populate a location on entry (§8.4: density by day, night and area). */
+  populate(id) {
+    this.clear();
+    this.grid = null;
+    if (!S.flags.outbreak || id === 'home') return;
+    const caps = { conv: 5, pharmacy: 4, market: 11, hardware: 6, supermarket: 13 };
+    const n = Math.round((caps[id] || 4) * Danger.level(id) * 1.25 + (Danger.level(id) > 0.15 ? 1 : 0));
+    const rng = RNG.local('spawn|' + S.worldSeed + '|' + id + '|' + Math.floor(S.time.min / 60));
+    const r = locDef(id).room;
+    for (let i = 0; i < n; i++) {
+      let p = null;
+      for (let k = 0; k < 12 && !p; k++) {
+        const x = U.lerp(r.x0 + 0.6, r.x1 - 0.6, rng()), z = U.lerp(r.z0 + 0.6, r.z1 - 2.5, rng());
+        if (Nav.walkable(0, x, z)) p = { x, z };
+      }
+      if (p) this.spawn(this.pickType(rng), p.x, p.z);
+    }
+    this.rebuildGrid();
+  },
+  pickType(rng) {
+    const day = S.time.min / 1440;
+    const R = ZOMBIES.runner;
+    if (day >= R.unlock && Render.nightAt(S.time.min) > 0.5 && rng() < R.share) return 'runner';
+    return 'walker';
+  },
+  /** Home pressure at night: walkers arrive from the street, drawn by light and outdoor noise. */
+  homeSpawner(dt) {
+    if (!S.flags.outbreak || !Scene.isHome()) return;
+    this.spawnT -= dt;
+    if (this.spawnT > 0) return;
+    this.spawnT = 20;  // real seconds between rolls (scaled by game speed below)
+    const night = Render.nightAt(S.time.min) > 0.45;
+    const alive = this.alive().length;
+    const cap = 2 + Math.round(Danger.level('home') * 8);
+    if (alive >= cap) return;
+    const p = (night ? 0.55 : 0.12) * Danger.level('home') * (1 + Barricades.attraction()) * GameClock.speed();
+    if (Math.random() < p) {
+      const x = U.lerp(-8, 10, Math.random());
+      this.spawn(this.pickType(Math.random), x, HOME.lot.z1 + 2.0);
+    }
+  },
+  update(dt) {
+    if (!S || !Scene.W) return;
+    const ch = activeChar();
+    for (const z of this.list) z.update(dt, ch);
+    // Corpses fade after a while
+    for (const z of this.list) if (z.dead && z.deadT > 40) { Render.scene.remove(z.obj); z.h.dispose(); z.gone = true; }
+    this.list = this.list.filter((z) => !z.gone);
+    this.homeSpawner(dt);
+    // Player movement noise outdoors
+    const nl = Noise.level(ch.d);
+    if (nl > 0 && Math.random() < dt * 2) NoiseBus.emit(ch.d.pos.x, ch.d.pos.z, nl, ch.d.pos.floor);
+    const gn = Appliances.generatorNoise ? (Scene.isHome() ? Appliances.generatorNoise() : 0) : 0;
+    if (gn && Math.random() < dt * 0.2) NoiseBus.emit(HOME_SLOTS[3].x, HOME_SLOTS[3].z, gn, 0, true);
+    // Sleep is interrupted by zombies at the barricades or near the player
+    if (GameClock.sleepUntil != null && this.list.some((z) => !z.dead && (z.state === 'bash' || z.state === 'attack' || Math.hypot(z.x - ch.d.pos.x, z.z - ch.d.pos.z) < 6))) {
+      GameClock.endSleep('zombies'); Toast.show(STR.wokeByZombies, 'bad', 6000);
+    }
+    Snd.tension(this.list.filter((z) => !z.dead && z.state !== 'wander').length);
+  },
+};
+
+/** Player combat (§8.1). */
+const Combat = {
+  target: null, cd: 0, swingT: 0,
+  weapon(ch) {
+    const it = ch.d.equip.weapon;
+    const w = it && WEAPONS[it.id];
+    return { it: w ? it : null, w: w || WEAPONS._fists };
+  },
+  /** Effective damage multiplier from durability cap (taped weapons perform worse, §7.2). */
+  condMul(it) { if (!it) return 1; const cap = it.cap == null ? 1 : it.cap; return (0.7 + 0.3 * cap) * (it.cond > 0.2 ? 1 : 0.8); },
+  engage(zb) { this.target = zb; },
+  stop() { this.target = null; },
+  update(dt) {
+    if (this.cd > 0) this.cd -= dt;
+    if (this.swingT > 0) this.swingT -= dt;
+    const zb = this.target;
+    if (!zb || zb.dead) { this.target = null; return; }
+    const ch = activeChar(), d = ch.d, av = Scene.avatar;
+    if (!d.alive || d.sleeping) { this.target = null; return; }
+    const { w } = this.weapon(ch);
+    const dist = Math.hypot(zb.x - d.pos.x, zb.z - d.pos.z);
+    if (dist > w.reach + 0.15) {
+      if (!av.isMoving() || av._chaseT <= 0) {
+        av._chaseT = 0.35;
+        const ang = Math.atan2(d.pos.x - zb.x, d.pos.z - zb.z);
+        av.goTo({ x: zb.x + Math.sin(ang) * (w.reach * 0.8), z: zb.z + Math.cos(ang) * (w.reach * 0.8), floor: d.pos.floor }, 'run');
+      }
+      av._chaseT -= dt;
+      return;
+    }
+    av.stop();
+    d.pos.rot = Math.atan2(zb.x - d.pos.x, zb.z - d.pos.z);
+    if (this.cd <= 0) this.swing(ch, zb);
+  },
+  swing(ch, zb) {
+    const d = ch.d, { it, w } = this.weapon(ch);
+    const fx = Health.effects(d);
+    const tired = d.needs.stamina < 10;
+    this.cd = w.speed * (tired ? 1.5 : 1) / (1 + ch.skill('melee') * 0.03);
+    this.swingT = 0.32;
+    Scene.avatar.h.swing = 1;
+    d.needs.stamina = Math.max(0, d.needs.stamina - w.stam * (ch.hasTrait('disciplined') ? 0.85 : 1) * (1 - ch.skill('melee') * 0.03));
+    const hitChance = U.clamp(0.62 + ch.skill('melee') * 0.03 - (tired ? 0.2 : 0) - (d.needs.energy < 20 ? 0.1 : 0), 0.2, 0.95) * fx.attack;
+    const roll = RNG.next('combat');
+    const noise = w.noise * (1 - ch.skill('stealth') * 0.02);
+    NoiseBus.emit(zb.x, zb.z, noise, d.pos.floor);
+    if (roll > hitChance) { Snd.play('swish'); return; }
+    const head = RNG.next('combat') < 0.18 + ch.skill('melee') * 0.02;
+    const dmg = w.dmg * (1 + ch.skill('melee') * 0.06) * this.condMul(it) * fx.attack * (head ? 2.1 : 1) * U.range(() => RNG.next('combat'), 0.85, 1.15);
+    zb.damage(dmg, head);
+    Snd.play(w.mat === 'blade' ? 'slash' : 'thud', zb.x, zb.z);
+    Skills.gain(ch, 'melee', head ? 3 : 2);
+    // Knockback
+    const ang = Math.atan2(zb.x - d.pos.x, zb.z - d.pos.z), kb = 0.25 + w.dmg / 100;
+    const nx = zb.x + Math.sin(ang) * kb, nz = zb.z + Math.cos(ang) * kb;
+    if (Nav.walkable(0, nx, nz)) { zb.x = nx; zb.z = nz; }
+    if (it) Durability.wear(ch, it, w.wear * (head ? 1.2 : 1));
+  },
+  /** Shove (V): push nearby zombies back, no damage, costs stamina. */
+  shove() {
+    const ch = activeChar(), d = ch.d;
+    if (d.needs.stamina < 12) { Toast.show(STR.tooTired, 'warn'); return; }
+    d.needs.stamina -= 12;
+    Scene.avatar.h.swing = 1;
+    for (const z of Zombies.alive()) {
+      const dist = Math.hypot(z.x - d.pos.x, z.z - d.pos.z);
+      if (dist > 1.4) continue;
+      const ang = Math.atan2(z.x - d.pos.x, z.z - d.pos.z);
+      const nx = z.x + Math.sin(ang) * 1.3, nz = z.z + Math.cos(ang) * 1.3;
+      if (Nav.walkable(0, nx, nz)) { z.x = nx; z.z = nz; }
+      z.stagger = 1.1; z.state = z.state === 'attack' ? 'chase' : z.state;
+    }
+    Snd.play('thud');
+  },
+  zombieHits(zb, ch) {
+    const d = ch.d;
+    if (!d.alive) return;
+    const evade = U.clamp(0.35 + ch.skill('fitness') * 0.02 - (ch.load() > 1 ? 0.15 : 0) - (d.sleeping ? 0.35 : 0), 0.05, 0.7);
+    if (RNG.next('combat') < evade) { Snd.play('swish'); return; }
+    const parts = ['armL', 'armR', 'armL', 'armR', 'torso', 'torso', 'legL', 'legR', 'head'];
+    const part = parts[Math.floor(RNG.next('combat') * parts.length)];
+    const dmg = U.range(() => RNG.next('combat'), zb.t.dmg[0], zb.t.dmg[1]);
+    const bite = RNG.next('combat') < zb.t.bite;
+    Health.damage(d, part, dmg, bite ? 'bite' : RNG.next('combat') < 0.5 ? 'scratch' : 'blunt');
+    Snd.play('hurt');
+    Bus.emit('player:hit', { part, dmg, bite });
+  },
+};
+
+/** Weapon durability & repair (§7.2). it.cond = current/cap fraction of max; it.cap = remaining max fraction. */
+const Durability = {
+  wear(ch, it, base) {
+    const d = itemDef(it.id);
+    if (!d.dura) return;
+    const loss = (base / d.dura) * difficultyOf(S.difficulty).wear * (1 - ch.skill('melee') * 0.04);
+    it.cond = Math.max(0, (it.cond == null ? 1 : it.cond) - loss);
+    if (it.cond <= 0) this.snap(ch, it);
+  },
+  state(it) { const c = it.cond == null ? 1 : it.cond; return c <= 0 ? 'broken' : c < 0.2 ? 'bad' : c < 0.5 ? 'cracked' : 'good'; },
+  snap(ch, it) {
+    const w = WEAPONS[it.id];
+    const to = w && w.broken;
+    ch.d.equip.weapon = null;
+    logEvent(STR.weaponBroke(itemDef(it.id).name), 'bad');
+    Bus.emit('toast', { kind: 'bad', msg: STR.weaponBroke(itemDef(it.id).name) });
+    if (to && ITEMS[to]) {
+      const n = Inv.makeItem(to, 1);
+      if (WEAPONS[to]) ch.d.equip.weapon = n;
+      else if (Inv.addToAny(ch.containers(), n) > 0) { const pile = Scene.pileNear(ch.d.pos.floor, ch.d.pos.x, ch.d.pos.z, true); Inv.add(pile.inv, n); Scene.syncPiles(); }
+    }
+    Scene.avatar.refreshGear();
+  },
+  /** Repair with the right materials; lowers the max-durability cap (taped bat is weaker). */
+  repair(ch, it) {
+    const w = WEAPONS[it.id], d = itemDef(it.id);
+    const R = w && REPAIRS[w.mat];
+    if (!R || !d.dura) return false;
+    if ((it.cond == null ? 1 : it.cond) >= (it.cap == null ? 1 : it.cap) - 0.02) { Bus.emit('toast', { kind: 'info', msg: STR.noRepairNeeded }); return false; }
+    const need = R.uses.find(([id]) => Health.findItem(ch, [id]));
+    if (!need) { Bus.emit('toast', { kind: 'warn', msg: STR.repairNeeds(R.uses.map(([id]) => itemDef(id).name).join(' หรือ ')) }); return false; }
+    Health.spend(Health.findItem(ch, [need[0]]));
+    const skill = ch.skill('carpentry');
+    const capLoss = R.capLoss * (1 - skill * 0.06) * (ch.hasTrait('handy') ? 0.75 : 1);
+    it.cap = Math.max(0.2, (it.cap == null ? 1 : it.cap) - capLoss);
+    it.cond = it.cap;
+    it.repairs = (it.repairs || 0) + 1;
+    GameClock.advance(Math.round(15 * (1 - skill * 0.05)));
+    Skills.gain(ch, 'carpentry', 5);
+    logEvent(STR.repaired(d.name, Math.round(it.cap * 100)), 'info');
+    return true;
+  },
+};
+
+/* ===== 42-barricades.js ===== */
+/* ==========================================================================
+   42 · BARRICADES (§9.1) — board windows, reinforce doors, secure the gate.
+   State: S.home.barr[key] = { layers, hp, max, glass (window), door (door base hp) }
+   Ground-floor exterior windows/doors and the yard gate are breach points.
+   ========================================================================== */
+
+const Barricades = {
+  _list: null,
+  /** Static list of breach points (computed once from HOME data). */
+  list() {
+    if (this._list) return this._list;
+    const out = [];
+    const b = HOME.bounds;
+    HOME.openings.forEach((o, i) => {
+      if (o.floor !== 0 || o.kind === 'arch') return;
+      const ext = (o.axis === 'z' && (o.at === b.z0 || o.at === b.z1)) || (o.axis === 'x' && (o.at === b.x0 || o.at === b.x1));
+      if (!ext) return;
+      const outward = o.axis === 'z' ? (o.at === b.z0 ? -1 : 1) : (o.at === b.x0 ? -1 : 1);
+      const mid = (o.a + o.b) / 2;
+      const t = 0.42;
+      const rect = o.axis === 'z' ? { x0: o.a, x1: o.b, z0: o.at - t, z1: o.at + t } : { x0: o.at - t, x1: o.at + t, z0: o.a, z1: o.b };
+      const outP = o.axis === 'z' ? { x: mid, z: o.at + outward * 0.75 } : { x: o.at + outward * 0.75, z: mid };
+      const inP = o.axis === 'z' ? { x: mid, z: o.at - outward * 0.75 } : { x: o.at - outward * 0.75, z: mid };
+      const kind = o.kind === 'window' ? 'window' : 'door';
+      out.push({ key: 'o' + i, kind, o, rect, out: outP, in: inP, outward, name: o.name || (kind === 'window' ? STR.windowAt(i) : STR.doorAt(i)) });
+    });
+    const g = HOME.gate, lot = HOME.lot;
+    out.push({ key: 'gate', kind: 'gate', rect: { x0: g.x0 - 0.1, x1: g.x0 + 2.7, z0: lot.z1 - 0.45, z1: lot.z1 + 0.45 }, out: { x: g.x0 + 1.3, z: lot.z1 + 0.8 }, in: { x: g.x0 + 1.3, z: lot.z1 - 0.9 }, name: STR.gateName, outward: 1 });
+    this._list = out;
+    return out;
+  },
+  get(key) {
+    if (!S.home.barr) S.home.barr = {};
+    let st = S.home.barr[key];
+    if (!st) {
+      const b = this.list().find((x) => x.key === key); if (!b) return null;
+      st = S.home.barr[key] = { layers: 0, hp: 0, max: 0, glass: b.kind === 'window' ? 20 : 0, door: b.kind === 'door' ? 60 : 0 };
+    }
+    return st;
+  },
+  info(key) { return this.list().find((x) => x.key === key); },
+  /** Can zombies pass this opening right now? */
+  passable(key) {
+    const b = this.info(key), st = this.get(key);
+    if (!b) return true;
+    if (st.hp > 0) return false;
+    if (b.kind === 'window') return st.glass <= 0;
+    if (b.kind === 'door') return st.door <= 0;
+    return true;                                   // gate: open unless barricaded
+  },
+  hit(key, dmg) {
+    const st = this.get(key), b = this.info(key);
+    const before = this.passable(key);
+    if (st.hp > 0) { st.hp = Math.max(0, st.hp - dmg); if (st.hp <= 0) { st.layers = 0; st.layersMax = 0; st.max = 0; } }
+    else if (b.kind === 'window') st.glass = Math.max(0, st.glass - dmg);
+    else if (b.kind === 'door') st.door = Math.max(0, st.door - dmg);
+    Snd.play(b.kind === 'window' && st.hp <= 0 ? 'glass' : 'bang', b.out.x, b.out.z);
+    NoiseBus.emit(b.out.x, b.out.z, 10, 0, true);
+    if (!before && this.passable(key)) {
+      logEvent(STR.breached(b.name), 'bad');
+      Bus.emit('toast', { kind: 'bad', msg: STR.breached(b.name), dur: 6000 });
+      Zombies.rebuildGrid();
+    }
+    this.refreshVisual(key);
+  },
+  /** How strongly the house draws zombies at night: lit windows + outdoor generator. */
+  attraction() {
+    let a = 0;
+    if (S.home.lightsOn && Appliances.lightsPowered() && Render.night > 0.4) a += 1;
+    if (Appliances.generatorNoise()) a += 1;
+    return a;
+  },
+  nearestTarget(x, z) {
+    const outsideLot = z > HOME.lot.z1 - 0.2;
+    let best = null, bd = Infinity;
+    for (const b of this.list()) {
+      if (this.passable(b.key)) continue;
+      if (outsideLot && b.kind !== 'gate' && !this.passable('gate')) continue;
+      const d = Math.hypot(b.out.x - x, b.out.z - z);
+      if (d < bd) { bd = d; best = { key: b.key, x: b.out.x, z: b.out.z }; }
+    }
+    return best;
+  },
+  materials(kind) { return BARRICADE[kind]; },
+  /** Which material set the character can afford (primary or alternative). */
+  pickUses(ch, kind) {
+    const B = BARRICADE[kind];
+    for (const set of [B.uses, B.alt]) {
+      if (set.every(([id, n]) => this.countAvail(ch, id) >= n)) return set;
+    }
+    return null;
+  },
+  countAvail(ch, id) {
+    let n = 0;
+    const d = itemDef(id);
+    const sources = [...ch.containers()];
+    if (S.scene === 'home' && P.settings.autoDraw) for (const f of S.home.furniture) if (f.inv) sources.push(f.inv);
+    for (const c of sources) Inv.walk(c, (it) => { if (it.id === id) n += d.uses ? (it.uses || 0) + (it.qty - 1) * d.uses : it.qty; });
+    return n;
+  },
+  consume(ch, id, n) {
+    const d = itemDef(id);
+    const sources = [...ch.containers()];
+    if (S.scene === 'home' && P.settings.autoDraw) for (const f of S.home.furniture) if (f.inv) sources.push(f.inv);
+    for (const c of sources) {
+      for (const s of [...c.slots]) {
+        if (n <= 0) return;
+        if (s.it.id !== id) continue;
+        if (d.uses) { while (n > 0 && c.slots.includes(s)) { const f = { it: s.it, c, slot: s }; Health.spend(f); n--; } }
+        else { const take = Math.min(n, s.it.qty); s.it.qty -= take; n -= take; if (s.it.qty <= 0) Inv.remove(c, s); }
+      }
+    }
+  },
+  /** Add one layer (or repair). Requires a hammer for planks/nails. Gate work happens outdoors (noise). */
+  build(ch, key) {
+    const b = this.info(key), kind = b.kind, B = BARRICADE[kind], st = this.get(key);
+    const uses = this.pickUses(ch, kind);
+    const repairing = st.layers > 0 && st.hp < st.max * 0.98;
+    if (!repairing && st.layers >= B.layers) { Toast.show(STR.barMax, 'info'); return false; }
+    if (!uses) { Toast.show(STR.barNeeds(B.uses.map(([id, n]) => itemDef(id).name + ' ×' + n).join(', ')), 'warn', 5000); return false; }
+    const needsHammer = uses.some(([id]) => id === 'nails_1kg');
+    if (needsHammer && !Health.findItem(ch, ['hammer'])) { Toast.show(STR.needHammer, 'warn'); return false; }
+    for (const [id, n] of uses) this.consume(ch, id, repairing ? Math.ceil(n / 2) : n);
+    const hpLayer = B.hp * (1 + ch.skill('carpentry') * BARRICADE.perCarpentry);
+    if (kind === 'gate') st.mat = uses[0][0] === 'chain' ? 'chain' : 'wood';
+    if (repairing) st.hp = st.max;
+    else { st.layers += 1; st.layersMax = st.layers; st.max = (st.max || 0) + hpLayer; st.hp = Math.min(st.max, st.hp + hpLayer); }
+    GameClock.advance(Math.round(B.minutes * (1 - ch.skill('carpentry') * 0.05)));
+    Skills.gain(ch, 'carpentry', 8);
+    if (B.outdoor || kind === 'gate') NoiseBus.emit(b.in.x, b.in.z, 22, 0, true);
+    else NoiseBus.emit(b.in.x, b.in.z, 22, 0);       // indoors: no gameplay effect (§8.3)
+    Snd.play('hammer');
+    logEvent(repairing ? STR.barRepaired(b.name) : STR.barBuilt(b.name, st.layers), 'good');
+    Zombies.rebuildGrid();
+    this.refreshVisual(key);
+    return true;
+  },
+  /* ---------- Visuals ---------- */
+  objs: new Map(),
+  renderAll() { this.objs.clear(); for (const b of this.list()) this.refreshVisual(b.key); },
+  refreshVisual(key) {
+    if (!Scene.W || !Scene.isHome()) return;
+    const b = this.info(key), st = this.get(key);
+    const prev = this.objs.get(key);
+    if (prev) { prev.parent && prev.parent.remove(prev); prev.traverse((o) => { if (o.isMesh) o.geometry.dispose(); }); }
+    const pb = new PB('barr' + key);
+    const wood = Mat.tex('wood_floor', '#c9a46a', 0.85), metal = Mat.color('#3a3f44', 0.5, 0.7);
+    const visibleLayers = st.max ? Math.ceil((st.hp / st.max) * (st.layersMax || st.layers)) : 0;
+    if (b.kind === 'gate') {
+      if (st.layers > 0 && st.hp > 0) {
+        if (st.mat === 'chain') pb.box(2.6, 0.06, 0.06, metal, b.rect.x0 + 1.35, 0.9 + HomeWorld.YARD_Y, HOME.lot.z1);
+        for (let i = 0; i < visibleLayers * 2; i++) pb.box(2.7, 0.18, 0.05, wood, b.rect.x0 + 1.35, HomeWorld.YARD_Y + 0.3 + i * 0.32, HOME.lot.z1 + 0.05, 0, [0, 0, (i % 2 ? 0.08 : -0.08)]);
+      }
+    } else {
+      const o = b.o, len = o.b - o.a, mid = (o.a + o.b) / 2;
+      const y0 = o.kind === 'window' ? (o.sill || 0.9) : 0.1, y1 = o.kind === 'window' ? 2.2 : 2.0;
+      const off = b.outward * 0.16;
+      for (let i = 0; i < visibleLayers; i++) {
+        const n = 3;
+        for (let k = 0; k < n; k++) {
+          const y = y0 + (y1 - y0) * ((k + 0.5) / n) + i * 0.05;
+          const tilt = (k - 1) * 0.12 + (i % 2 ? 0.1 : -0.1);
+          if (o.axis === 'z') pb.box(len + 0.3, 0.16, 0.04, wood, mid, y, o.at + off + i * 0.03 * b.outward, 0, [0, 0, tilt]);
+          else pb.box(0.04, 0.16, len + 0.3, wood, o.at + off + i * 0.03 * b.outward, y, mid, 0, [tilt, 0, 0]);
+        }
+      }
+      if (o.kind === 'window' && st.glass <= 0 && st.hp <= 0) {
+        // Broken glass shards
+        const shard = Mat.color('#9fc4d8', 0.1, 0.2, { transparent: true, opacity: 0.5 });
+        for (let k = 0; k < 4; k++) { const s = 0.15 + k * 0.05; if (o.axis === 'z') pb.box(s, s * 1.4, 0.01, shard, o.a + 0.15 + k * len / 4, y0 + 0.05, o.at, 0, [0, 0, k]); else pb.box(0.01, s * 1.4, s, shard, o.at, y0 + 0.05, o.a + 0.15 + k * len / 4, 0, [k, 0, 0]); }
+      }
+    }
+    const obj = pb.parts.length ? pb.build() : new THREE.Group();
+    (b.kind === 'gate' ? Scene.W.outdoor : Scene.W.floors[0].group).add(obj);
+    this.objs.set(key, obj);
+  },
+};
+
+/* ===== 43-encounters.js ===== */
+/* ==========================================================================
+   43 · TRAVEL ENCOUNTERS (§4.4, §8.5) — zombie street scenes and hostile
+   survivor ambushes with Fight / Give some / Flee and real consequences.
+   ========================================================================== */
+
+LOCATIONS.street = { name: 'ถนนระหว่างทาง', short: 'ถนน', icon: '🛣️', map: [0, 0], dist: 0, hidden: true };
+LOC_IDS.splice(0, LOC_IDS.length, ...Object.keys(LOCATIONS).filter((k) => k !== 'home' && !LOCATIONS[k].hidden));
+
+const StreetWorld = {
+  build(scene) {
+    const W = { root: new THREE.Group(), floors: [{ group: new THREE.Group(), walls: [], cutGroup: new THREE.Group() }], blockers: [[]], lights: [], furn: new Map(), pickables: [], windowMats: new Map(), outdoor: new THREE.Group(), animated: [] };
+    W.root.add(W.floors[0].group); W.root.add(W.outdoor);
+    const pb = new PB('street-enc');
+    const road = new THREE.PlaneGeometry(60, 8); road.rotateX(-Math.PI / 2);
+    pb.geo(road, Mat.tex('asphalt', '#ffffff', 0.92, 0, 0.6), 0, 0, 0);
+    for (const z of [-5, 5]) pb.box(60, 0.14, 2, Mat.tex('pavers', '#9a958a', 0.9), 0, -0.02, z);
+    for (let x = -28; x < 30; x += 4) { const p = new THREE.PlaneGeometry(2, 0.12); p.rotateX(-Math.PI / 2); pb.geo(p, Mat.color('#e8e0c8', 0.8), x, 0.005, 0); }
+    // Abandoned cars and debris
+    const rng = U.makeRng(U.hashSeed('streetenc' + (S.travel ? S.travel.from + S.travel.to : '')));
+    W.outdoor.add(pb.build({ uvTile: 2.4, cast: false }));
+    for (let i = 0; i < 4; i++) {
+      const car = AssetRegistry.create('prop.car', { seed: 'sc' + i });
+      const x = -12 + i * 8 + rng() * 2, z = (rng() < 0.5 ? -1.6 : 1.8);
+      car.position.set(x, 0, z); car.rotation.y = Math.PI / 2 + (rng() - 0.5) * 0.8;
+      W.outdoor.add(car);
+      W.blockers[0].push({ x0: x - 2.3, x1: x + 2.3, z0: z - 1.1, z1: z + 1.1 });
+    }
+    for (let i = 0; i < 9; i++) {
+      const b = HomeWorld.shophouse(rng, U.pick(rng, ['ร้านปิดถาวร', 'ให้เช่า', 'ร้านทอง', 'ซ่อมรถ', 'ร้านข้าว']));
+      b.position.set(-24 + i * 6, 0, -6.2); W.outdoor.add(b);
+      const b2 = HomeWorld.shophouse(rng, U.pick(rng, ['ร้านยา', 'ร้านน้ำชา', 'ร้านเสริมสวย']));
+      b2.position.set(-21 + i * 6, 0, 6.2); b2.rotation.y = Math.PI; W.outdoor.add(b2);
+    }
+    W.blockers[0].push({ x0: -40, x1: 40, z0: -9, z1: -6.1 }, { x0: -40, x1: 40, z0: 6.1, z1: 9 });
+    const arrow = new THREE.Mesh(new THREE.RingGeometry(0.4, 0.6, 24), new THREE.MeshBasicMaterial({ color: 0xffb347, transparent: true, opacity: 0.7, depthWrite: false }));
+    arrow.rotation.x = -Math.PI / 2; arrow.position.set(17.5, 0.02, 0); W.outdoor.add(arrow); W.exitMarker = arrow;
+    W.streetLamps = [new THREE.Vector3(-10, 5.5, -4.5), new THREE.Vector3(8, 5.5, 4.5)];
+    scene.add(W.root);
+    Object.assign(W, {
+      kind: 'street', layout: { rooms: [], openings: [], bounds: { x0: -19, x1: 19, z0: -5, z1: 5 } }, floorsCount: 1, stairs: null,
+      groundY: () => 0, navAreas: [{ x0: -19.5, x1: 19.5, z0: -6, z1: 6 }],
+      camBounds: { x0: -20, x1: 20, z0: -6, z1: 10 }, pickY0: 0, slab: null, dustRect: { x0: -5, x1: 5, z0: -3, z1: 3 },
+      isIndoor: () => false, exit: { x: 17.5, z: 0, floor: 0 }, spawn: { x: -17, z: 0.3, floor: 0, rot: Math.PI / 2 },
+    });
+    return W;
+  },
+};
+
+const Encounters = {
+  /** Roll an encounter for a trip. Returns null | 'zombies' | 'ambush'. */
+  roll(from, to, pace) {
+    if (!S.flags.outbreak) return null;
+    const km = World.km(from, to);
+    const night = Render.nightAt(S.time.min) > 0.5 ? 1 : 0;
+    const dz = (Danger.level(from) + Danger.level(to)) / 2;
+    const pZ = U.clamp((0.04 + dz * 0.55 + night * 0.3) * Math.min(1.5, 0.6 + km * 0.5) * (pace === 'run' ? 0.85 : 1), 0, 0.85);
+    const ch = activeChar();
+    const haul = ch.containers().reduce((a, c) => a + Inv.value(c), 0);
+    const pA = U.clamp(AMBUSH.baseChance * (night ? AMBUSH.nightMul : 1) * (1 + haul * AMBUSH.haulMul) * Math.min(1, S.time.min / 1440 / 4), 0, 0.5);
+    const r = RNG.next('events');
+    if (r < pA) return 'ambush';
+    if (r < pA + pZ) return 'zombies';
+    return null;
+  },
+  /** Begin a street scene mid-trip. */
+  startStreet(plan) {
+    S.travel = plan;
+    logEvent(STR.encZombies, 'bad');
+    Bus.emit('toast', { kind: 'bad', msg: STR.encZombies, dur: 6000 });
+    Scene.enter('street');
+  },
+  spawnStreet() {
+    const night = Render.nightAt(S.time.min) > 0.5;
+    const n = Math.round(2 + Danger.level(S.travel.to) * 5 + (night ? 2 : 0));
+    const rng = RNG.local('streetspawn|' + S.time.min);
+    for (let i = 0; i < n; i++) {
+      let p = null;
+      for (let k = 0; k < 10 && !p; k++) { const x = -8 + rng() * 24, z = -4 + rng() * 8; if (Nav.walkable(0, x, z)) p = { x, z }; }
+      if (p) Zombies.spawn(Zombies.pickType(rng), p.x, p.z);
+    }
+    Zombies.rebuildGrid();
+  },
+  /** Reached the far end of the street: finish the trip. */
+  async finish() {
+    const t = S.travel; if (!t) return;
+    S.travel = null;
+    TravelUI.show(locDef(t.to).name, t.left);
+    let done = 0;
+    while (done < t.left) { const step = Math.min(t.left - done, Math.max(1, Math.ceil(t.left / 20))); GameClock.advance(step); done += step; TravelUI.progress(done / t.left, S.time.min); await new Promise((r) => requestAnimationFrame(r)); }
+    TravelUI.hide();
+    Scene.enter(t.to);
+  },
+};
+
+/** Hostile survivors (§8.5). */
+const AmbushUI = {
+  open(plan, resume) {
+    const ch = activeChar();
+    const rng = () => RNG.next('events');
+    const n = 2 + Math.floor(rng() * 2);
+    const haul = ch.containers().reduce((a, c) => a + Inv.value(c), 0) + (ch.d.equip.back ? 0 : 0);
+    const demand = Math.max(150, Math.round(haul * U.range(rng, AMBUSH.demandFrac[0], AMBUSH.demandFrac[1])));
+    const { w } = Combat.weapon(ch);
+    const fightP = U.clamp(0.3 + ch.skill('melee') * 0.05 + w.dmg / 120 - n * 0.08 + (ch.health() - 70) / 300, 0.05, 0.85);
+    const fleeP = U.clamp(0.35 + ch.d.needs.stamina / 260 + ch.skill('fitness') * 0.03 - Math.max(0, ch.load() - 0.7) * 0.6, 0.05, 0.85);
+    const body = U.el('div.ambush', null,
+      U.el('p', null, STR.ambushText(n)),
+      U.el('p.warn', null, STR.ambushDemand(U.money(demand))),
+      U.el('div.dim', null, STR.ambushOdds(Math.round(fightP * 100), Math.round(fleeP * 100))));
+    const done = (msg, kind) => { Modal.close(); logEvent(msg, kind); Toast.show(msg, kind, 7000); resume(); };
+    Modal.open({ title: STR.ambushTitle, body, dismissible: false, actions: [
+      { label: '⚔ ' + STR.ambFight, close: false, fn: () => this.fight(ch, n, fightP, done) },
+      { label: '🎁 ' + STR.ambGive, close: false, fn: () => this.give(ch, demand, done) },
+      { label: '🏃 ' + STR.ambFlee, close: false, fn: () => this.flee(ch, n, fleeP, fightP, done) },
+    ] });
+  },
+  injure(ch, count, max) {
+    const parts = ['armL', 'armR', 'torso', 'legL', 'legR', 'head'];
+    for (let i = 0; i < count; i++) Health.damage(ch.d, parts[Math.floor(RNG.next('combat') * parts.length)], U.range(() => RNG.next('combat'), max * 0.4, max), RNG.next('combat') < 0.5 ? 'blunt' : 'blade');
+  },
+  takeItems(ch, frac) {
+    const all = [];
+    for (const c of ch.containers()) for (const s of c.slots) all.push({ c, s });
+    all.sort(() => RNG.next('events') - 0.5);
+    const n = Math.ceil(all.length * frac);
+    for (const e of all.slice(0, n)) Inv.remove(e.c, e.s);
+    return n;
+  },
+  fight(ch, n, p, done) {
+    Skills.gain(ch, 'melee', 8);
+    if (RNG.next('combat') < p) {
+      this.injure(ch, 1, 14);
+      const loot = Inv.makeItem(U.pick(() => RNG.next('events'), ['canned_tuna', 'energy_bar', 'water_1500', 'paracetamol', 'batteries']), 2);
+      Inv.addToAny(ch.containers(), loot);
+      S.flags.rep = (S.flags.rep || 0) - 1;
+      done(STR.ambWon(itemDef(loot.id).name), 'good');
+    } else {
+      this.injure(ch, 2 + n - 2, 22);
+      const lost = this.takeItems(ch, 0.5);
+      if (ch.d.equip.weapon && RNG.next('events') < 0.5) { ch.d.equip.weapon = null; Scene.avatar && Scene.avatar.refreshGear(); }
+      done(STR.ambLost(lost), 'bad');
+    }
+  },
+  flee(ch, n, p, fightP, done) {
+    ch.d.needs.stamina = Math.max(0, ch.d.needs.stamina - 35);
+    Skills.gain(ch, 'fitness', 4);
+    if (RNG.next('combat') < p) {
+      let dropped = 0;
+      if (ch.load() > 0.7) dropped = this.takeItems(ch, 0.15);
+      done(dropped ? STR.ambFledDrop(dropped) : STR.ambFled, dropped ? 'warn' : 'good');
+    } else { Modal.close(); Toast.show(STR.ambCaught, 'bad'); setTimeout(() => this.forceFight(ch, n, fightP - 0.15, done), 50); }
+  },
+  forceFight(ch, n, p, done) {
+    Modal.open({ title: STR.ambushTitle, body: U.el('p.warn', null, STR.ambCaught), dismissible: false, actions: [{ label: '⚔ ' + STR.ambFight, close: false, fn: () => this.fight(ch, n, Math.max(0.05, p), done) }] });
+  },
+  /** Grid picker: choose items to hand over until their value covers the demand. */
+  give(ch, demand, done) {
+    const rows = [];
+    for (const c of ch.containers()) for (const s of c.slots) rows.push({ c, s, on: false });
+    const body = U.el('div.givepick');
+    const total = U.el('div.mealtot');
+    const btn = U.el('button.btn.primary', { disabled: true }, STR.ambHand);
+    const upd = () => {
+      const v = rows.filter((r) => r.on).reduce((a, r) => a + (itemDef(r.s.it.id).price || 0) * r.s.it.qty, 0);
+      total.textContent = STR.ambGiveTotal(U.money(v), U.money(demand));
+      btn.disabled = v < demand;
+    };
+    const grid = U.el('div.givegrid');
+    for (const r of rows) {
+      const d = itemDef(r.s.it.id);
+      const cell = U.el('button.givecell', { title: d.name, on: { click: () => { r.on = !r.on; cell.classList.toggle('on', r.on); upd(); } } }, U.el('img', { src: Icons.get(r.s.it.id) }), U.el('small', null, (r.s.it.qty > 1 ? '×' + r.s.it.qty + ' ' : '') + U.money((d.price || 0) * r.s.it.qty)));
+      grid.appendChild(cell);
+    }
+    btn.addEventListener('click', () => {
+      for (const r of rows) if (r.on) Inv.remove(r.c, r.s);
+      S.flags.rep = (S.flags.rep || 0) - 0.5;
+      Modal.close();
+      done(STR.ambGave, 'warn');
+    });
+    body.append(U.el('p.dim', null, STR.ambGiveHint), grid, total, btn);
+    if (!rows.length) body.append(U.el('p.warn', null, STR.ambNothing));
+    upd();
+    Modal.open({ title: STR.ambGive, body, wide: true, dismissible: false, actions: [{ label: STR.back, close: false, fn: () => { Modal.close(); } }] });
+  },
+};
+
+/* ===== 45-audio.js ===== */
+/* ==========================================================================
+   45 · PROCEDURAL AUDIO (§11.3) — Web Audio synthesis, no sound files.
+   Ambient beds (wind, night insects, interior hum, generator), footsteps by
+   surface, combat/zombie/building SFX, generative ambient music with a
+   tension layer when zombies are aware of you. Starts after a user gesture.
+   ASSET_OVERRIDES['sfx.<name>'] = URL/data URI replaces any synthesized SFX.
+   ========================================================================== */
+
+const Snd = {
+  ctx: null, master: null, musicBus: null, sfxBus: null, ambBus: null, ok: false, noiseBuf: null,
+  buffers: new Map(), tens: 0, stepT: 0, musicT: 0, noteT: 0, chord: 0,
+  init() {
+    const unlock = () => {
+      if (this.ctx) { if (this.ctx.state === 'suspended') this.ctx.resume(); return; }
+      try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { console.warn('[Audio] unavailable', e); return; }
+      const c = this.ctx;
+      this.master = c.createGain(); this.master.connect(c.destination);
+      this.musicBus = c.createGain(); this.musicBus.connect(this.master);
+      this.sfxBus = c.createGain(); this.sfxBus.connect(this.master);
+      this.ambBus = c.createGain(); this.ambBus.connect(this.sfxBus);
+      const len = c.sampleRate * 2, buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+      this.noiseBuf = buf;
+      this.buildAmbient();
+      this.buildMusic();
+      this.applyVolumes();
+      this.ok = true;
+      for (const k in ASSET_OVERRIDES) if (k.startsWith('sfx.')) this.loadOverride(k.slice(4), ASSET_OVERRIDES[k]);
+    };
+    window.addEventListener('pointerdown', unlock);
+    window.addEventListener('keydown', unlock);
+  },
+  applyVolumes() {
+    if (!this.ctx) return;
+    const s = P.settings, m = s.mute ? 0 : s.master;
+    this.master.gain.value = m;
+    this.musicBus.gain.value = s.music * 0.6;
+    this.sfxBus.gain.value = s.sfx;
+  },
+  loadOverride(name, url) {
+    fetch(url).then((r) => r.arrayBuffer()).then((ab) => this.ctx.decodeAudioData(ab)).then((b) => this.buffers.set(name, b)).catch((e) => console.warn('[Audio] override failed', name, e));
+  },
+  /* ---------- building blocks ---------- */
+  noise(dur, filterType, freq, q, gain, when = 0, freqEnd) {
+    const c = this.ctx, t = c.currentTime + when;
+    const src = c.createBufferSource(); src.buffer = this.noiseBuf; src.loop = true;
+    const f = c.createBiquadFilter(); f.type = filterType; f.frequency.setValueAtTime(freq, t); f.Q.value = q;
+    if (freqEnd) f.frequency.exponentialRampToValueAtTime(freqEnd, t + dur);
+    const g = c.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(gain, t + 0.008); g.gain.exponentialRampToValueAtTime(0.0008, t + dur);
+    src.connect(f); f.connect(g); g.connect(this._out);
+    src.start(t, Math.random()); src.stop(t + dur + 0.05);
+  },
+  tone(type, f0, f1, dur, gain, when = 0) {
+    const c = this.ctx, t = c.currentTime + when;
+    const o = c.createOscillator(); o.type = type; o.frequency.setValueAtTime(f0, t); if (f1) o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+    const g = c.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(gain, t + 0.01); g.gain.exponentialRampToValueAtTime(0.0008, t + dur);
+    o.connect(g); g.connect(this._out); o.start(t); o.stop(t + dur + 0.05);
+  },
+  /** Distance attenuation + stereo pan relative to the player. */
+  spatial(x, z) {
+    const c = this.ctx;
+    const g = c.createGain(), pan = c.createStereoPanner ? c.createStereoPanner() : null;
+    let vol = 1, p = 0;
+    if (x != null && S && S.chars[S.active]) {
+      const d = S.chars[S.active].pos, dist = Math.hypot(x - d.x, z - d.z);
+      vol = U.clamp(1 - dist / 30, 0.05, 1);
+      const yaw = Render.cam.curYaw, rx = (x - d.x) * Math.cos(yaw) - (z - d.z) * Math.sin(yaw);
+      p = U.clamp(rx / 10, -0.9, 0.9);
+    }
+    g.gain.value = vol;
+    if (pan) { pan.pan.value = p; g.connect(pan); pan.connect(this.sfxBus); } else g.connect(this.sfxBus);
+    return g;
+  },
+  play(name, x, z) {
+    if (!this.ok) return;
+    this._out = this.spatial(x, z);
+    const b = this.buffers.get(name);
+    if (b) { const s = this.ctx.createBufferSource(); s.buffer = b; s.connect(this._out); s.start(); return; }
+    const r = Math.random;
+    switch (name) {
+      case 'groan': {
+        const c = this.ctx, t = c.currentTime, dur = 1.1 + r() * 0.8, base = 70 + r() * 50;
+        const o = c.createOscillator(); o.type = 'sawtooth'; o.frequency.setValueAtTime(base, t); o.frequency.linearRampToValueAtTime(base * (0.7 + r() * 0.2), t + dur);
+        const lfo = c.createOscillator(); lfo.frequency.value = 5 + r() * 3; const lg = c.createGain(); lg.gain.value = 6; lfo.connect(lg); lg.connect(o.frequency);
+        const g = c.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.16, t + 0.2); g.gain.linearRampToValueAtTime(0.0, t + dur);
+        for (const [f, q] of [[480 + r() * 120, 6], [1100 + r() * 200, 8]]) { const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = f; bp.Q.value = q; o.connect(bp); bp.connect(g); }
+        g.connect(this._out); o.start(t); lfo.start(t); o.stop(t + dur); lfo.stop(t + dur);
+        break;
+      }
+      case 'zdie': this.noise(0.5, 'lowpass', 600, 1, 0.3); this.tone('sine', 120, 50, 0.4, 0.3); break;
+      case 'thud': this.tone('sine', 140, 55, 0.18, 0.5); this.noise(0.12, 'lowpass', 900, 1, 0.35); break;
+      case 'slash': this.noise(0.22, 'highpass', 2200, 1, 0.3, 0, 6000); this.tone('sine', 220, 120, 0.12, 0.2); break;
+      case 'swish': this.noise(0.18, 'bandpass', 1500, 2, 0.15, 0, 400); break;
+      case 'hurt': this.noise(0.2, 'bandpass', 700, 3, 0.35); this.tone('triangle', 260, 180, 0.25, 0.2); break;
+      case 'hammer': for (let i = 0; i < 4; i++) { this.tone('square', 900, 400, 0.05, 0.15, i * 0.28); this.noise(0.06, 'bandpass', 2500, 2, 0.3, i * 0.28); } break;
+      case 'bang': this.tone('sine', 90, 40, 0.3, 0.6); this.noise(0.25, 'lowpass', 500, 1, 0.4); break;
+      case 'glass': for (let i = 0; i < 6; i++) this.tone('sine', 2500 + r() * 3000, 1500, 0.15, 0.08, i * 0.03); this.noise(0.35, 'highpass', 4000, 1, 0.3); break;
+      case 'step': this.noise(0.07, 'lowpass', x === 'soft' ? 600 : 1800, 1, 0.12); break;
+      case 'ui': this.tone('sine', 880, 660, 0.06, 0.08); break;
+      case 'eat': this.noise(0.08, 'bandpass', 1200, 4, 0.1); this.noise(0.08, 'bandpass', 900, 4, 0.1, 0.15); break;
+      case 'alarm': for (let i = 0; i < 4; i++) this.tone('square', 880, 660, 0.2, 0.12, i * 0.3); break;
+      default: break;
+    }
+  },
+  footstep(surface) { if (!this.ok) return; this._out = this.spatial(); this.noise(0.07, 'lowpass', surface === 'soft' ? 500 : surface === 'wood' ? 1100 : 2000, 1, surface === 'soft' ? 0.08 : 0.13); },
+  /* ---------- ambient beds ---------- */
+  buildAmbient() {
+    const c = this.ctx;
+    const mk = (type, freq, q) => { const s = c.createBufferSource(); s.buffer = this.noiseBuf; s.loop = true; const f = c.createBiquadFilter(); f.type = type; f.frequency.value = freq; f.Q.value = q; const g = c.createGain(); g.gain.value = 0; s.connect(f); f.connect(g); g.connect(this.ambBus); s.start(); return { g, f }; };
+    this.wind = mk('lowpass', 380, 0.6);
+    this.city = mk('bandpass', 180, 0.8);
+    const hum = c.createOscillator(); hum.frequency.value = 100; const hg = c.createGain(); hg.gain.value = 0; const hf = c.createBiquadFilter(); hf.type = 'lowpass'; hf.frequency.value = 220; hum.connect(hf); hf.connect(hg); hg.connect(this.ambBus); hum.start(); this.hum = hg;
+    const gen = c.createOscillator(); gen.type = 'sawtooth'; gen.frequency.value = 52; const gg = c.createGain(); gg.gain.value = 0; const gf = c.createBiquadFilter(); gf.type = 'lowpass'; gf.frequency.value = 300; gen.connect(gf); gf.connect(gg); gg.connect(this.ambBus); gen.start(); this.gen = gg;
+    this.insectT = 0;
+  },
+  /* ---------- generative music ---------- */
+  buildMusic() {
+    const c = this.ctx;
+    this.pad = [0, 1, 2].map(() => { const o = c.createOscillator(); o.type = 'triangle'; const g = c.createGain(); g.gain.value = 0.0; const f = c.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 700; o.connect(f); f.connect(g); g.connect(this.musicBus); o.start(); return { o, g }; });
+    const drone = c.createOscillator(); drone.type = 'sine'; drone.frequency.value = 55;
+    const trem = c.createOscillator(); trem.frequency.value = 1.6; const tg = c.createGain(); tg.gain.value = 0.5;
+    const dg = c.createGain(); dg.gain.value = 0; trem.connect(tg); tg.connect(dg.gain);
+    drone.connect(dg); dg.connect(this.musicBus); drone.start(); trem.start();
+    this.drone = dg;
+  },
+  chords: [[220, 261.6, 329.6], [196, 246.9, 293.7], [174.6, 220, 261.6], [164.8, 207.7, 246.9]],
+  scale: [440, 523.3, 587.3, 659.3, 784, 880],
+  tension(n) { this.tens = U.lerp(this.tens, Math.min(1, n / 4), 0.05); },
+  update(dt) {
+    if (!this.ok || !S) return;
+    const c = this.ctx, t = c.currentTime;
+    const d = S.chars[S.active];
+    const indoor = Scene.W && Scene.W.isIndoor(d.pos.x, d.pos.z, d.pos.floor);
+    const night = Render.night;
+    this.wind.g.gain.setTargetAtTime((indoor ? 0.02 : 0.06) + night * 0.02, t, 0.5);
+    this.city.g.gain.setTargetAtTime(S.flags.outbreak ? 0.0 : (indoor ? 0.01 : 0.035), t, 1);
+    this.hum.gain.setTargetAtTime(indoor && Scene.isHome() && Appliances.lightsPowered() ? 0.02 : 0, t, 0.5);
+    const genOn = Scene.isHome() && Appliances.generator() && Appliances.genState(Appliances.generator()).on && !Power.gridOn();
+    this.gen.gain.setTargetAtTime(genOn ? (indoor ? 0.03 : 0.06) : 0, t, 0.5);
+    // Night insects
+    this.insectT -= dt;
+    if (night > 0.5 && !indoor && this.insectT <= 0) { this.insectT = 0.4 + Math.random() * 1.5; this._out = this.ambBus; for (let i = 0; i < 3; i++) this.tone('sine', 4200 + Math.random() * 900, 0, 0.04, 0.015, i * 0.06); }
+    // Music: slow pad changes + sparse notes; tension drone when zombies are aware
+    this.musicT -= dt;
+    if (this.musicT <= 0) {
+      this.musicT = 9 + Math.random() * 5; this.chord = (this.chord + 1 + Math.floor(Math.random() * 2)) % this.chords.length;
+      this.chords[this.chord].forEach((f, i) => { const p = this.pad[i]; p.o.frequency.setTargetAtTime(f / 2, t, 1.5); p.g.gain.setTargetAtTime(0.035, t, 2); });
+    }
+    this.noteT -= dt;
+    if (this.noteT <= 0) { this.noteT = 2.5 + Math.random() * 5; this._out = this.musicBus; this.tone('triangle', U.pick(Math.random, this.scale) / (Math.random() < 0.5 ? 2 : 1), 0, 1.6, 0.035); }
+    this.drone.gain.setTargetAtTime(this.tens * 0.12, t, 0.8);
+    // Footsteps
+    if (d._moving && !d.sleeping) {
+      this.stepT -= dt * (d._moving === 'run' ? 1.8 : d._moving === 'sneak' ? 0.6 : 1);
+      if (this.stepT <= 0) { this.stepT = 0.42; const g = Scene.W && Scene.W.kind === 'home' && !indoor ? 'soft' : (Scene.isHome() && d.pos.floor === 1 ? 'wood' : 'hard'); this.footstep(g); }
+    }
+  },
+};
+
 /* ===== 50-ui-core.js ===== */
 /* ==========================================================================
    50 · UI PRIMITIVES — toasts, modal stack (owns time), tooltip, context menu
@@ -10595,18 +11990,21 @@ const HUD = {
     e.power = U.el('div.power');
     const side = U.el('div.panel.side', null, e.place, e.cash, e.floors, U.el('div.row', null, e.lights), e.power);
     // Bottom bar
+    const B = (icon, label, key, fn) => U.el('button.btn.hb', { title: label + (key ? ' (' + key + ')' : ''), on: { click: fn } }, icon, U.el('span', null, ' ' + label));
     const bar = U.el('div.panel.bottombar', null,
-      U.el('button.btn', { on: { click: () => InvUI.toggle() } }, '🎒 ' + STR.btnInventory),
-      U.el('button.btn', { on: { click: () => MapUI.open(false) } }, '🗺 ' + STR.btnMap),
-      U.el('button.btn', { on: { click: () => MealUI.open() } }, '🍚 ' + STR.btnEatMeal),
-      U.el('button.btn', { on: { click: () => CookUI.open() } }, '🍳 ' + STR.btnCook),
-      U.el('button.btn', { on: { click: () => StockUI.open() } }, '📦 ' + STR.btnStock),
-      U.el('button.btn', { on: { click: () => NutritionUI.open() } }, '🥗 ' + STR.btnNutrition),
-      U.el('button.btn', { on: { click: () => SkillsUI.open() } }, '📈 ' + STR.btnSkills),
-      U.el('button.btn', { on: { click: () => LogUI.open() } }, '📜 ' + STR.btnLog),
-      U.el('button.btn', { on: { click: () => HelpUI.open() } }, '⌨ ' + STR.btnHelp),
-      U.el('button.btn', { on: { click: () => { if (Save.saveRun('manual')) Toast.show(STR.saved, 'info', 1800); } } }, '💾 ' + STR.btnSave),
-      U.el('button.btn', { on: { click: () => PauseMenu.open() } }, '☰ ' + STR.btnMenu),
+      B('🎒', STR.hbInv, 'I', () => InvUI.toggle()),
+      B('🗺', STR.hbMap, 'M', () => MapUI.open(false)),
+      B('🍚', STR.btnEatMeal, '', () => MealUI.open()),
+      B('🍳', STR.hbCook, 'C', () => CookUI.open()),
+      B('❤', STR.hbHealth, 'H', () => HealthUI.open()),
+      B('🔨', STR.hbBuild, 'B', () => BuildUI.open()),
+      B('🥗', STR.btnNutrition, 'N', () => NutritionUI.open()),
+      B('📦', STR.btnStock, '', () => StockUI.open()),
+      B('📈', STR.btnSkills, '', () => SkillsUI.open()),
+      U.el('button.btn.hb.icon', { title: STR.btnLog, on: { click: () => LogUI.open() } }, '📜'),
+      U.el('button.btn.hb.icon', { title: STR.btnHelp, on: { click: () => HelpUI.open() } }, '⌨'),
+      U.el('button.btn.hb.icon', { title: STR.btnSave, on: { click: () => { if (Save.saveRun('manual')) Toast.show(STR.saved, 'info', 1800); } } }, '💾'),
+      U.el('button.btn.hb.icon', { title: STR.btnMenu, on: { click: () => PauseMenu.open() } }, '☰'),
     );
     e.hint = U.el('div.hint');
     e.sleep = U.el('div.sleepover', { hidden: true, on: { click: () => GameClock.endSleep('manual') } }, STR.sleeping);
@@ -10651,7 +12049,8 @@ const HUD = {
       e.ration.append(U.el('span', null, STR.rationShort), ...Object.entries(RATIONS).map(([k, r]) => U.el('button.rb' + (k === rk ? '.on' : ''), { title: Math.round(r.f * 100) + '%', on: { click: () => { d.nut.ration = k; } } }, r.name)));
     }
     const stg = Body.stage(d);
-    e.ill.textContent = [stg.key !== 'normal' ? '⚠ ' + stg.name : '', ...d.ill.map((x) => '🤢 ' + STR.illName[x.type]), ...Body.deficient(d).map((g) => '↓' + STR[g])].filter(Boolean).join(' · ');
+    const bleed = Health.wounds(d).some((x) => x.w.bleed > 0.05), inf = Health.worstInfection(d);
+    e.ill.textContent = [stg.key !== 'normal' ? '⚠ ' + stg.name : '', bleed ? '🩸 ' + STR.bleeding(Math.round(Health.wounds(d).reduce((a, x) => a + x.w.bleed, 0) * 100)) : '', d.blood < 95 ? STR.blood + ' ' + Math.round(d.blood) + '%' : '', inf > 0.05 ? '🦠 ' + STR.infection(Math.round(inf * 100)) : '', ...d.ill.map((x) => '🤢 ' + STR.illName[x.type]), ...Body.deficient(d).map((g) => '↓' + STR[g])].filter(Boolean).join(' · ');
     const load = ch.load();
     e.weight.textContent = STR.weight + ' ' + U.kg(ch.carried()) + ' / ' + ch.capacity().toFixed(1) + ' กก.' + (load > 1.5 ? ' · ' + STR.immobile : load > 1 ? ' · ' + STR.overloaded : '');
     e.weight.className = 'wline ' + (load > 1.5 ? 'bad' : load > 1 ? 'warn' : '');
@@ -10886,7 +12285,9 @@ const InvUI = {
     rows.push(`<div class="tt-r"><span>${STR.ttSize}</span><b>${d.size[0]}×${d.size[1]}</b></div>`);
     if (d.price) rows.push(`<div class="tt-r"><span>${STR.ttPrice}</span><b>${U.money(d.price)}</b></div>`);
     if (it.unpaid) rows.push(`<div class="tt-r"><span style="color:#ffb0a8">${STR.unpaidTag}</span><b>${U.money(d.price * it.qty)}</b></div>`);
-    if (it.cond != null) rows.push(`<div class="tt-r"><span>${STR.ttCond}</span><b>${Math.round(it.cond * 100)}%</b></div>`);
+    if (it.cond != null) rows.push(`<div class="tt-r"><span>${STR.ttCond}</span><b>${Math.round(it.cond * 100)}% · ${STR.durState[Durability.state(it)]}</b></div>`);
+    if (it.cap != null && it.cap < 1) rows.push(`<div class="tt-r warn"><span>${STR.ttCap}</span><b>${Math.round(it.cap * 100)}% (${STR.repairsN(it.repairs || 0)})</b></div>`);
+    if (WEAPONS[it.id]) { const w = WEAPONS[it.id]; rows.push(`<div class="tt-sub">${STR.wpnLine(Math.round(w.dmg * Combat.condMul(it)), w.reach, w.speed, w.noise)}</div>`); }
     if (it.uses != null) rows.push(`<div class="tt-r"><span>${STR.ttUses}</span><b>${it.uses}</b></div>`);
     if (d.grid) rows.push(`<div class="tt-r"><span>${STR.ttCapacity}</span><b>${d.grid[0]}×${d.grid[1]} · ${d.limit} กก.</b></div>`);
     if (d.per) {
@@ -10914,6 +12315,7 @@ const InvUI = {
     }
     if (src.slot && (d.tags.includes('electrolyte') || d.tags.includes('diarrhea')) && !d.per) items.push({ label: STR.use, fn: () => { if (Illness.treat(activeChar().d, it)) { if (it.uses != null) it.uses--; if (it.uses == null || it.uses <= 0) { if (it.qty > 1) { it.qty--; if (d.uses) it.uses = d.uses; } else Inv.remove(src.c, src.slot); } logEvent(STR.usedMed(d.name)); } this.changed(); } });
     if (src.slot && d.installs) items.push({ label: STR.installAct, fn: () => InstallUI.open(src.c, src.slot) });
+    if (WEAPONS[it.id] && WEAPONS[it.id].mat && d.dura) items.push({ label: STR.repairAct + ' (' + REPAIRS[WEAPONS[it.id].mat].name + ')', fn: () => { if (Durability.repair(activeChar(), it)) Toast.show(STR.repaired(d.name, Math.round(it.cap * 100)), 'good'); this.changed(); } });
     if (it.inv) items.push({ label: STR.openBag, fn: () => this.openBag(it) });
     if (src.slot && d.equip && !ch.d.equip[d.equip]) items.push({ label: STR.equip, fn: () => this.equipFrom(src.c, src.slot, d.equip) });
     if (src.slot && d.cat === 'weapon' && !ch.d.equip.weapon) items.push({ label: STR.equip, fn: () => this.equipFrom(src.c, src.slot, 'weapon') });
@@ -11239,6 +12641,9 @@ const SettingsUI = {
       Game.bench ? U.el('p.dim', null, STR.qualityAuto(STR.qualityNames[Game.bench.key], Game.bench.ms)) : null,
       U.el('p.dim', null, STR.qualityReload),
       U.el('button.btn.sm', { on: { click: async () => { if (!S) return; const r = await QualityBench.run(40); Game.bench = r; s.quality = r.key; Render.applyQuality(r.key); Save.saveProfile(); Modal.close(); this.open(); } } }, STR.rebench),
+      U.el('h4', null, STR.audioTitle),
+      ...['master', 'music', 'sfx'].map((k) => U.el('label.slider', null, STR['vol' + k[0].toUpperCase() + k.slice(1)], U.el('input', { type: 'range', min: 0, max: 1, step: 0.05, value: s[k], on: { input: (e) => { s[k] = +e.target.value; Snd.applyVolumes(); Save.saveProfile(); } } }))),
+      check('mute', STR.mute, () => Snd.applyVolumes()),
       check('fps', STR.fpsOverlay, () => { if (HUD.els.fps) HUD.els.fps.hidden = !s.fps; }),
       check('edgeScroll', STR.edgeScroll),
       U.el('h4', null, STR.smartLootCats), lootBox,
@@ -11349,10 +12754,11 @@ const DebugUI = {
     const hourIn = U.el('input.txt.sm', { type: 'number', min: 0, max: 23, value: t.hour });
     const jump = () => {
       const target = Math.max(0, (+dayIn.value | 0)) * 1440 + U.clamp(+hourIn.value | 0, 0, 23) * 60;
-      if (target > S.time.min) GameClock.advance(target - S.time.min);   // runs every system minute-by-minute
+      if (target > S.time.min) { S.flags.debugSustain = sustain.checked; GameClock.advance(target - S.time.min); S.flags.debugSustain = false; }   // runs every system minute-by-minute
       else S.time.min = target;
       Toast.show(STR.dbgJump + ' → ' + STR.day + ' ' + U.timeOf(S.time.min).day + ' ' + U.timeOf(S.time.min).hhmm, 'info', 2000);
     };
+    const sustain = U.el('input', { type: 'checkbox', checked: true });
     const itemSel = U.el('select.sel', null, ...Object.values(ITEMS).filter((d) => d.id !== 'unknown').sort((a, b) => a.cat.localeCompare(b.cat) || a.name.localeCompare(b.name, 'th')).map((d) => U.el('option', { value: d.id }, `[${CATEGORIES[d.cat].name}] ${d.name}`)));
     const qty = U.el('input.txt.sm', { type: 'number', min: 1, value: 1 });
     const addItem = () => {
@@ -11369,6 +12775,7 @@ const DebugUI = {
     const speedBtns = U.el('div.row', null, ...[1, 16, 60].map((m) => U.el('button.btn.sm' + (GameClock.debugMul === m ? '.on' : ''), { on: { click: () => { GameClock.debugMul = m; Modal.close(); this.open(); } } }, '×' + m)));
     body.append(
       U.el('h4', null, STR.dbgJump), U.el('div.row', null, STR.day, dayIn, 'ชม.', hourIn, U.el('button.btn.sm', { on: { click: jump } }, STR.dbgGo)),
+      U.el('label.chk', null, sustain, STR.dbgSustain),
       U.el('h4', null, STR.dbgSpeed + ' (คูณกับความเร็วปัจจุบัน)'), speedBtns,
       U.el('h4', null, STR.dbgAdd), U.el('div.row', null, itemSel, qty, U.el('button.btn.sm', { on: { click: addItem } }, '+')),
       U.el('div.row', null,
@@ -11377,10 +12784,17 @@ const DebugUI = {
       U.el('h4', null, STR.dbgUtilities + ' — ' + STR.dbgFailDay(Power.failDay())),
       U.el('div.row', null,
         ...[[Power.brownoutStart() - 1, STR.dbgBeforeBrown], [Power.brownoutStart(), STR.dbgBrown], [Power.failDay(), STR.dbgFail]].map(([day, label]) =>
-          U.el('button.btn.sm', { on: { click: () => { const target = day * 1440 + 8 * 60; if (target > S.time.min) GameClock.advance(target - S.time.min); Toast.show(label + ' → ' + STR.day + ' ' + U.timeOf(S.time.min).day, 'info', 2000); Modal.close(); } } }, label + ' (' + STR.day + ' ' + day + ')')),
+          U.el('button.btn.sm', { on: { click: () => { const target = day * 1440 + 8 * 60; if (target > S.time.min) { S.flags.debugSustain = sustain.checked; GameClock.advance(target - S.time.min); S.flags.debugSustain = false; } Toast.show(label + ' → ' + STR.day + ' ' + U.timeOf(S.time.min).day, 'info', 2000); Modal.close(); } } }, label + ' (' + STR.day + ' ' + day + ')')),
         U.el('button.btn.sm' + (S.flags.gridForcedOff ? '.on' : ''), { on: { click: () => { S.flags.gridForcedOff = !S.flags.gridForcedOff; Modal.close(); this.open(); } } }, STR.dbgCutGrid)),
       U.el('div.row', null, STR.difficulty + ':', U.el('select.sel', { on: { change: (e) => { S.difficulty = e.target.value; Modal.close(); this.open(); } } }, ...Object.keys(DIFFICULTY).map((k) => U.el('option', { value: k, selected: S.difficulty === k }, STR.diffNames[k] + ' (ไฟดับวันที่ ' + DIFFICULTY[k].utilityFailDay + ')')))),
-      U.el('p.dim', null, STR.dbgNotYet),
+      U.el('h4', null, STR.dbgCombat),
+      U.el('div.row', null,
+        U.el('button.btn.sm', { on: { click: () => { const d = activeChar().d; for (let i = 0; i < 3; i++) { const p = Zombies.randomPoint(Math.random, d.pos.x + 4, d.pos.z + 3, 3); Zombies.spawn('walker', p.x, p.z); } Zombies.rebuildGrid(); Modal.close(); } } }, STR.dbgSpawn3),
+        U.el('button.btn.sm', { on: { click: () => { const d = activeChar().d; const p = Zombies.randomPoint(Math.random, d.pos.x + 5, d.pos.z, 3); Zombies.spawn('runner', p.x, p.z); Zombies.rebuildGrid(); Modal.close(); } } }, STR.dbgSpawnRunner),
+        U.el('button.btn.sm', { on: { click: () => { for (const z of Zombies.alive()) z.die(); } } }, STR.dbgKillAll),
+        U.el('button.btn.sm' + (S.flags.invulnerable ? '.on' : ''), { on: { click: () => { S.flags.invulnerable = !S.flags.invulnerable; Modal.close(); this.open(); } } }, STR.dbgInvuln),
+        U.el('button.btn.sm', { on: { click: () => { Health.damage(activeChar().d, 'armL', 12, 'bite'); } } }, STR.dbgBite),
+        U.el('button.btn.sm', { on: { click: () => { const ch = activeChar(); for (const k in BODY_PARTS) { ch.d.body[k].hp = BODY_PARTS[k].hp; ch.d.body[k].cond = []; } ch.d.blood = 100; } } }, STR.dbgHeal)),
       U.el('details', null, U.el('summary', null, STR.dbgAssets + ' (' + AssetRegistry.list().length + ')'), U.el('pre.assets', null, AssetRegistry.list().join('\n'))),
     );
     Modal.open({ title: STR.dbgTitle, body, wide: true, pauseTime: false });
@@ -11486,7 +12900,7 @@ const Danger = {
     if (!S.flags.outbreak) return 0;
     const day = S.time.min / 1440 - 1;
     const base = Math.min(1, 0.12 + day * 0.02) * difficultyOf(S.difficulty).zombie;
-    const night = Render.night > 0.5 ? 1.4 : 1;
+    const night = Render.nightAt(S.time.min) > 0.5 ? 1.4 : 1;
     const dense = id === 'supermarket' ? 1.3 : id === 'market' ? 1.2 : id === 'home' ? 0.6 : 1;
     return U.clamp(base * night * dense, 0, 1);
   },
@@ -11858,6 +13272,99 @@ const FreezeRules = {
   },
 };
 
+/* ===== 57-health-ui.js ===== */
+/* ==========================================================================
+   57 · HEALTH (H), DEATH SCREEN, BUILD / BARRICADE MODE (B)
+   ========================================================================== */
+
+const HealthUI = {
+  open() {
+    const ch = activeChar(); if (!ch) return;
+    const body = U.el('div.health');
+    const render = () => {
+      body.innerHTML = '';
+      const d = ch.d;
+      const col = (k) => { const f = d.body[k].hp / BODY_PARTS[k].hp; return f > 0.75 ? '#7fbf5f' : f > 0.45 ? '#e0b23c' : f > 0.15 ? '#e07a3a' : '#d65a5a'; };
+      const mark = (k) => d.body[k].cond.length ? 'stroke="#fff" stroke-width="2"' : 'stroke="#2a2116" stroke-width="1"';
+      const svg = `<svg viewBox="0 0 120 220" width="150"><circle cx="60" cy="22" r="16" fill="${col('head')}" ${mark('head')}/>
+        <rect x="38" y="42" width="44" height="70" rx="12" fill="${col('torso')}" ${mark('torso')}/>
+        <rect x="16" y="46" width="18" height="70" rx="8" fill="${col('armR')}" ${mark('armR')}/><rect x="86" y="46" width="18" height="70" rx="8" fill="${col('armL')}" ${mark('armL')}/>
+        <rect x="40" y="116" width="18" height="92" rx="8" fill="${col('legR')}" ${mark('legR')}/><rect x="62" y="116" width="18" height="92" rx="8" fill="${col('legL')}" ${mark('legL')}/></svg>`;
+      const left = U.el('div.hleft', { html: svg });
+      left.append(U.el('div.tt-r', null, U.el('span', null, STR.blood), U.el('b', null, Math.round(d.blood) + '%')),
+        U.el('div.tt-r', null, U.el('span', null, STR.needHealth), U.el('b', null, Math.round(ch.health()) + '%')),
+        U.el('div.tt-r', null, U.el('span', null, STR.painkillerOn), U.el('b', null, d.meds.painUntil > S.time.min ? U.dur(d.meds.painUntil - S.time.min) : '—')),
+        U.el('div.tt-r', null, U.el('span', null, STR.antibioticOn), U.el('b', null, d.meds.abxUntil > S.time.min ? U.dur(d.meds.abxUntil - S.time.min) : '—')),
+        U.el('div.row', null,
+          U.el('button.btn.sm', { on: { click: () => { Health.takeMed(ch, 'pain'); render(); } } }, '💊 ' + STR.takePain),
+          U.el('button.btn.sm', { on: { click: () => { Health.takeMed(ch, 'antibiotic'); render(); } } }, '💉 ' + STR.takeAbx)));
+      const right = U.el('div.hright');
+      const parts = Object.keys(BODY_PARTS);
+      for (const k of parts) {
+        const p = d.body[k];
+        right.appendChild(U.el('div.hpart', null, U.el('b', null, BODY_PARTS[k].name), U.el('span.dim', null, ' ' + Math.round(p.hp) + '/' + BODY_PARTS[k].hp)));
+        for (const w of p.cond) {
+          const st = Health.infectStage(w);
+          const flags = [w.bleed > 0.05 ? STR.bleeding(Math.round(w.bleed * 100)) : '', w.cleaned ? STR.flagCleaned : '', w.dressedAt != null ? (S.time.min - w.dressedAt > INJURY.dressingLifeH * 60 ? STR.flagStale : STR.flagDressed) : '', w.sutured ? STR.flagSutured : '', w.splinted ? STR.flagSplinted : '', w.tq ? STR.flagTq : ''].filter(Boolean).join(' · ');
+          const acts = Health.actions(ch, k, w);
+          right.appendChild(U.el('div.wound' + (st ? '.inf-' + st : ''), null,
+            U.el('div', null, U.el('b', null, STR.woundName[w.t]), ' ' + STR.severity(Math.round(w.sev * 100)), w.infect > 0.02 ? U.el('span.inf', null, ' · ' + STR.infection(Math.round(w.infect * 100)) + (st ? ' (' + STR.infStage[st] + ')' : '')) : null),
+            flags ? U.el('div.dim', null, flags) : null,
+            U.el('div.row', null, ...acts.map((a) => U.el('button.btn.xs' + (a.ok ? '' : '.dis'), { title: a.need, disabled: !a.ok, on: { click: () => { Health.treat(ch, k, w.id, a.key); render(); } } }, a.label)))));
+        }
+      }
+      if (!Health.wounds(d).length) right.appendChild(U.el('p.dim', null, STR.noWounds));
+      right.appendChild(U.el('p.dim', null, STR.biteHint));
+      body.append(left, right);
+    };
+    render();
+    Modal.open({ title: STR.healthTitle, body, wide: true });
+  },
+};
+
+const DeathUI = {
+  show(cause, day) {
+    Modal.closeAll();
+    if (InvUI.isOpen) InvUI.close();
+    const root = U.$('#menu');
+    root.hidden = false; root.innerHTML = '';
+    const skills = Object.entries(P.skills).filter(([, s]) => s.lv > 0).map(([k, s]) => U.el('div.dskill', null, SKILLS[k].icon + ' ' + SKILLS[k].name + ' ', U.el('b', null, 'Lv ' + s.lv)));
+    const lives = P.lives.slice(-8).reverse().map((l) => U.el('tr', null, U.el('td', null, '#' + l.n), U.el('td', null, (BACKGROUNDS[l.bg] || {}).name || l.bg), U.el('td', null, STR.daysSurvived(l.days)), U.el('td', null, l.cause)));
+    root.append(U.el('div.death', null,
+      U.el('h1', null, STR.youDied),
+      U.el('p.cause', null, cause),
+      U.el('p', null, STR.daysSurvived(day)),
+      U.el('h4', null, STR.skillsKept), U.el('div.dskills', null, ...(skills.length ? skills : [U.el('span.dim', null, '—')])),
+      U.el('h4', null, STR.livesLog), U.el('table.lives', null, ...lives),
+      U.el('div.row2', null, U.el('button.mbtn', { on: { click: () => Game.toMenu(true) } }, STR.toMenu), U.el('button.mbtn.primary', { on: { click: () => CharSelect.show() } }, STR.newLife))));
+  },
+};
+
+const BuildUI = {
+  open() {
+    if (!Scene.isHome()) { Toast.show(STR.buildHomeOnly, 'warn'); return; }
+    const ch = activeChar();
+    const body = U.el('div.build');
+    body.appendChild(U.el('p.dim', null, STR.buildHint));
+    for (const b of Barricades.list()) {
+      const st = Barricades.get(b.key), B = BARRICADE[b.kind];
+      const status = st.hp > 0 ? STR.barStatus(st.layers, B.layers, Math.round(st.hp), Math.round(st.max)) : (b.kind === 'window' ? (st.glass > 0 ? STR.barGlassOnly : STR.barBroken) : b.kind === 'door' ? (st.door > 0 ? STR.barDoorOnly : STR.barBroken) : STR.barOpen);
+      const uses = Barricades.pickUses(ch, b.kind);
+      const canAdd = st.layers < B.layers || (st.layers && st.hp < st.max * 0.98);
+      body.appendChild(U.el('div.brow', null,
+        U.el('b', null, b.name), U.el('span.dim', null, status),
+        U.el('span.small', null, STR.barCost(B.uses.map(([id, n]) => itemDef(id).name + ' ×' + n).join(' + '), B.alt.map(([id, n]) => itemDef(id).name + ' ×' + n).join(' + '))),
+        U.el('button.btn.sm' + (uses && canAdd ? '.primary' : ''), { disabled: !canAdd, on: { click: () => {
+          Modal.close();
+          const target = b.in;
+          const go = () => { if (Barricades.build(ch, b.key)) Toast.show(STR.barBuilt(b.name, Barricades.get(b.key).layers), 'good'); };
+          if (!Scene.avatar.goTo({ x: target.x, z: target.z, floor: 0 }, 'walk', go)) go();
+        } } }, st.layers && st.hp < st.max * 0.98 ? STR.barRepairBtn : STR.barBuildBtn)));
+    }
+    Modal.open({ title: STR.buildTitle, body, wide: true });
+  },
+};
+
 /* ===== 99-main.js ===== */
 /* ==========================================================================
    99 · GAME — boot, state machine (MainMenu → CharacterSelect → Home),
@@ -11901,6 +13408,10 @@ const Game = {
     Meal.initAuto();
     Appliances.init();
     HomeInstall.init();
+    Health.initHooks();
+    Snd.init();
+    Bus.on('death', ({ cause, day }) => { this.mode = 'dead'; GameClock.endSleep('death'); U.$('#hud').hidden = true; setTimeout(() => DeathUI.show(cause, day), 900); });
+    Bus.on('player:hit', () => { const v = U.$('#hurt'); v.classList.remove('on'); void v.offsetWidth; v.classList.add('on'); });
     GameClock.onDay(() => { if (Game.mode === 'play') Save.saveRun('day'); });
     const run = Save.loadRun();
     S = run || createRun({ bg: 'warehouse', difficulty: 'standard', name: '' });
@@ -11992,6 +13503,9 @@ const Game = {
         const simDt = GameClock.simDt(realDt);
         this.cameraKeys(realDt);
         Scene.update(realDt, simDt);
+        Zombies.update(simDt);
+        Combat.update(simDt);
+        Snd.update(realDt);
         this.hudAcc += realDt;
         if (this.hudAcc > 0.12) { this.hudAcc = 0; HUD.update(); }
       } else if (this.mode === 'menu' && Scene.W) {
@@ -12086,9 +13600,9 @@ const Game = {
         case 'KeyM': MapUI.open(false); break;
         case 'KeyC': CookUI.open(); break;
         case 'KeyN': NutritionUI.open(); break;
-        case 'KeyH': case 'KeyB':
-          Toast.show({ KeyH: 'หน้าต่างสุขภาพ', KeyB: 'โหมดสร้าง' }[e.code] + ' จะเปิดใช้งานใน Phase 1D', 'info', 2200);
-          break;
+        case 'KeyH': HealthUI.open(); break;
+        case 'KeyB': BuildUI.open(); break;
+        case 'KeyV': Combat.shove(); break;
         default: break;
       }
     });
@@ -12101,6 +13615,7 @@ window.HH = {
   get S() { return S; }, get P() { return P; },
   Game, GameClock, Render, Scene, HomeScene, HomeWorld, World, Shop, Travel, Power, LOCATIONS, POOLS, Nav, InvUI, Inv, Save, Sanitize, ITEMS, FURNITURE, HOME,
   Icons, AssetRegistry, Character, activeChar, Modal, Toast, Needs, Skills, RNG, createRun, BUILD,
+  Zombies, Combat, Health, Durability, Barricades, Encounters, AmbushUI, Snd, NoiseBus, Death, Food, Body, Meal, Cook, Spoil, Appliances, HomeInstall,
 };
 
 Game.boot().catch((e) => { console.error('[boot]', e); Game.fatal(STR.errTitle + ': ' + e.message); });

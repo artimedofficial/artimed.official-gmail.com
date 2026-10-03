@@ -91,6 +91,7 @@ const Needs = {
         for (const k of ['satiety', 'hydration', 'energy', 'stamina']) n[k] = U.clamp(n[k], 0, 100);
         n.stamina = Math.min(n.stamina, fx.staminaMax);
         Body.minute(d, d.sleeping ? 'sleep' : moving || 'idle');
+        if (S.flags.debugSustain) { n.satiety = Math.max(n.satiety, 50); n.hydration = Math.max(n.hydration, 50); n.energy = Math.max(n.energy, 40); d.nut.reserve = Math.max(d.nut.reserve, -1000); }
         Illness.minute(d);
         // Walking with a load trains fitness/strength (§5.6).
         if (moving) {

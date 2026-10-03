@@ -13,6 +13,7 @@ class Avatar {
     this.onArrive = null;
     this.stairFrom = null;
     this.bed = null;
+    this._chaseT = 0;
     this.syncFromData();
     this.refreshGear();
   }
@@ -21,7 +22,7 @@ class Avatar {
     this.obj.position.set(p.x, Scene.W.groundY(p.x, p.z, p.floor), p.z);
     this.obj.rotation.y = p.rot;
   }
-  refreshGear() { this.h.setGear({ back: this.d.equip.back, hand: this.d.equip.hand }); }
+  refreshGear() { this.h.setGear({ back: this.d.equip.back, hand: this.d.equip.hand, weapon: this.d.equip.weapon }); }
   get floor() { return this.d.pos.floor; }
   isMoving() { return this.path.length > 0; }
 

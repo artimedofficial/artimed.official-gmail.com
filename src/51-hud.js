@@ -56,18 +56,21 @@ const HUD = {
     e.power = U.el('div.power');
     const side = U.el('div.panel.side', null, e.place, e.cash, e.floors, U.el('div.row', null, e.lights), e.power);
     // Bottom bar
+    const B = (icon, label, key, fn) => U.el('button.btn.hb', { title: label + (key ? ' (' + key + ')' : ''), on: { click: fn } }, icon, U.el('span', null, ' ' + label));
     const bar = U.el('div.panel.bottombar', null,
-      U.el('button.btn', { on: { click: () => InvUI.toggle() } }, '🎒 ' + STR.btnInventory),
-      U.el('button.btn', { on: { click: () => MapUI.open(false) } }, '🗺 ' + STR.btnMap),
-      U.el('button.btn', { on: { click: () => MealUI.open() } }, '🍚 ' + STR.btnEatMeal),
-      U.el('button.btn', { on: { click: () => CookUI.open() } }, '🍳 ' + STR.btnCook),
-      U.el('button.btn', { on: { click: () => StockUI.open() } }, '📦 ' + STR.btnStock),
-      U.el('button.btn', { on: { click: () => NutritionUI.open() } }, '🥗 ' + STR.btnNutrition),
-      U.el('button.btn', { on: { click: () => SkillsUI.open() } }, '📈 ' + STR.btnSkills),
-      U.el('button.btn', { on: { click: () => LogUI.open() } }, '📜 ' + STR.btnLog),
-      U.el('button.btn', { on: { click: () => HelpUI.open() } }, '⌨ ' + STR.btnHelp),
-      U.el('button.btn', { on: { click: () => { if (Save.saveRun('manual')) Toast.show(STR.saved, 'info', 1800); } } }, '💾 ' + STR.btnSave),
-      U.el('button.btn', { on: { click: () => PauseMenu.open() } }, '☰ ' + STR.btnMenu),
+      B('🎒', STR.hbInv, 'I', () => InvUI.toggle()),
+      B('🗺', STR.hbMap, 'M', () => MapUI.open(false)),
+      B('🍚', STR.btnEatMeal, '', () => MealUI.open()),
+      B('🍳', STR.hbCook, 'C', () => CookUI.open()),
+      B('❤', STR.hbHealth, 'H', () => HealthUI.open()),
+      B('🔨', STR.hbBuild, 'B', () => BuildUI.open()),
+      B('🥗', STR.btnNutrition, 'N', () => NutritionUI.open()),
+      B('📦', STR.btnStock, '', () => StockUI.open()),
+      B('📈', STR.btnSkills, '', () => SkillsUI.open()),
+      U.el('button.btn.hb.icon', { title: STR.btnLog, on: { click: () => LogUI.open() } }, '📜'),
+      U.el('button.btn.hb.icon', { title: STR.btnHelp, on: { click: () => HelpUI.open() } }, '⌨'),
+      U.el('button.btn.hb.icon', { title: STR.btnSave, on: { click: () => { if (Save.saveRun('manual')) Toast.show(STR.saved, 'info', 1800); } } }, '💾'),
+      U.el('button.btn.hb.icon', { title: STR.btnMenu, on: { click: () => PauseMenu.open() } }, '☰'),
     );
     e.hint = U.el('div.hint');
     e.sleep = U.el('div.sleepover', { hidden: true, on: { click: () => GameClock.endSleep('manual') } }, STR.sleeping);
@@ -112,7 +115,8 @@ const HUD = {
       e.ration.append(U.el('span', null, STR.rationShort), ...Object.entries(RATIONS).map(([k, r]) => U.el('button.rb' + (k === rk ? '.on' : ''), { title: Math.round(r.f * 100) + '%', on: { click: () => { d.nut.ration = k; } } }, r.name)));
     }
     const stg = Body.stage(d);
-    e.ill.textContent = [stg.key !== 'normal' ? '⚠ ' + stg.name : '', ...d.ill.map((x) => '🤢 ' + STR.illName[x.type]), ...Body.deficient(d).map((g) => '↓' + STR[g])].filter(Boolean).join(' · ');
+    const bleed = Health.wounds(d).some((x) => x.w.bleed > 0.05), inf = Health.worstInfection(d);
+    e.ill.textContent = [stg.key !== 'normal' ? '⚠ ' + stg.name : '', bleed ? '🩸 ' + STR.bleeding(Math.round(Health.wounds(d).reduce((a, x) => a + x.w.bleed, 0) * 100)) : '', d.blood < 95 ? STR.blood + ' ' + Math.round(d.blood) + '%' : '', inf > 0.05 ? '🦠 ' + STR.infection(Math.round(inf * 100)) : '', ...d.ill.map((x) => '🤢 ' + STR.illName[x.type]), ...Body.deficient(d).map((g) => '↓' + STR[g])].filter(Boolean).join(' · ');
     const load = ch.load();
     e.weight.textContent = STR.weight + ' ' + U.kg(ch.carried()) + ' / ' + ch.capacity().toFixed(1) + ' กก.' + (load > 1.5 ? ' · ' + STR.immobile : load > 1 ? ' · ' + STR.overloaded : '');
     e.weight.className = 'wline ' + (load > 1.5 ? 'bad' : load > 1 ? 'warn' : '');

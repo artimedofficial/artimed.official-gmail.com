@@ -133,6 +133,7 @@ const Sanitize = {
     if (it.st != null && typeof it.st !== 'object') delete it.st;
     if (it.unpaid != null && !LOCATIONS[it.unpaid]) delete it.unpaid;
     if (it.age != null) it.age = U.num(it.age, 0, 0, 3);
+    if (it.cap != null) it.cap = U.num(it.cap, 1, 0.2, 1);
     if (it.frz != null) it.frz = U.num(it.frz, 0, 0, 1);
     if (it.st && it.st.nut && typeof it.st.nut !== 'object') delete it.st.nut;
     return it;
@@ -167,6 +168,7 @@ const Sanitize = {
     c.sleeping = false;
     c.alive = c.alive !== false;
     Body.init(c);
+    Health.init(c);
     c.ill = c.ill.filter((x) => x && typeof x.type === 'string').map((x) => ({ type: x.type, sev: U.num(x.sev, 0.3, 0, 1), h: U.num(x.h, 6, 0, 500) }));
     return c;
   },
@@ -194,7 +196,7 @@ const Sanitize = {
     st.log = st.log.filter((e) => e && typeof e.t === 'number' && typeof e.msg === 'string').slice(-200);
     if (typeof st.flags !== 'object' || !st.flags) st.flags = { outbreak: false };
     st.flags.outbreak = !!st.flags.outbreak;
-    if (st.scene !== 'home' && !LOC_IDS.includes(st.scene)) st.scene = 'home';
+    if (st.scene !== 'home' && st.scene !== 'street' && !LOC_IDS.includes(st.scene)) st.scene = 'home';
     const pileList = (arr) => (Array.isArray(arr) ? arr : []).filter((p) => p && typeof p === 'object').map((p) => ({
       uid: typeof p.uid === 'string' ? p.uid : U.uid(), floor: U.num(p.floor, 0, 0, 1) | 0, x: U.num(p.x, 0, -60, 60), z: U.num(p.z, 0, -60, 60),
       inv: Object.assign(Sanitize.container(p.inv, STR.ground), { w: 8, h: 6, limit: 200 }),
@@ -215,7 +217,8 @@ const Sanitize = {
       locs[id] = { genAt: U.num(L.genAt, 0, 0, 1e9), furniture: furn, piles: pileList(L.piles), initial: U.num(L.initial, 1, 1, 1e6), depletedTo: U.num(L.depletedTo, 1, 0, 1), visits: U.num(L.visits, 0, 0, 1e6) | 0, lastVisit: L.lastVisit == null ? null : U.num(L.lastVisit, 0, 0, 1e9) };
     }
     st.locs = locs;
-    if (st.scene !== 'home' && !st.locs[st.scene]) st.scene = 'home';
+    if (st.scene !== 'home' && st.scene !== 'street' && !st.locs[st.scene]) st.scene = 'home';
+    if (st.scene === 'street' && !st.travel) st.scene = 'home';
     // Furniture: rebuild from layout if missing/garbled; keep containers by matching type+position.
     const fresh = buildHomeFurniture(st.worldSeed);
     const old = Array.isArray(st.home.furniture) ? st.home.furniture.filter((f) => f && FURNITURE[f.type]) : [];
@@ -244,6 +247,17 @@ const Sanitize = {
     st.home.lightsOn = st.home.lightsOn !== false;
     st.home.gas = U.num(st.home.gas, 70, 0, 100);
     st.home.carFuel = U.num(st.home.carFuel, 24, 0, 60);
+    if (!st.home.barr || typeof st.home.barr !== 'object' || Array.isArray(st.home.barr)) st.home.barr = {};
+    for (const k of Object.keys(st.home.barr)) {
+      const b = st.home.barr[k];
+      if (!b || typeof b !== 'object') { delete st.home.barr[k]; continue; }
+      for (const f of ['layers', 'layersMax']) b[f] = U.num(b[f], 0, 0, 3) | 0;
+      for (const f of ['hp', 'max', 'glass', 'door']) b[f] = U.num(b[f], 0, 0, 2000);
+    }
+    if (st.scene === 'street') st.scene = st.travel && LOCATIONS[st.travel.to] ? 'street' : 'home';
+    if (st.travel && (typeof st.travel !== 'object' || !LOCATIONS[st.travel.to])) st.travel = null;
+    if (st.travel) st.travel.left = U.num(st.travel.left, 10, 0, 1000);
+    st.flags.invulnerable = !!st.flags.invulnerable;
     if (!st.home.loads || typeof st.home.loads !== 'object' || Array.isArray(st.home.loads)) st.home.loads = {};
     st.food.reserve = Array.isArray(st.food.reserve) ? st.food.reserve.filter((x) => ITEMS[x]) : [];
     st.food.exclude = Array.isArray(st.food.exclude) ? st.food.exclude.filter((x) => ITEMS[x]) : [];

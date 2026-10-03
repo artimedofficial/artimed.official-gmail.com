@@ -45,6 +45,7 @@ await page.evaluate(() => {
 });
 await page.keyboard.press('KeyI');
 await page.waitForFunction(() => HH.InvUI.isOpen);
+await page.evaluate(() => { HH.InvUI.tab = HH.InvUI.tabs.findIndex((t) => t.key === 'ground'); HH.InvUI.render(); });
 await page.waitForTimeout(400);
 // Drag backpack from ground grid onto the back slot
 const bp = await page.evaluate(() => { const el = [...document.querySelectorAll('#inv .item')].find((e) => e._slot.it.id === 'backpack_medium'); const r = el.getBoundingClientRect(); return { x: r.x + 10, y: r.y + 10 }; });

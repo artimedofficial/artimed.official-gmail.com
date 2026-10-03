@@ -121,9 +121,22 @@ class Humanoid {
   }
 
   /** Attach / detach visible gear (backpack, hand bag). */
-  setGear({ back, hand }) {
+  setGear({ back, hand, weapon }) {
     if (this.backpackMesh) { this.chest.remove(this.backpackMesh); this.backpackMesh = null; }
     if (this.handMesh) { this.arms[1].hand.remove(this.handMesh); this.handMesh = null; }
+    if (this.weaponMesh) { this.arms[1].hand.remove(this.weaponMesh); this.weaponMesh = null; }
+    if (weapon && !hand) {
+      const d = itemDef(weapon.id), ic = d.icon || {};
+      const pb = new PB('wp' + weapon.id);
+      const len = d.size[1] * 0.22;
+      if (ic.k === 'pan') { pb.cyl(0.03, 0.03, 0.3, Mat.color('#3a2a1a', 0.6), 0, -0.36, 0.0); pb.cyl(0.13, 0.11, 0.04, Mat.color(ic.c || '#222', 0.4, 0.6), 0, -0.58, 0.1, 16, [Math.PI / 2, 0, 0]); }
+      else if (ic.k === 'knife') { pb.box(0.03, 0.12, 0.03, Mat.color(ic.c2 || '#222', 0.6), 0, -0.1, 0); pb.box(0.012, len, 0.035, Mat.color(ic.c || '#ccc', 0.2, 0.9), 0, -0.16 - len, 0); }
+      else if (ic.k === 'hammer') { pb.cyl(0.018, 0.018, len, Mat.color(ic.c2 || '#8a5a2a', 0.6), 0, -0.05 - len, 0, 8); pb.box(0.06, 0.06, 0.16, Mat.color(ic.c || '#333', 0.3, 0.8), 0, -0.08 - len, 0); }
+      else { pb.cyl(0.035, 0.018, len, Mat.color(ic.c || '#a87a42', 0.55, ic.k === 'bat' && (ic.c || '').startsWith('#c9c') ? 0.8 : 0), 0, -0.05 - len, 0, 8); }
+      this.weaponMesh = pb.build();
+      this.weaponMesh.rotation.x = -0.6;
+      this.arms[1].hand.add(this.weaponMesh);
+    }
     if (back) {
       const d = itemDef(back.id), ic = d.icon || {};
       const big = d.grid ? d.grid[0] * d.grid[1] / 30 : 0.5;
@@ -185,6 +198,26 @@ class Humanoid {
       arm.upper.rotation.x = carrying ? -0.05 : -Math.sin(ph) * swing * 0.85 - 0.1 * r + Math.sin(this.t * 1.8) * 0.02;
       arm.upper.rotation.z = arm.s * (0.08 + (carrying ? 0.12 : 0) + 0.04 * r);
       arm.elbow.rotation.x = carrying ? -0.1 : -(0.15 + 0.25 * w + 1.2 * r + 0.6 * s + Math.max(0, Math.sin(ph)) * 0.3 * mv);
+      if (st.zombie) {
+        // Shambling posture: arms reaching forward, stiff elbows, lurching
+        const reach = st.lunge ? 1.7 : 1.25;
+        arm.upper.rotation.x = -reach + Math.sin(this.t * 2 + arm.s) * 0.08;
+        arm.upper.rotation.z = arm.s * 0.12;
+        arm.elbow.rotation.x = -0.2;
+      }
+    }
+    if (st.zombie) {
+      this.spine.rotation.x += 0.22; this.neck.rotation.x += 0.25; this.head.rotation.z = Math.sin(this.t * 0.7) * 0.18;
+      this.hips.rotation.z = Math.sin(p) * 0.06;
+    }
+    // Attack swing (right arm): wind-up then strike
+    if (this.swing > 0) {
+      this.swing = Math.max(0, this.swing - dt / 0.35);
+      const k = 1 - this.swing;
+      const a = this.arms[1];
+      a.upper.rotation.x = k < 0.35 ? -2.4 * (k / 0.35) : -2.4 + 3.0 * ((k - 0.35) / 0.65);
+      a.elbow.rotation.x = -0.4;
+      this.spine.rotation.y += Math.sin(k * Math.PI) * 0.4;
     }
   }
   poseSleep() {

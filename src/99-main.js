@@ -40,6 +40,10 @@ const Game = {
     Meal.initAuto();
     Appliances.init();
     HomeInstall.init();
+    Health.initHooks();
+    Snd.init();
+    Bus.on('death', ({ cause, day }) => { this.mode = 'dead'; GameClock.endSleep('death'); U.$('#hud').hidden = true; setTimeout(() => DeathUI.show(cause, day), 900); });
+    Bus.on('player:hit', () => { const v = U.$('#hurt'); v.classList.remove('on'); void v.offsetWidth; v.classList.add('on'); });
     GameClock.onDay(() => { if (Game.mode === 'play') Save.saveRun('day'); });
     const run = Save.loadRun();
     S = run || createRun({ bg: 'warehouse', difficulty: 'standard', name: '' });
@@ -131,6 +135,9 @@ const Game = {
         const simDt = GameClock.simDt(realDt);
         this.cameraKeys(realDt);
         Scene.update(realDt, simDt);
+        Zombies.update(simDt);
+        Combat.update(simDt);
+        Snd.update(realDt);
         this.hudAcc += realDt;
         if (this.hudAcc > 0.12) { this.hudAcc = 0; HUD.update(); }
       } else if (this.mode === 'menu' && Scene.W) {
@@ -225,9 +232,9 @@ const Game = {
         case 'KeyM': MapUI.open(false); break;
         case 'KeyC': CookUI.open(); break;
         case 'KeyN': NutritionUI.open(); break;
-        case 'KeyH': case 'KeyB':
-          Toast.show({ KeyH: 'หน้าต่างสุขภาพ', KeyB: 'โหมดสร้าง' }[e.code] + ' จะเปิดใช้งานใน Phase 1D', 'info', 2200);
-          break;
+        case 'KeyH': HealthUI.open(); break;
+        case 'KeyB': BuildUI.open(); break;
+        case 'KeyV': Combat.shove(); break;
         default: break;
       }
     });
@@ -240,6 +247,7 @@ window.HH = {
   get S() { return S; }, get P() { return P; },
   Game, GameClock, Render, Scene, HomeScene, HomeWorld, World, Shop, Travel, Power, LOCATIONS, POOLS, Nav, InvUI, Inv, Save, Sanitize, ITEMS, FURNITURE, HOME,
   Icons, AssetRegistry, Character, activeChar, Modal, Toast, Needs, Skills, RNG, createRun, BUILD,
+  Zombies, Combat, Health, Durability, Barricades, Encounters, AmbushUI, Snd, NoiseBus, Death, Food, Body, Meal, Cook, Spoil, Appliances, HomeInstall,
 };
 
 Game.boot().catch((e) => { console.error('[boot]', e); Game.fatal(STR.errTitle + ': ' + e.message); });

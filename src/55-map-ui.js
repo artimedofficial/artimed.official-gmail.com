@@ -96,7 +96,7 @@ const Danger = {
     if (!S.flags.outbreak) return 0;
     const day = S.time.min / 1440 - 1;
     const base = Math.min(1, 0.12 + day * 0.02) * difficultyOf(S.difficulty).zombie;
-    const night = Render.night > 0.5 ? 1.4 : 1;
+    const night = Render.nightAt(S.time.min) > 0.5 ? 1.4 : 1;
     const dense = id === 'supermarket' ? 1.3 : id === 'market' ? 1.2 : id === 'home' ? 0.6 : 1;
     return U.clamp(base * night * dense, 0, 1);
   },

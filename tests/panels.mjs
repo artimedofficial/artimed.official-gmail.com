@@ -25,7 +25,7 @@ await page.screenshot({ path: 'shots/tooltip.png' });
 await page.keyboard.press('Escape');
 // Panels
 for (const [label, shot] of [['ทักษะ', 'skills'], ['บันทึก', 'log'], ['ปุ่มลัด', 'help']]) {
-  await page.click(`.bottombar button:has-text("${label}") >> nth=0`);
+  await page.click(`.bottombar button:has-text("${label}"), .bottombar button[title="${label}"] >> nth=0`);
   await page.waitForSelector('.modal');
   await page.waitForTimeout(150);
   await page.screenshot({ path: `shots/${shot}.png` });

@@ -188,6 +188,8 @@ const Render = {
     const az = U.lerp(-1.2, 1.2, U.clamp(dayT, 0, 1));
     return { elev, az, dayT };
   },
+  /** Night factor (0 day … 1 night) for any game minute, independent of rendering. */
+  nightAt(min) { const { elev } = this.sunState(min); return 1 - U.clamp(elev * 4 + 0.35, 0, 1); },
   updateDayNight(min) {
     const { elev, az } = this.sunState(min);
     const day = U.clamp(elev * 3, 0, 1), dusk = U.clamp(1 - Math.abs(elev) * 4, 0, 1) * (elev > -0.25 ? 1 : 0);
@@ -286,6 +288,14 @@ const Render = {
         if (this.ray.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), p0) && W.groundY(p0.x, p0.z, 0) === 0) gp.copy(p0);
       }
       ground = { x: gp.x, z: gp.z, floor: this.viewFloor, dist: this.ray.ray.origin.distanceTo(gp) };
+    }
+    // Zombies (attack target)
+    const zobjs = Zombies.alive().map((z) => z.obj);
+    if (zobjs.length) {
+      const zh = this.ray.intersectObjects(zobjs, true)[0];
+      if (zh) { const zid = zh.object.userData.zombieId; const z = Zombies.list.find((q) => q.id === zid); if (z && !z.dead) return { kind: 'zombie', z, ground }; }
+      // Generous target: a click on the ground right next to a zombie also selects it
+      if (ground) { const z = Zombies.alive().find((q) => Math.hypot(q.x - ground.x, q.z - ground.z) < 0.75); if (z) return { kind: 'zombie', z, ground }; }
     }
     // Stairs: clicking the steps means "go to the other floor".
     const sh = W.stairsObj ? this.ray.intersectObject(W.stairsObj, true)[0] : null;
