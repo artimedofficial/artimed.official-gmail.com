@@ -133,6 +133,11 @@ const Scene = {
   actions(f) {
     const def = FURNITURE[f.type], out = [];
     if (def.act === 'checkout') out.push({ key: 'checkout', label: STR.checkoutAct });
+    if (def.act === 'checkout' && DELIVERY[S.scene] && !S.flags.outbreak) out.push({ key: 'delivery', label: STR.orderDelivery });
+    if (def.act === 'cook') out.push({ key: 'cook', label: STR.cookAct });
+    if (def.act === 'microwave') out.push({ key: 'microwave', label: STR.cookAct + ' (' + STR.stMicrowave + ')' });
+    if (def.act === 'generator') out.push({ key: 'generator', label: STR.genAct });
+    if (f.type === 'car') out.push({ key: 'siphon', label: STR.siphonAct });
     if (f.inv) out.push({ key: 'open', label: STR.open + ' ' + f.label });
     if (def.act === 'sleep') out.push({ key: 'sleep', label: STR.sleepHere });
     if (def.act === 'water') out.push({ key: 'drink', label: STR.drinkTap });
@@ -147,6 +152,11 @@ const Scene = {
       sleep: () => SleepUI.open(f),
       drink: () => { Needs.drinkTap(activeChar()); },
       checkout: () => CheckoutUI.open(),
+      delivery: () => DeliveryUI.open(),
+      cook: () => CookUI.open('stove'),
+      microwave: () => CookUI.open('microwave'),
+      generator: () => GenUI.open(),
+      siphon: () => this.siphon(),
       walk: null,
     }[key];
     const ok = this.avatar.goTo({ x: ap.x, z: ap.z, floor: f.floor }, mode, () => {
@@ -154,6 +164,23 @@ const Scene = {
     });
     if (!ok) Bus.emit('toast', { kind: 'warn', msg: STR.cannotReach });
     else { Render.cam.follow = true; Render.flashClick(ap.x, this.W.groundY(ap.x, ap.z, f.floor), ap.z); }
+  },
+  /** Siphon fuel from the parked car into an empty jerry can (yields 5 L cans). */
+  siphon() {
+    const ch = activeChar();
+    if (S.home.carFuel == null) S.home.carFuel = 24;
+    if (S.home.carFuel < 1) { Toast.show(STR.carEmpty, 'warn'); return; }
+    let found = null;
+    for (const c of ch.containers()) for (const s of c.slots) if (s.it.id === 'jerry_can') found = { c, s };
+    if (!found) { Toast.show(STR.needJerry, 'warn'); return; }
+    Inv.remove(found.c, found.s);
+    const litres = Math.min(20, Math.floor(S.home.carFuel));
+    S.home.carFuel -= litres;
+    const n = Math.floor(litres / 5);
+    for (let i = 0; i < n; i++) { const it = Inv.makeItem('gasoline_5l', 1); if (Inv.addToAny(ch.containers(), it) > 0) { const pile = this.pileNear(0, ch.d.pos.x, ch.d.pos.z, true); Inv.add(pile.inv, it); } }
+    this.syncPiles();
+    GameClock.advance(15);
+    logEvent(STR.siphoned(litres), 'info'); Toast.show(STR.siphoned(litres), 'good');
   },
   face(f) { const d = S.chars[S.active]; d.pos.rot = Math.atan2(f.x - d.pos.x, f.z - d.pos.z); },
   /** Is a ground point beyond the exit (gate / shop door)? */
@@ -250,7 +277,7 @@ const Scene = {
     if (this.W.exitMarker) this.W.exitMarker.material.opacity = 0.45 + Math.sin(performance.now() * 0.004) * 0.25;
     Render.updateCamera(realDt, { x: p.x, z: p.z });
     Render.updateDayNight(S.time.min);
-    Render.updateLights({ x: p.x, z: p.z }, this.isHome() ? S.home.lightsOn : true, Power.gridOn());
+    Render.updateLights({ x: p.x, z: p.z }, this.isHome() ? S.home.lightsOn : true, this.isHome() ? Appliances.lightsPowered() : Power.gridOn());
   },
 };
 const HomeScene = Scene; // legacy alias used by older harnesses

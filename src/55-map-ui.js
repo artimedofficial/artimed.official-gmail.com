@@ -138,6 +138,7 @@ const CheckoutUI = {
       if (leaving) body.appendChild(U.el('p.warn', null, STR.mustPay));
     }
     const tot = Shop.total(list);
+    if (DELIVERY[S.scene]) body.appendChild(U.el('button.btn', { on: { click: () => { Modal.close(); DeliveryUI.open(); } } }, '🚚 ' + STR.orderDelivery));
     Modal.open({ title: STR.checkoutTitle, body, actions: list.length ? [
       { label: STR.returnItems, fn: () => { Shop.returnAll(ch); Toast.show(STR.itemsReturned, 'info'); } },
       { label: STR.payBtn(U.money(tot)), primary: true, fn: () => { if (!Shop.pay(ch)) { Toast.show(STR.notEnoughCash, 'bad'); return false; } Toast.show(STR.paid, 'good'); return true; } },

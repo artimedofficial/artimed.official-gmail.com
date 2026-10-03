@@ -196,6 +196,30 @@ button, input, select { font-family: inherit; font-size: inherit; }
 .ttime { font-size: 22px; color: var(--amber); font-weight: 700; }
 .bill { width: 100%; border-collapse: collapse; font-size: 13px; } .bill td { padding: 3px 6px; border-bottom: 1px solid #2c241a; } .bill td.n { text-align: right; white-space: nowrap; }
 .checkout .total { font-size: 16px; margin-top: 8px; }
+.rationsel { display: flex; gap: 3px; align-items: center; font-size: 11px; margin-top: 4px; } .rationsel span { color: var(--dim); margin-right: 3px; }
+.rb { background: #1d1812; border: 1px solid var(--line); color: var(--dim); border-radius: 4px; font-size: 11px; padding: 1px 6px; cursor: pointer; } .rb.on { background: var(--amber2); color: #1a1208; border-color: var(--amber); }
+.ill { font-size: 11px; color: var(--warn); margin-top: 3px; min-height: 0; }
+.item.st-aging img { filter: sepia(.45) drop-shadow(0 2px 2px rgba(0,0,0,.5)); } .item.st-spoiled img { filter: sepia(.6) hue-rotate(40deg) saturate(.8) brightness(.85); } .item.st-rotten img { filter: grayscale(.6) sepia(.7) hue-rotate(50deg) brightness(.6); }
+.item.frozen { background: radial-gradient(ellipse at 50% 40%, rgba(180,220,255,.22), rgba(20,40,70,.4)); }
+.thaw { position: absolute; right: 2px; top: 1px; font-size: 10px; color: #bfe3ff; text-shadow: 0 1px 2px #000; }
+.usesoon { position: absolute; left: 1px; bottom: 1px; font-size: 9px; background: #e0912a; color: #1a1208; padding: 0 3px; border-radius: 3px; font-weight: 700; }
+.reserve { position: absolute; right: 2px; bottom: 12px; font-size: 9px; background: #3a6a9a; color: #fff; padding: 0 3px; border-radius: 3px; }
+.tt-r.warn b, .tt-r.warn span { color: var(--warn); } .tt-r.bad b, .tt-r.bad span { color: var(--bad); } .tt-r.frozen b, .tt-r.frozen span { color: #9fd0ff; }
+.eatbox .eathead { display: flex; gap: 10px; align-items: center; margin-bottom: 6px; } .eathead img { width: 48px; height: 48px; }
+.eatbtns { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+.mealrows { display: flex; flex-direction: column; gap: 4px; margin: 8px 0; } .mealrow { display: grid; grid-template-columns: 32px 1fr 80px 24px 24px 24px; align-items: center; gap: 6px; } .mealrow img { width: 30px; height: 30px; }
+.tag { font-style: normal; font-size: 10px; background: #3a3020; padding: 0 4px; border-radius: 3px; margin-left: 6px; } .tag.warn { background: #6a4a1a; color: #ffd27a; }
+.mealtot { margin-top: 10px; color: var(--amber); } .mealhead { color: var(--dim); font-size: 13px; }
+.nstage { font-size: 15px; } .nstage.thin b { color: var(--warn); } .nstage.weak b, .nstage.veryweak b, .nstage.starving b { color: var(--bad); }
+.nbufs { display: flex; flex-direction: column; gap: 4px; } .nbuf { display: grid; grid-template-columns: 110px 1fr 80px; gap: 8px; align-items: center; font-size: 13px; } .nbuf .bar i { background: #7fbf5f; } .nbuf.low .bar i { background: #d65a5a; } .nbuf em { font-style: normal; color: var(--dim); }
+.ntrend { display: flex; gap: 8px; align-items: flex-end; height: 86px; } .ncol { display: grid; grid-template-columns: 8px 8px; grid-template-rows: 60px auto; align-items: end; gap: 2px; } .ncol i { display: block; width: 8px; } .ncol i.in { background: var(--amber); } .ncol i.out { background: #6c757d; } .ncol small { grid-column: 1 / 3; font-size: 10px; color: var(--dim); }
+.rations { display: flex; gap: 6px; flex-wrap: wrap; } .fx { font-size: 13px; color: var(--text); }
+.sdays, .sgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; } .sday { background: #1d1812; border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; display: flex; flex-direction: column; font-size: 12px; } .sday b { font-size: 16px; color: var(--amber); } .sday.low { border-color: var(--bad); } .sday.low b { color: var(--bad); } .sday.warn b { color: var(--warn); }
+.modal.cookmodal { max-width: 1060px; width: 90vw; } .cook { display: grid; grid-template-columns: 280px 1fr; gap: 12px; } .rlist { display: flex; flex-direction: column; gap: 3px; max-height: 62vh; overflow: auto; }
+.rbtn { display: flex; align-items: center; gap: 8px; background: #1d1812; border: 1px solid var(--line); color: var(--text); border-radius: 6px; padding: 3px 8px; cursor: pointer; text-align: left; } .rbtn img { width: 26px; height: 26px; } .rbtn.on { border-color: var(--amber); } .rbtn.dim { opacity: .5; } .rbtn em { margin-left: auto; font-size: 10px; color: var(--bad); font-style: normal; }
+.rdetail h3 { margin: 0; color: var(--amber); } .rdetail .slot { display: grid; grid-template-columns: 150px 1fr auto; gap: 8px; align-items: center; margin: 6px 0; } .slot.miss .sl { color: var(--bad); } .amt { display: flex; gap: 4px; align-items: center; }
+.pv { background: #1d1812; border: 1px solid var(--line); border-radius: 8px; padding: 8px; margin: 8px 0; }
+.drow { display: grid; grid-template-columns: 50px 1fr 220px 90px; gap: 10px; align-items: center; margin: 6px 0; } .drow img { width: 48px; height: 36px; }
 .invhint { grid-column: 1 / 3; color: var(--dim); font-size: 12px; text-align: center; }
 @media (max-width: 1100px) { .needs { left: 10px; top: 128px; } .bgcards { grid-template-columns: repeat(2, 1fr); } }
 </style>
@@ -4049,7 +4073,7 @@ void main() {
    Everything here is plain data so the owner can tweak without touching logic.
    ========================================================================== */
 
-const BUILD = '1B.0.1';
+const BUILD = '1C.0.1';
 
 /**
  * ASSET_OVERRIDES — swap any procedural asset for an external file.
@@ -4180,6 +4204,55 @@ const STR = {
   inspect: 'ตรวจดู',
   cannotReach: 'ไปที่นั่นไม่ได้',
   goUp: 'ขึ้นบันไดไปชั้นบน',
+  // Food system (1C)
+  notFood: 'ไม่ใช่ของกิน', ruinedItem: 'ของชิ้นนี้เสียหายแล้ว กินไม่ได้', rottenItem: 'เน่าแล้ว กินไม่ได้', frozenSolid: 'ยังแข็งเป็นน้ำแข็ง ต้องละลายก่อน',
+  softCookOnly: 'ผักที่ผ่านการแช่แข็งเนื้อเละแล้ว ใช้ทำอาหารสุกได้เท่านั้น', portionUnit: 'ส่วน',
+  suffixRuined: '(เสียหาย)', suffixOpened: 'เปิดแล้ว', illPoison: 'อาหารเป็นพิษ! คลื่นไส้ ท้องเสีย เสียน้ำมาก ดื่มน้ำ/เกลือแร่และพักผ่อน',
+  mealLog: (s) => 'กินมื้ออาหาร: ' + s, autoMealDone: 'กินมื้ออัตโนมัติแล้ว',
+  loadLights: 'ไฟในบ้าน', genNoFuel: 'ไม่มีน้ำมันในถัง เติมน้ำมันก่อน', genStarted: 'สตาร์ทเครื่องปั่นไฟแล้ว', genStopped: 'ดับเครื่องปั่นไฟแล้ว',
+  genRefuel: (l) => 'เติมน้ำมันเครื่องปั่นไฟ ' + l + ' ลิตร', genOut: 'เครื่องปั่นไฟน้ำมันหมด ดับแล้ว!',
+  installed: (n) => 'ติดตั้ง ' + n + ' เรียบร้อย', ordered: (n, t, hh) => 'สั่งซื้อ ' + n + ' พร้อมจัดส่ง (' + t + ') จะมาถึงประมาณ ' + hh,
+  deliveryCancelled: (n) => 'การจัดส่ง ' + n + ' ถูกยกเลิกเพราะการระบาด (ได้เงินคืน)', delivered: (n) => 'ของมาส่งแล้ว: ' + n + ' ติดตั้งที่บ้านเรียบร้อย',
+  stHomeStove: 'เตาแก๊สในครัว', gasLeft: (n) => 'แก๊สเหลือ ' + n + '%', noGas: 'แก๊สหมด', stPortable: 'เตาแก๊สปิกนิก', noCanister: 'ไม่มีแก๊สกระป๋อง',
+  stMicrowave: 'ไมโครเวฟ', noPower: 'ไม่มีไฟฟ้า', stNone: 'ไม่ต้องใช้ไฟ (ยำ/ผสม)', missingIng: (l) => 'ขาดวัตถุดิบ: ' + l, notEnoughIng: (l) => 'วัตถุดิบไม่พอ: ' + l,
+  wrongStation: 'เมนูนี้ใช้อุปกรณ์ที่เลือกไม่ได้', noWater: 'ไม่มีน้ำสำหรับต้ม (น้ำประปาไม่ไหลและไม่มีน้ำดื่มติดตัว)',
+  cooked: (n, p) => 'ทำ ' + n + ' ได้ ' + p + ' ส่วน', microThawed: (n) => 'ละลาย ' + n + ' ด้วยไมโครเวฟ ควรปรุงภายใน 1 ชม.',
+  stage: { fresh: 'สด', aging: 'ใกล้เสีย', spoiled: 'เสียแล้ว', rotten: 'เน่า', ruined: 'เสียหาย' },
+  ruinedBurst: 'แตก/บวมจากการแช่แข็ง', frozenState: 'แช่แข็ง −20 °C', noSpoil: 'ไม่เน่าเสีย คุณค่าอาหารคงเดิม', thawing: 'กำลังละลาย',
+  leftTime: (t) => 'เหลือ ' + t, pastDue: 'เลยกำหนด', envName: { ambient: 'อุณหภูมิห้อง', fridge: 'ในตู้เย็น', freezer: 'ในช่องแช่แข็ง' },
+  softTexture: 'เนื้อเละ (ใช้ปรุงสุกเท่านั้น)', noRefreeze: 'ละลายหมดแล้ว ห้ามแช่แข็งซ้ำ (ยกเว้นปรุงสุกก่อน)', rawCook: 'ของดิบ ต้องปรุงสุก',
+  eat1: '1 ส่วน', ofPack: 'ห่อ', eatAll: 'ทั้งหมด', portionsLeft: (l, t) => 'เหลือ ' + l + ' จาก ' + t + ' ส่วน',
+  perPortionLine: (p) => 'ต่อส่วน: ' + Math.round(p.kcal) + ' kcal · โปรตีน ' + p.protein.toFixed(1) + ' ก. · คาร์บ ' + p.carb.toFixed(1) + ' ก. · ไขมัน ' + p.fat.toFixed(1) + ' ก. · วิตามิน ' + p.micro.toFixed(1),
+  riskWarn: (p) => 'เสี่ยงอาหารเป็นพิษประมาณ ' + p + '%',
+  mealTarget: (k, r) => 'เป้าหมายมื้อนี้ ≈ ' + k + ' kcal (ระดับปันส่วน: ' + r + ') — ระบบเลือกของที่เปิดแล้วและใกล้เสียก่อน และไม่แตะของที่ตั้งเป็น "สำรอง"',
+  mealNothing: 'ไม่มีอาหารพร้อมกินที่ใช้ได้ (ของดิบ/แช่แข็ง/ของสำรองถูกข้าม)', useSoon: 'ใกล้เสีย', mealAdd: '+ เพิ่มรายการ…',
+  eatMeal: 'กินมื้ออาหาร', eatConfirm: 'กินตามนี้', mealDone: (n) => 'กินแล้ว ' + n + ' ส่วน',
+  bodyState: 'สภาพร่างกาย', reserveLine: (r) => 'พลังงานสะสม ' + (r >= 0 ? '+' : '') + r.toLocaleString() + ' kcal',
+  buffers7d: 'สารอาหารสะสมย้อนหลัง 7 วัน', energyTrend: 'พลังงานรายวัน (เข้า/ใช้)', trendLegend: 'แท่งส้ม = กินเข้า · แท่งเทา = ใช้ไป',
+  effectsTitle: 'ผลต่อร่างกาย', fxCarry: 'แบกได้', fxSpeed: 'ความเร็ว', fxHeal: 'แผลหาย', fxSkill: 'เรียนรู้ทักษะ', fxStamina: 'แรงสูงสุด', fxInfect: 'เสี่ยงติดเชื้อ',
+  illName: { food_poison: 'อาหารเป็นพิษ' }, rationTitle: 'ระดับการปันส่วน', autoMeals: 'กินมื้ออัตโนมัติ 07:00 / 12:00 / 18:00 (เมื่ออยู่บ้าน)',
+  nutritionTitle: 'โภชนาการและร่างกาย', foodDaysAt: (n) => 'อาหารพอสำหรับ (' + n + ')', daysUnit: 'วัน', stockFood: 'อาหาร', needPerDay: (n) => 'ต้องการ ~' + n + ' kcal/วัน',
+  waterDays: 'น้ำดื่มพอสำหรับ', tapRunning: 'น้ำประปายังไหล', fuelHours: 'น้ำมันเครื่องปั่นไฟ', cookGas: 'แก๊สหุงต้ม', pieces: 'ชิ้น',
+  medStock: 'เวชภัณฑ์', medNames: { dressing: 'ผ้าพันแผล/ทำแผล', antiseptic: 'ยาฆ่าเชื้อ', painkiller: 'ยาแก้ปวด/ลดไข้', antibiotic: 'ยาปฏิชีวนะ' },
+  byCategory2: 'ของทั้งหมดตามหมวด', stockTitle: 'ภาพรวมเสบียง (Loot Spotter)', missing: 'ขาดของ',
+  methodName: { boil: 'ต้ม', fry: 'ผัด/ทอด', grill: 'ย่าง', steam: 'นึ่ง', bake: 'อบ', microwave: 'ไมโครเวฟ', none: 'ไม่ต้องใช้ความร้อน' },
+  stationsOk: (s) => 'ใช้กับ: ' + s, stationName: { stove: 'เตาแก๊ส', microwave: 'ไมโครเวฟ', none: 'ไม่ใช้เตา' },
+  skipOpt: '— ไม่ใส่ —', optional: 'ไม่ใส่ก็ได้', noneAvailable: 'ไม่มีในคลัง', batch: 'จำนวนชุด', cookLonger: 'ปรุงนานขึ้นให้สุกทั่ว (จากของแช่แข็ง)',
+  cookOut: (n, p) => 'ได้ ' + n + ' ' + p + ' ส่วน', cookTime: (m) => 'ใช้เวลา ' + m + ' นาที', qualityLine: (q) => 'คุณภาพ ' + q + '%',
+  waterUse: (w) => 'ใช้น้ำ ' + w + ' ส่วน', fromFrozen: 'ปรุงจากของแช่แข็ง (+50% เวลา)', cookBtn: 'ลงมือทำ', cookedToast: (n) => 'ทำ ' + n + ' เสร็จแล้ว', cookTitle: 'ทำอาหาร (C)',
+  genStatus: 'สถานะ', genOn: 'กำลังทำงาน', genOff: 'ดับอยู่', genFuel: 'น้ำมันในถัง', gridState: 'ไฟฟ้าหลวง', genLoad: 'โหลดที่จ่าย',
+  genOutdoorNoise: 'ตั้งอยู่นอกบ้าน: เสียงดังดึงดูดซอมบี้ได้', genIndoor: 'ตั้งในห้องเก็บของ: เสียงไม่มีผลต่อเกม', genStop: 'ดับเครื่อง', genStart: 'สตาร์ทเครื่อง',
+  genRefuelBtn: 'เติมน้ำมัน', noGasoline: 'ไม่มีน้ำมันเบนซินติดตัวหรือในบ้าน', loadPanel: 'จัดการโหลดไฟฟ้า (เลือกเครื่องที่จะจ่ายไฟให้)',
+  installHomeOnly: 'ติดตั้งได้เฉพาะที่บ้าน', noFreeSlot: 'ไม่มีช่องว่างสำหรับเฟอร์นิเจอร์ขนาดใหญ่', installTime: (m) => 'ใช้เวลาติดตั้งประมาณ ' + m + ' นาที เลือกตำแหน่ง:',
+  installTitle: 'ติดตั้ง', deliveryNote: (f, h) => 'สั่งซื้อพร้อมจัดส่ง ค่าส่ง ' + f + ' ของจะมาถึงบ้านในประมาณ ' + h + ' ชั่วโมงและติดตั้งในช่องที่เลือก (ถ้าการระบาดเริ่มก่อน จะไม่มีใครมาส่งและได้เงินคืน)',
+  fee: 'ค่าส่ง', orderBtn: 'สั่งซื้อ', orderedToast: 'สั่งซื้อแล้ว รอของมาส่งที่บ้าน', deliveryTitle: 'สั่งซื้อเครื่องใช้ไฟฟ้าพร้อมจัดส่ง',
+  noRefreezeMsg: 'ของดิบที่ละลายหมดแล้วห้ามแช่แข็งซ้ำ ต้องปรุงสุกก่อนจึงจะแช่แข็งได้', freezeWarnTitle: 'คำเตือน: แช่แข็งไม่ได้',
+  freezeWarn: (n) => n + ' จะแตก บวม หรือเสียหายถ้านำไปแช่แข็ง (กระป๋อง ขวดแก้ว น้ำอัดลม ไข่ทั้งเปลือก) ยังต้องการใส่หรือไม่?', freezeAnyway: 'ใส่อยู่ดี',
+  satietyShort: 'อิ่ม', microThaw: 'ละลายด้วยไมโครเวฟ', reserve: 'ตั้งเป็นของสำรอง (ไม่ใช้ใน "กินมื้ออาหาร")', unreserve: 'ยกเลิกของสำรอง',
+  exclude: 'ห้ามใช้ในมื้ออัตโนมัติ', unexclude: 'อนุญาตให้ใช้ในมื้ออัตโนมัติ', usedMed: (n) => 'ใช้ ' + n, installAct: 'ติดตั้งที่บ้าน…',
+  freezeSkipped: (n) => 'ข้าม ' + n + ' ชิ้นที่แช่แข็งไม่ได้ (ลากใส่เองเพื่อยืนยัน)',
+  btnEatMeal: 'กินมื้อ', btnNutrition: 'โภชนาการ', btnStock: 'เสบียง', btnCook: 'ทำอาหาร (C)', rationShort: 'ปันส่วน',
+  orderDelivery: 'สั่งเครื่องใช้ไฟฟ้า (ส่งถึงบ้าน)', genAct: 'ใช้เครื่องปั่นไฟ', cookAct: 'ทำอาหาร', siphonAct: 'ดูดน้ำมันจากรถ (ต้องมีแกลลอน)', siphoned: (l) => 'ดูดน้ำมันจากรถได้ ' + l + ' ลิตร', carEmpty: 'น้ำมันในรถหมดแล้ว', needJerry: 'ต้องมีแกลลอนน้ำมันเปล่าติดตัว',
   // Map & travel (1B)
   mapTitle: 'แผนที่เมือง (M)',
   youAreHere: 'คุณอยู่ที่นี่',
@@ -4364,7 +4437,8 @@ const STR = {
   dbgSpeed: 'เร่งเวลา',
   dbgCash: 'เพิ่มเงิน ฿10,000',
   dbgAssets: 'รายการ assetId ทั้งหมด',
-  dbgNotYet: 'ไฟดับ/ไฟตก, เกิดซอมบี้, อมตะ — เปิดใช้งานใน Phase 1C–1D',
+  dbgNotYet: 'เกิดซอมบี้ / อมตะ — เปิดใช้งานใน Phase 1D',
+  dbgUtilities: 'ไฟฟ้าและน้ำประปา', dbgFailDay: (d) => 'ล่มถาวรวันที่ ' + d, dbgBeforeBrown: 'ก่อนไฟตก', dbgBrown: 'เริ่มไฟตก', dbgFail: 'ไฟล่มถาวร', dbgCutGrid: 'ตัดไฟหลวงทันที (สลับ)',
   // Death (1D) / misc
   outbreakToast: 'การระบาดเริ่มขึ้นแล้ว! ร้านค้าปิดหมด เงินสดแทบไม่มีค่าอีกต่อไป',
   outbreakSoon: 'ข่าวด่วน: มีรายงานผู้ป่วยอาการคลุ้มคลั่งหลายเขตทั่วกรุง',
@@ -5372,6 +5446,172 @@ function shopOpen(id, min) {
   return h >= L.hours[0] && h < L.hours[1];
 }
 
+/* ===== 15-data-food.js ===== */
+/* ==========================================================================
+   15 · FOOD SYSTEM DATA (§6.5, §6.6) — cooked dishes, recipes, nutrition
+   targets, ration levels, thaw/freeze tuning, cold-hold, appliances.
+   Every number here is a tunable.
+   ========================================================================== */
+
+/** Daily nutrient targets for the 7-day buffers (§6.5.3). */
+const NUTRITION = {
+  baseKcal: 2100,                    // resting-day need before activity
+  target: { protein: 60, carb: 275, fat: 65, micro: 20 },
+  bufferDays: 7,
+  lowDays: 2,                        // buffer below this → deficiency effects
+  refeedEfficiency: 1.6,             // surplus counts extra while recovering a deficit
+  // Body-reserve thresholds (kcal, negative = deficit) → state
+  stages: [
+    { key: 'normal',    min: -2500,  name: 'ปกติ',            carry: 1.0,  speed: 1.0,  skill: 1.0,  heal: 1.0 },
+    { key: 'thin',      min: -6500,  name: 'น้ำหนักลด',        carry: 0.93, speed: 1.0,  skill: 0.95, heal: 0.9 },
+    { key: 'weak',      min: -15000, name: 'อ่อนแรง',          carry: 0.8,  speed: 0.92, skill: 0.8,  heal: 0.7 },
+    { key: 'veryweak',  min: -30000, name: 'อ่อนแรงมาก',       carry: 0.65, speed: 0.85, skill: 0.6,  heal: 0.5 },
+    { key: 'starving',  min: -1e9,   name: 'ขาดอาหารรุนแรง',   carry: 0.5,  speed: 0.75, skill: 0.4,  heal: 0.3 },
+  ],
+  activity: { sleep: 0.85, idle: 1.0, walk: 1.6, sneak: 1.3, run: 3.0 },
+};
+/** Ration levels (§6.5.4): fraction of estimated daily need. */
+const RATIONS = {
+  normal:    { name: 'ปกติ', f: 1.0 },
+  reduced:   { name: 'ลดปริมาณ', f: 0.7 },
+  emergency: { name: 'ฉุกเฉิน', f: 0.45 },
+  recovery:  { name: 'ฟื้นฟู', f: 1.2 },
+};
+/** Spoilage stages by age (0 = fresh, 1 = spoiled). */
+const FRESH = { aging: 0.7, spoiled: 1.0, rotten: 1.4 };
+/** Freeze / thaw tuning (hours for a ~250 g piece; scaled by (kg/0.25)^exp). */
+const THAW = {
+  freezeH: 3, freezeExp: 0.5,
+  fridgeH: 10, fridgeExp: 0.55,      // steak ≈ 10 h, whole chicken ≈ 25 h
+  ambientH: 3, ambientExp: 0.5,      // steak ≈ 3 h in Thai room heat
+  microwaveMin: 8,
+  cookFromFrozenMul: 1.5,
+};
+/** Cold-hold hours after power loss for a closed unit (§6.6.3). Opening the lid costs holdLidH. */
+const COLD_HOLD = { fridge: 4, compartment: 6, chest: 24, large: 36, shop_chiller: 3, shop_cooler: 4, shop_freezer: 12, holdLidH: 0.6 };
+
+/* ---------- Cooked dishes (outputs of recipes) ---------- */
+// id, name, icon colours, kcal per portion (sizing reference), satiety per portion, life preset
+const DISHES = [
+  ['dish_rice', 'ข้าวสวย', '#f6f3ea', '#e9e2cc', 100, 7],
+  ['dish_sticky_rice', 'ข้าวเหนียวนึ่ง', '#f2eedc', '#d8cfb0', 120, 8],
+  ['dish_noodle_soup', 'บะหมี่น้ำ', '#e2a72e', '#c0392b', 120, 10],
+  ['dish_jok', 'โจ๊ก/ข้าวต้ม', '#f2ead8', '#c9a46a', 110, 11],
+  ['dish_fried_rice', 'ข้าวผัด', '#e9c87a', '#c9733a', 200, 11],
+  ['dish_omelet', 'ไข่เจียว', '#f2c230', '#c9933a', 160, 8],
+  ['dish_kaprao', 'ผัดกะเพรา', '#7a5a3a', '#3a7a3a', 220, 11],
+  ['dish_curry', 'แกงกะทิ', '#5f8a3a', '#e9d8b0', 230, 12],
+  ['dish_tomyum', 'ต้มยำ', '#e57a2e', '#c4202a', 110, 11],
+  ['dish_clear_soup', 'แกงจืด', '#e9e6d0', '#5f8a3a', 90, 10],
+  ['dish_stir_veg', 'ผัดผัก', '#3f8a2f', '#9ccf6a', 90, 8],
+  ['dish_grilled_meat', 'เนื้อย่าง/หมูย่าง', '#8a4a2a', '#c9733a', 260, 11],
+  ['dish_steak', 'สเต๊ก', '#6b3a22', '#a8582a', 340, 13],
+  ['dish_fried_fish', 'ปลาทอด', '#c9933a', '#8a9aa8', 180, 10],
+  ['dish_boiled_egg', 'ไข่ต้ม', '#f6f3ea', '#f2c230', 75, 6],
+  ['dish_pasta', 'พาสต้าซอสมะเขือเทศ', '#c4202a', '#f2e6c8', 250, 12],
+  ['dish_rice_canned', 'ข้าวราดปลากระป๋อง', '#c4342b', '#f6f3ea', 230, 12],
+  ['dish_yum', 'ยำ/สลัด', '#e8a088', '#5f8a3a', 110, 7],
+  ['dish_somtam', 'ส้มตำ', '#9ccf6a', '#c4202a', 90, 8],
+  ['dish_oatmeal', 'ข้าวโอ๊ตต้ม', '#d8b97a', '#f2efe6', 160, 11],
+  ['dish_potato', 'มันฝรั่งต้ม', '#e9d8b0', '#c9a46a', 130, 11],
+  ['dish_fries', 'เฟรนช์ฟรายส์', '#f2c230', '#c4202a', 190, 7],
+  ['dish_dimsum', 'ติ่มซำนึ่ง', '#f2e6c8', '#e0b23c', 170, 9],
+  ['dish_ready', 'อาหารสำเร็จรูปอุ่นร้อน', '#e9eef5', '#c4202a', 210, 11],
+  ['dish_fried_sausage', 'ไส้กรอกทอด', '#c9643a', '#f2c230', 190, 8],
+  ['dish_veg_soup', 'ซุปผัก', '#c9733a', '#5f8a3a', 70, 10],
+  ['dish_bean_stew', 'ถั่วต้ม/สตูว์ถั่ว', '#8a2f2a', '#c9a46a', 170, 12],
+  ['dish_seafood_stirfry', 'ผัดทะเล', '#e8a088', '#3a7a3a', 150, 9],
+  ['dish_roti', 'โรตีนมข้น', '#e0c08a', '#f2f2ec', 260, 8],
+  ['dish_dessert', 'ขนมหวานกะทิ', '#f2e6c8', '#f2c230', 170, 7],
+  ['dish_pancake', 'แพนเค้ก', '#e0b07a', '#f2c230', 200, 9],
+  ['dish_sandwich', 'แซนด์วิช', '#d9a35a', '#7a4a2a', 230, 9],
+  ['dish_boiled_veg', 'ผักลวก', '#3f8a2f', '#e9e6d0', 40, 6],
+];
+for (const [id, name, c, c2, kcal, sat] of DISHES) {
+  defFood(id, name, 1, 1, 0.25, 1, 0, 4, [kcal, kcal * 0.05, kcal * 0.12, kcal * 0.035, 1.5, sat, 10], L.cooked, { tags: ['cooked', 'dish'], cooked: true, refKcal: kcal, icon: { k: 'plate', c, c2, b: '#ffffff' } });
+}
+
+/**
+ * Recipes (§6.5.5). Slots accept items by 'tag:x' or 'id:x'. amt = portions of the matched
+ * item per batch (×1). Optional slots add flavour/nutrition. Methods need stations:
+ * stove (home gas stove or portable stove), microwave (power), none (no-cook).
+ */
+const RECIPES = [
+  { id: 'r_rice', name: 'หุงข้าวสวย', out: 'dish_rice', method: 'boil', station: ['stove', 'microwave'], time: 25, water: 2, slots: [{ label: 'ข้าวสาร', any: ['id:rice_5kg', 'id:rice_brown_1kg'], amt: 2 }] },
+  { id: 'r_sticky', name: 'นึ่งข้าวเหนียว', out: 'dish_sticky_rice', method: 'steam', station: ['stove'], time: 40, water: 2, slots: [{ label: 'ข้าวเหนียว', any: ['id:rice_sticky_2kg'], amt: 2 }] },
+  { id: 'r_noodle', name: 'บะหมี่น้ำ', out: 'dish_noodle_soup', method: 'boil', station: ['stove', 'microwave'], time: 6, water: 1, slots: [{ label: 'บะหมี่/เส้น', any: ['tag:instant', 'tag:noodle'], amt: 4 }, { label: 'ไข่', any: ['tag:egg'], amt: 1, optional: true }, { label: 'ผัก', any: ['tag:leafy', 'tag:veg'], amt: 1, optional: true }, { label: 'เนื้อสัตว์', any: ['tag:meat', 'tag:seafood', 'tag:processed'], amt: 1, optional: true }] },
+  { id: 'r_jok', name: 'ข้าวต้ม/โจ๊ก', out: 'dish_jok', method: 'boil', station: ['stove'], time: 30, water: 3, slots: [{ label: 'ข้าวสาร', any: ['id:rice_5kg', 'id:rice_brown_1kg', 'id:dish_rice'], amt: 2 }, { label: 'เนื้อสัตว์', any: ['tag:minced', 'tag:meat', 'tag:seafood'], amt: 1, optional: true }, { label: 'ไข่', any: ['tag:egg'], amt: 1, optional: true }, { label: 'กระเทียม/หอม', any: ['id:garlic', 'id:shallot'], amt: 1, optional: true, seasoning: true }] },
+  { id: 'r_fried_rice', name: 'ข้าวผัด', out: 'dish_fried_rice', method: 'fry', station: ['stove'], time: 12, slots: [{ label: 'ข้าวสวย', any: ['id:dish_rice'], amt: 3 }, { label: 'ไข่', any: ['tag:egg'], amt: 1, optional: true }, { label: 'เนื้อสัตว์', any: ['tag:meat', 'tag:seafood', 'tag:processed', 'id:canned_pork', 'id:canned_sausage'], amt: 1, optional: true }, { label: 'น้ำมัน', any: ['id:cooking_oil'], amt: 1, optional: true }, { label: 'เครื่องปรุง', any: ['tag:sauce', 'id:fish_sauce'], amt: 1, optional: true, seasoning: true }] },
+  { id: 'r_omelet', name: 'ไข่เจียว', out: 'dish_omelet', method: 'fry', station: ['stove'], time: 6, slots: [{ label: 'ไข่', any: ['tag:egg'], amt: 2 }, { label: 'น้ำมัน', any: ['id:cooking_oil'], amt: 1, optional: true }, { label: 'น้ำปลา', any: ['id:fish_sauce', 'id:soy_sauce'], amt: 1, optional: true, seasoning: true }, { label: 'หมูสับ', any: ['tag:minced'], amt: 1, optional: true }] },
+  { id: 'r_kaprao', name: 'ผัดกะเพรา', out: 'dish_kaprao', method: 'fry', station: ['stove'], time: 10, slots: [{ label: 'เนื้อสัตว์', any: ['tag:minced', 'tag:poultry', 'tag:pork', 'tag:seafood'], amt: 2 }, { label: 'ใบกะเพรา', any: ['id:thai_basil'], amt: 1, optional: true, seasoning: true }, { label: 'พริก/กระเทียม', any: ['id:chili_fresh', 'id:garlic'], amt: 1, optional: true, seasoning: true }, { label: 'น้ำมัน', any: ['id:cooking_oil'], amt: 1, optional: true }, { label: 'ข้าวสวย', any: ['id:dish_rice'], amt: 2, optional: true }] },
+  { id: 'r_green_curry', name: 'แกงเขียวหวาน', out: 'dish_curry', method: 'boil', station: ['stove'], time: 30, water: 1, slots: [{ label: 'พริกแกง', any: ['id:curry_paste_green'], amt: 2, seasoning: true }, { label: 'กะทิ', any: ['id:coconut_milk'], amt: 4 }, { label: 'เนื้อสัตว์', any: ['tag:poultry', 'tag:pork', 'tag:fish', 'tag:meat'], amt: 3 }, { label: 'ผัก', any: ['id:eggplant', 'id:canned_bamboo', 'tag:veg'], amt: 1, optional: true }] },
+  { id: 'r_red_curry', name: 'แกงเผ็ด', out: 'dish_curry', method: 'boil', station: ['stove'], time: 30, water: 1, slots: [{ label: 'พริกแกง', any: ['id:curry_paste_red'], amt: 2, seasoning: true }, { label: 'กะทิ', any: ['id:coconut_milk'], amt: 4 }, { label: 'เนื้อสัตว์', any: ['tag:meat', 'tag:poultry', 'tag:pork'], amt: 3 }, { label: 'ผัก', any: ['id:pumpkin', 'id:canned_bamboo', 'tag:veg'], amt: 1, optional: true }] },
+  { id: 'r_tomyum', name: 'ต้มยำ', out: 'dish_tomyum', method: 'boil', station: ['stove'], time: 20, water: 3, slots: [{ label: 'เนื้อ/ทะเล', any: ['tag:seafood', 'tag:fish', 'tag:poultry'], amt: 3 }, { label: 'เครื่องต้มยำ', any: ['id:tomyum_paste', 'id:lemongrass', 'id:galangal', 'id:kaffir_lime_leaf'], amt: 1, seasoning: true }, { label: 'มะนาว', any: ['id:lime'], amt: 2, optional: true, seasoning: true }, { label: 'เห็ด', any: ['tag:mushroom'], amt: 1, optional: true }] },
+  { id: 'r_clear_soup', name: 'แกงจืด', out: 'dish_clear_soup', method: 'boil', station: ['stove'], time: 20, water: 4, slots: [{ label: 'หมูสับ/เนื้อ', any: ['tag:minced', 'tag:meat', 'id:meatballs'], amt: 1 }, { label: 'ผัก', any: ['tag:veg'], amt: 2 }, { label: 'วุ้นเส้น', any: ['id:glass_noodle'], amt: 1, optional: true }, { label: 'ซีอิ๊ว', any: ['id:soy_sauce', 'id:seasoning_powder'], amt: 1, optional: true, seasoning: true }] },
+  { id: 'r_stir_veg', name: 'ผัดผักรวม', out: 'dish_stir_veg', method: 'fry', station: ['stove'], time: 8, slots: [{ label: 'ผัก', any: ['tag:leafy', 'tag:veg'], amt: 2 }, { label: 'ซอสหอยนางรม', any: ['id:oyster_sauce', 'id:soy_sauce', 'id:fish_sauce'], amt: 1, optional: true, seasoning: true }, { label: 'กระเทียม', any: ['id:garlic'], amt: 1, optional: true, seasoning: true }, { label: 'น้ำมัน', any: ['id:cooking_oil'], amt: 1, optional: true }] },
+  { id: 'r_morning_glory', name: 'ผัดผักบุ้งไฟแดง', out: 'dish_stir_veg', method: 'fry', station: ['stove'], time: 6, slots: [{ label: 'ผักบุ้ง', any: ['id:morning_glory'], amt: 2 }, { label: 'พริก/กระเทียม', any: ['id:chili_fresh', 'id:garlic'], amt: 1, optional: true, seasoning: true }, { label: 'เต้าเจี้ยว/ซอส', any: ['id:oyster_sauce', 'id:soy_sauce'], amt: 1, optional: true, seasoning: true }] },
+  { id: 'r_grill_pork', name: 'หมูย่าง', out: 'dish_grilled_meat', method: 'grill', station: ['stove'], time: 20, slots: [{ label: 'หมู', any: ['tag:pork'], amt: 3 }, { label: 'เครื่องหมัก', any: ['id:soy_sauce', 'id:oyster_sauce', 'id:seasoning_powder'], amt: 1, optional: true, seasoning: true }] },
+  { id: 'r_grill_chicken', name: 'ไก่ย่าง', out: 'dish_grilled_meat', method: 'grill', station: ['stove'], time: 30, slots: [{ label: 'ไก่', any: ['tag:poultry'], amt: 3 }, { label: 'กระเทียม/ซอส', any: ['id:garlic', 'id:soy_sauce'], amt: 1, optional: true, seasoning: true }] },
+  { id: 'r_steak', name: 'สเต๊ก', out: 'dish_steak', method: 'fry', station: ['stove'], time: 12, slots: [{ label: 'สเต๊ก', any: ['tag:steak', 'tag:beef'], amt: 2 }, { label: 'เนย/น้ำมัน', any: ['id:butter', 'id:cooking_oil'], amt: 1, optional: true }, { label: 'พริกไทย/เกลือ', any: ['id:pepper_ground', 'id:salt'], amt: 1, optional: true, seasoning: true }, { label: 'มันฝรั่ง', any: ['id:potato'], amt: 1, optional: true }] },
+  { id: 'r_fried_fish', name: 'ปลาทอด', out: 'dish_fried_fish', method: 'fry', station: ['stove'], time: 15, slots: [{ label: 'ปลา', any: ['tag:fish'], amt: 2 }, { label: 'น้ำมัน', any: ['id:cooking_oil'], amt: 2, optional: true }] },
+  { id: 'r_boiled_egg', name: 'ไข่ต้ม', out: 'dish_boiled_egg', method: 'boil', station: ['stove', 'microwave'], time: 10, water: 1, slots: [{ label: 'ไข่', any: ['tag:egg'], amt: 2 }] },
+  { id: 'r_pasta', name: 'พาสต้าซอสมะเขือเทศ', out: 'dish_pasta', method: 'boil', station: ['stove'], time: 18, water: 2, slots: [{ label: 'พาสต้า/เส้น', any: ['id:pasta_500', 'id:rice_noodle_dry'], amt: 2 }, { label: 'ซอสมะเขือเทศ', any: ['id:canned_tomato', 'id:tomato'], amt: 2, optional: true }, { label: 'เนื้อสัตว์', any: ['tag:minced', 'tag:processed', 'id:canned_tuna'], amt: 1, optional: true }] },
+  { id: 'r_rice_canned', name: 'ข้าวราดปลากระป๋อง', out: 'dish_rice_canned', method: 'none', station: ['none', 'stove', 'microwave'], time: 4, slots: [{ label: 'ข้าวสวย', any: ['id:dish_rice'], amt: 2 }, { label: 'ปลา/หมูกระป๋อง', any: ['tag:canned'], amt: 2 }] },
+  { id: 'r_yum_tuna', name: 'ยำทูน่า', out: 'dish_yum', method: 'none', station: ['none'], time: 8, slots: [{ label: 'ทูน่า/ปลากระป๋อง', any: ['id:canned_tuna', 'id:canned_mackerel', 'id:canned_sardine'], amt: 2 }, { label: 'หอม', any: ['id:shallot', 'id:onion'], amt: 1, optional: true }, { label: 'มะนาว/พริก', any: ['id:lime', 'id:chili_fresh'], amt: 1, optional: true, seasoning: true }, { label: 'ผักสด', any: ['id:cucumber', 'id:tomato', 'tag:leafy'], amt: 1, optional: true }] },
+  { id: 'r_somtam', name: 'ส้มตำ', out: 'dish_somtam', method: 'none', station: ['none'], time: 10, slots: [{ label: 'มะละกอดิบ', any: ['id:green_papaya', 'id:cucumber', 'id:carrot'], amt: 2 }, { label: 'มะนาว', any: ['id:lime'], amt: 2, optional: true, seasoning: true }, { label: 'พริก', any: ['id:chili_fresh'], amt: 1, optional: true, seasoning: true }, { label: 'น้ำปลา', any: ['id:fish_sauce'], amt: 1, optional: true, seasoning: true }, { label: 'ถั่ว/กุ้งแห้ง', any: ['id:peanuts', 'id:dried_shrimp'], amt: 1, optional: true }] },
+  { id: 'r_oatmeal', name: 'ข้าวโอ๊ตต้ม', out: 'dish_oatmeal', method: 'boil', station: ['stove', 'microwave'], time: 6, water: 1, slots: [{ label: 'ข้าวโอ๊ต', any: ['id:oats_800', 'id:cereal'], amt: 2 }, { label: 'นม', any: ['tag:milk', 'id:evaporated_milk', 'id:condensed_milk'], amt: 1, optional: true }, { label: 'ผลไม้/น้ำผึ้ง', any: ['id:banana', 'id:honey', 'id:dried_mango'], amt: 1, optional: true }] },
+  { id: 'r_potato', name: 'มันฝรั่งต้ม', out: 'dish_potato', method: 'boil', station: ['stove', 'microwave'], time: 20, water: 2, slots: [{ label: 'มันฝรั่ง/ฟักทอง', any: ['id:potato', 'id:pumpkin', 'id:corn_cob'], amt: 3 }, { label: 'เนย/เกลือ', any: ['id:butter', 'id:salt'], amt: 1, optional: true, seasoning: true }] },
+  { id: 'r_fries', name: 'ทอดเฟรนช์ฟรายส์', out: 'dish_fries', method: 'fry', station: ['stove'], time: 12, slots: [{ label: 'มันฝรั่งแช่แข็ง/สด', any: ['id:frozen_fries', 'id:potato'], amt: 2 }, { label: 'น้ำมัน', any: ['id:cooking_oil'], amt: 2 }] },
+  { id: 'r_dimsum', name: 'นึ่งติ่มซำ/ซาลาเปา', out: 'dish_dimsum', method: 'steam', station: ['stove', 'microwave'], time: 12, water: 1, slots: [{ label: 'ติ่มซำแช่แข็ง', any: ['id:frozen_dumplings', 'id:frozen_dimsum', 'id:frozen_pork_bun'], amt: 2 }] },
+  { id: 'r_ready', name: 'อุ่นอาหารสำเร็จรูป', out: 'dish_ready', method: 'microwave', station: ['microwave', 'stove'], time: 5, slots: [{ label: 'อาหารพร้อมทาน', any: ['tag:ready'], amt: 1 }] },
+  { id: 'r_sausage', name: 'ไส้กรอกทอด', out: 'dish_fried_sausage', method: 'fry', station: ['stove'], time: 8, slots: [{ label: 'ไส้กรอก/แฮม', any: ['tag:processed', 'id:canned_sausage'], amt: 2 }, { label: 'ไข่', any: ['tag:egg'], amt: 1, optional: true }] },
+  { id: 'r_veg_soup', name: 'ซุปผัก', out: 'dish_veg_soup', method: 'boil', station: ['stove'], time: 25, water: 4, slots: [{ label: 'ผัก', any: ['tag:veg'], amt: 3 }, { label: 'เนื้อสัตว์', any: ['tag:meat', 'tag:poultry'], amt: 1, optional: true }, { label: 'ซุปก้อน/เกลือ', any: ['id:instant_soup', 'id:salt', 'id:seasoning_powder'], amt: 1, optional: true, seasoning: true }] },
+  { id: 'r_bean_stew', name: 'ถั่วต้มน้ำตาล/สตูว์ถั่ว', out: 'dish_bean_stew', method: 'boil', station: ['stove'], time: 60, water: 3, slots: [{ label: 'ถั่วแห้ง', any: ['tag:beans'], amt: 3 }, { label: 'น้ำตาล/มะเขือเทศ', any: ['id:sugar_1kg', 'id:palm_sugar', 'id:canned_tomato'], amt: 1, optional: true, seasoning: true }] },
+  { id: 'r_seafood', name: 'ผัดทะเล', out: 'dish_seafood_stirfry', method: 'fry', station: ['stove'], time: 10, slots: [{ label: 'กุ้ง/หมึก', any: ['tag:seafood'], amt: 2 }, { label: 'ผัก', any: ['tag:veg'], amt: 1, optional: true }, { label: 'ซอส', any: ['id:oyster_sauce', 'id:chili_sauce'], amt: 1, optional: true, seasoning: true }] },
+  { id: 'r_heat_curry', name: 'อุ่นแกงกระป๋อง', out: 'dish_curry', method: 'boil', station: ['stove', 'microwave'], time: 6, slots: [{ label: 'แกงกระป๋อง', any: ['tag:curry', 'id:canned_soup'], amt: 2 }] },
+  { id: 'r_roti', name: 'โรตีนมข้น', out: 'dish_roti', method: 'fry', station: ['stove'], time: 8, slots: [{ label: 'โรตี', any: ['id:roti_frozen'], amt: 2 }, { label: 'นมข้นหวาน', any: ['id:condensed_milk'], amt: 1, optional: true }, { label: 'เนย/น้ำมัน', any: ['id:butter', 'id:cooking_oil'], amt: 1, optional: true }] },
+  { id: 'r_kluay_buat_chi', name: 'กล้วยบวชชี', out: 'dish_dessert', method: 'boil', station: ['stove'], time: 15, slots: [{ label: 'กล้วย/ฟักทอง', any: ['id:banana', 'id:pumpkin'], amt: 2 }, { label: 'กะทิ', any: ['id:coconut_milk'], amt: 2 }, { label: 'น้ำตาล', any: ['id:sugar_1kg', 'id:palm_sugar'], amt: 1, optional: true, seasoning: true }] },
+  { id: 'r_mango_sticky', name: 'ข้าวเหนียวมะม่วงทำเอง', out: 'dish_dessert', method: 'steam', station: ['stove'], time: 35, water: 1, slots: [{ label: 'ข้าวเหนียว', any: ['id:rice_sticky_2kg', 'id:dish_sticky_rice'], amt: 2 }, { label: 'มะม่วง', any: ['id:mango'], amt: 1 }, { label: 'กะทิ', any: ['id:coconut_milk'], amt: 2, optional: true }] },
+  { id: 'r_khao_tom', name: 'ข้าวต้มกุ้ง/หมู', out: 'dish_jok', method: 'boil', station: ['stove'], time: 20, water: 3, slots: [{ label: 'ข้าวสวย', any: ['id:dish_rice'], amt: 2 }, { label: 'กุ้ง/หมู/ไก่', any: ['tag:seafood', 'tag:pork', 'tag:poultry'], amt: 1 }, { label: 'กระเทียมเจียว', any: ['id:garlic'], amt: 1, optional: true, seasoning: true }] },
+  { id: 'r_pancake', name: 'แพนเค้ก', out: 'dish_pancake', method: 'fry', station: ['stove'], time: 15, slots: [{ label: 'แป้ง', any: ['id:flour_1kg'], amt: 2 }, { label: 'ไข่', any: ['tag:egg'], amt: 1 }, { label: 'นม', any: ['tag:milk', 'id:uht_milk'], amt: 1, optional: true }, { label: 'น้ำผึ้ง/น้ำตาล', any: ['id:honey', 'id:sugar_1kg', 'id:jam'], amt: 1, optional: true, seasoning: true }] },
+  { id: 'r_sandwich', name: 'แซนด์วิช', out: 'dish_sandwich', method: 'none', station: ['none'], time: 3, slots: [{ label: 'ขนมปัง', any: ['id:bread_loaf', 'id:buns'], amt: 2 }, { label: 'ไส้', any: ['id:peanut_butter', 'id:jam', 'id:ham', 'id:cheese_slices', 'id:canned_tuna', 'id:butter'], amt: 1 }] },
+  { id: 'r_boiled_veg', name: 'ลวกผัก', out: 'dish_boiled_veg', method: 'boil', station: ['stove', 'microwave'], time: 5, water: 1, slots: [{ label: 'ผัก', any: ['tag:veg'], amt: 2 }] },
+];
+
+/* ---------- Appliances, generator & fuel (installable items) ---------- */
+defItem('appliance_chest_freezer', 'ตู้แช่แข็งแบบนอน 200 ลิตร (กล่อง)', 'electric', 4, 3, 42, 1, 9500, { installs: 'chest_freezer', rarity: 'uncommon', icon: { k: 'crate', c: '#e9eef2', c2: '#2f63a8' } });
+defItem('appliance_large_freezer', 'ตู้แช่แข็งเชิงพาณิชย์ 600 ลิตร (กล่อง)', 'electric', 4, 4, 95, 1, 45000, { installs: 'large_freezer', rarity: 'rare', icon: { k: 'crate', c: '#c9cdd1', c2: '#1f3f6a' } });
+defItem('generator_small', 'เครื่องปั่นไฟเบนซิน 2.5 kW', 'electric', 3, 3, 38, 1, 6500, { installs: 'generator', rarity: 'uncommon', icon: { k: 'case', c: '#e07a2a', c2: '#2b2b2b' } });
+defItem('gasoline_5l', 'น้ำมันเบนซิน 5 ลิตร (แกลลอน)', 'fuel', 2, 2, 4.2, 2, 200, { fuelL: 5, tags: ['gasoline', 'fuel'], icon: { k: 'jug', c: '#c4202a', c2: '#2b2b2b', b: '#e0b23c' } });
+POOLS.hw_misc.push(['gasoline_5l', 3, 2], ['generator_small', 1, 1]);
+POOLS.sm_cookware.push(['appliance_chest_freezer', 1, 1]);
+
+Object.assign(FURNITURE, {
+  chest_freezer: { name: 'ตู้แช่แข็งแบบนอน 200 ลิตร (−20 °C)', size: [1.3, 0.75, 0.85], slot: 'large', asset: 'prop.chest_freezer', grid: [8, 5], limit: 90, temp: 'freezer', power: 110, hold: 'chest', install: 60, item: 'appliance_chest_freezer' },
+  large_freezer: { name: 'ตู้แช่แข็งเชิงพาณิชย์ 600 ลิตร (−20 °C)', size: [2.0, 0.85, 0.9], slot: 'large', asset: 'prop.large_freezer', grid: [12, 7], limit: 250, temp: 'freezer', power: 300, hold: 'large', install: 90, item: 'appliance_large_freezer' },
+  generator:     { name: 'เครื่องปั่นไฟ 2.5 kW', size: [0.7, 0.55, 0.6], slot: 'large', asset: 'prop.generator', act: 'generator', capacityW: 2500, tankL: 12, install: 20, item: 'generator_small' },
+});
+FURNITURE.fridge.hold = 'fridge'; FURNITURE.fridge.sub.hold = 'compartment';
+FURNITURE.chiller.hold = 'shop_chiller'; FURNITURE.drink_cooler.hold = 'shop_cooler'; FURNITURE.shop_freezer.hold = 'shop_freezer';
+FURNITURE.stove.act = 'cook'; FURNITURE.microwave.act = 'microwave';
+
+/** Home slots for large appliances and the generator (§9.1 furniture slots). */
+const HOME_SLOTS = [
+  { id: 'L1', kind: 'large', floor: 0, x: -4.45, z: -4.55, rot: 0, name: 'ห้องเก็บของ (มุมใน)' },
+  { id: 'L2', kind: 'large', floor: 0, x: -4.45, z: -2.75, rot: 0, name: 'ห้องเก็บของ (กลางห้อง)' },
+  { id: 'L3', kind: 'large', floor: 1, x: 4.4, z: -3.4, rot: 2, name: 'ห้องเก็บของชั้นบน' },
+  { id: 'G1', kind: 'generator', floor: 0, x: -8.6, z: -2.4, rot: 1, outdoor: true, name: 'ลานข้างบ้าน (ภายนอก — มีเสียง)' },
+  { id: 'G2', kind: 'generator', floor: 0, x: -3.2, z: -4.85, rot: 0, name: 'ห้องเก็บของ (ภายใน)' },
+];
+/** Appliances that can be ordered with delivery before the outbreak (§6.6.1). */
+const DELIVERY = {
+  supermarket: [['appliance_chest_freezer', 9500], ['appliance_large_freezer', 45000]],
+  hardware: [['generator_small', 6500], ['appliance_chest_freezer', 9900]],
+  fee: 600, delayMin: 180,
+};
+/** Appliance loads in watts for the load-management panel. */
+const LOADS = { lights: 160, fan: 45 };
+
 /* ===== 20-inventory.js ===== */
 /* ==========================================================================
    20 · INVENTORY MODEL — grid containers, item instances, transfers
@@ -5636,8 +5876,12 @@ function createCharacterData({ name, bg, profileSkills }) {
     pockets: Inv.makeContainer(4, 2, 4, 'กระเป๋ากางเกง/เสื้อ'),
     sleeping: false,
     alive: true,
+    nut: null,
+    ill: [],
   };
 }
+/** Create a character record with its nutrition state initialised. */
+function newCharacter(opts) { const d = createCharacterData(opts); Body.init(d); return d; }
 
 class Character {
   constructor(data) { this.d = data; }
@@ -5677,6 +5921,7 @@ class Character {
     const armF = (b.armL.hp / BODY_PARTS.armL.hp + b.armR.hp / BODY_PARTS.armR.hp) / 2;
     const legF = (b.legL.hp / BODY_PARTS.legL.hp + b.legR.hp / BODY_PARTS.legR.hp) / 2;
     cap *= 0.55 + 0.25 * armF + 0.2 * legF;
+    if (this.d.nut) cap *= Body.effects(this.d).carry;
     return cap;
   }
   /** Load ratio: ≤1 normal; 1..1.5 overloaded (slow, loud); ≥1.5 immobile. */
@@ -5688,6 +5933,7 @@ class Character {
     const legF = Math.min(b.legL.hp / BODY_PARTS.legL.hp, b.legR.hp / BODY_PARTS.legR.hp);
     f *= 0.45 + 0.55 * legF;
     if (this.d.needs.energy < 15) f *= 0.8;
+    if (this.d.nut) f *= Body.effects(this.d).speed;
     return Math.max(0, f * this.cartFactor());
   }
   health() {
@@ -5703,7 +5949,7 @@ const Skills = {
     const s = ch.d.skills[key];
     if (!s || s.lv >= 10) return;
     // Exhaustion slows learning (§5.3)
-    const mult = ch.d.needs.energy < 20 ? 0.5 : 1;
+    const mult = (ch.d.needs.energy < 20 ? 0.5 : 1) * (ch.d.nut ? Body.effects(ch.d).skill : 1);
     s.xp += xp * mult;
     while (s.lv < 10 && s.xp >= xpForLevel(s.lv + 1)) {
       s.xp -= xpForLevel(s.lv + 1);
@@ -5752,14 +5998,18 @@ function createRun({ bg, difficulty, name }) {
     difficulty: DIFFICULTY[difficulty] ? difficulty : 'standard',
     time: { min: CFG.START_MINUTE, speedIdx: 2 },
     cash: CFG.START_CASH,
-    chars: [createCharacterData({ name, bg, profileSkills: P.skills })],
+    chars: [newCharacter({ name, bg, profileSkills: P.skills })],
     active: 0,
     home: { furniture: [], lightsOn: true, piles: [] },
     locs: {},
+    food: { reserve: [], exclude: [] },
+    deliveries: [],
     flags: { outbreak: false },
     log: [],
     scene: 'home',
   };
+  st.home.gas = 70;
+  st.home.loads = {};
   st.home.furniture = buildHomeFurniture(st.worldSeed);
   return st;
 }
@@ -5790,6 +6040,7 @@ function buildHomeFurniture(worldSeed) {
       left -= q;
     }
   }
+  for (const f of list) { if (f.sub && f.sub.temp === 'freezer') Spoil.freezeContents(f.sub); if (f.inv && f.inv.temp === 'freezer') Spoil.freezeContents(f.inv); }
   return list;
 }
 
@@ -5812,6 +6063,7 @@ const Sanitize = {
     c.label = typeof c.label === 'string' ? c.label : (label || '');
     if (!['ambient', 'fridge', 'freezer'].includes(c.temp)) c.temp = 'ambient';
     if (c.shop != null && !LOCATIONS[c.shop]) delete c.shop;
+    if (c.cold != null) c.cold = U.num(c.cold, 1, 0, 1);
     const old = Array.isArray(c.slots) ? c.slots : [];
     c.slots = [];
     const overflow = [];
@@ -5843,6 +6095,9 @@ const Sanitize = {
     else delete it.inv;
     if (it.st != null && typeof it.st !== 'object') delete it.st;
     if (it.unpaid != null && !LOCATIONS[it.unpaid]) delete it.unpaid;
+    if (it.age != null) it.age = U.num(it.age, 0, 0, 3);
+    if (it.frz != null) it.frz = U.num(it.frz, 0, 0, 1);
+    if (it.st && it.st.nut && typeof it.st.nut !== 'object') delete it.st.nut;
     return it;
   },
   character(c) {
@@ -5874,6 +6129,8 @@ const Sanitize = {
     }
     c.sleeping = false;
     c.alive = c.alive !== false;
+    Body.init(c);
+    c.ill = c.ill.filter((x) => x && typeof x.type === 'string').map((x) => ({ type: x.type, sev: U.num(x.sev, 0.3, 0, 1), h: U.num(x.h, 6, 0, 500) }));
     return c;
   },
   run(st) {
@@ -5882,7 +6139,7 @@ const Sanitize = {
     const tmpl = {
       schema: CFG.SCHEMA_RUN, build: BUILD, life: 1, createdAt: Date.now(), worldSeed: P.worldSeed,
       lifeSeed: 1, rng: {}, difficulty: 'standard', time: { min: CFG.START_MINUTE, speedIdx: 2 },
-      cash: CFG.START_CASH, chars: [], active: 0, home: { furniture: [], lightsOn: true, piles: [] }, locs: {},
+      cash: CFG.START_CASH, chars: [], active: 0, home: { furniture: [], lightsOn: true, piles: [], gas: 70, loads: {} }, locs: {}, food: { reserve: [], exclude: [] }, deliveries: [],
       flags: { outbreak: false }, log: [], scene: 'home',
     };
     U.deepFill(st, tmpl);
@@ -5918,7 +6175,7 @@ const Sanitize = {
         return out;
       });
       if (furn.length !== fixtures.length) continue;   // garbled → regenerate on next visit
-      locs[id] = { furniture: furn, piles: pileList(L.piles), initial: U.num(L.initial, 1, 1, 1e6), depletedTo: U.num(L.depletedTo, 1, 0, 1), visits: U.num(L.visits, 0, 0, 1e6) | 0, lastVisit: L.lastVisit == null ? null : U.num(L.lastVisit, 0, 0, 1e9) };
+      locs[id] = { genAt: U.num(L.genAt, 0, 0, 1e9), furniture: furn, piles: pileList(L.piles), initial: U.num(L.initial, 1, 1, 1e6), depletedTo: U.num(L.depletedTo, 1, 0, 1), visits: U.num(L.visits, 0, 0, 1e6) | 0, lastVisit: L.lastVisit == null ? null : U.num(L.lastVisit, 0, 0, 1e9) };
     }
     st.locs = locs;
     if (st.scene !== 'home' && !st.locs[st.scene]) st.scene = 'home';
@@ -5934,6 +6191,8 @@ const Sanitize = {
         f.x = U.num(f.x, 0, -40, 40); f.z = U.num(f.z, 0, -40, 40);
         f.rot = U.num(f.rot, 0, 0, 3) | 0;
         f.label = typeof f.label === 'string' ? f.label : def.name;
+        if (f.slot != null && !HOME_SLOTS.some((s) => s.id === f.slot)) delete f.slot;
+        if (f.type === 'generator') f.gen = { on: !!(f.gen && f.gen.on), fuel: U.num(f.gen && f.gen.fuel, 0, 0, 50), hours: U.num(f.gen && f.gen.hours, 0, 0, 1e6) };
         // Grid size and temperature always come from the current furniture definition.
         const fixC = (c, spec, temp, label) => {
           const out = c && typeof c === 'object' ? c : Inv.makeContainer(1, 1, 1, label);
@@ -5946,6 +6205,12 @@ const Sanitize = {
       });
     }
     st.home.lightsOn = st.home.lightsOn !== false;
+    st.home.gas = U.num(st.home.gas, 70, 0, 100);
+    st.home.carFuel = U.num(st.home.carFuel, 24, 0, 60);
+    if (!st.home.loads || typeof st.home.loads !== 'object' || Array.isArray(st.home.loads)) st.home.loads = {};
+    st.food.reserve = Array.isArray(st.food.reserve) ? st.food.reserve.filter((x) => ITEMS[x]) : [];
+    st.food.exclude = Array.isArray(st.food.exclude) ? st.food.exclude.filter((x) => ITEMS[x]) : [];
+    st.deliveries = (Array.isArray(st.deliveries) ? st.deliveries : []).filter((x) => x && ITEMS[x.item] && isFinite(x.at)).map((x) => ({ id: String(x.id), item: x.item, slot: String(x.slot), at: +x.at, paid: U.num(x.paid, 0, 0, 1e7) }));
     if (typeof st.rng !== 'object' || !st.rng) st.rng = {};
     // Schema migrations go here, oldest first: if (fromSchema < 2) {...}
     void fromSchema;
@@ -6122,8 +6387,12 @@ const Needs = {
           n.hydration -= NEEDS.hydrationDecay * actMul * (Needs.isHotHour() ? 1.25 : 1);
           n.energy -= NEEDS.energyDecay * (ch.hasTrait('hardy') ? 0.9 : 1) * (moving === 'run' ? 1.6 : 1);
         }
-        if (moving === 'run') n.stamina -= 0.9; else n.stamina += moving === 'walk' ? 0.4 : 1.2;
+        const fx = Body.effects(d);
+        if (moving === 'run') n.stamina -= 0.9; else n.stamina += (moving === 'walk' ? 0.4 : 1.2) * fx.staminaRegen * (n.satiety < 15 ? 0.5 : 1);
         for (const k of ['satiety', 'hydration', 'energy', 'stamina']) n[k] = U.clamp(n[k], 0, 100);
+        n.stamina = Math.min(n.stamina, fx.staminaMax);
+        Body.minute(d, d.sleeping ? 'sleep' : moving || 'idle');
+        Illness.minute(d);
         // Walking with a load trains fitness/strength (§5.6).
         if (moving) {
           Skills.gain(ch, 'fitness', moving === 'run' ? 0.12 : 0.04);
@@ -6146,35 +6415,6 @@ const Needs = {
     check('sat', d.needs.satiety, 25, STR.hungry);
     check('hyd', d.needs.hydration, 25, STR.thirsty);
     check('en', d.needs.energy, 20, STR.tired);
-  },
-  /** Consume an item: drink/eat one portion (1A). Returns true if consumed. */
-  consume(ch, container, slot) {
-    const it = slot.it, d = itemDef(it.id);
-    if (!d.per) return false;
-    const portions = d.portions || 1;
-    // Eating from a stack opens exactly one unit, which becomes its own non-stacking instance.
-    let unit = it, unitC = container;
-    if (it.qty > 1) {
-      if (portions > 1) {
-        unit = Inv.makeItem(it.id, 1);
-        unit.st = { portionsLeft: portions };
-        it.qty -= 1;
-        const dest = [container, ...ch.containers().filter((c) => c !== container)].find((c) => Inv.add(c, unit) === 0);
-        if (!dest) { it.qty += 1; Bus.emit('toast', { kind: 'warn', msg: STR.containerFull }); return false; }
-        unitC = dest;
-      } else { it.qty -= 1; unit = null; }
-    }
-    if (unit) {
-      unit.st = unit.st || {};
-      unit.st.portionsLeft = (unit.st.portionsLeft == null ? portions : unit.st.portionsLeft) - 1;
-      if (unit.st.portionsLeft <= 0) { const loc = Inv.locate(unitC, unit.uid); if (loc) Inv.remove(loc.c, loc.slot); }
-    }
-    const n = ch.d.needs;
-    n.satiety = U.clamp(n.satiety + d.per.satiety * 3.2, 0, 100);
-    n.hydration = U.clamp(n.hydration + (d.per.water || 0) * 1.0, 0, 100);
-    logEvent(d.cat === 'drink' ? STR.drank(d.name) : STR.ate(d.name));
-    Bus.emit('inv:changed');
-    return true;
   },
   drinkTap(ch) {
     ch.d.needs.hydration = U.clamp(ch.d.needs.hydration + 35, 0, 100);
@@ -6232,9 +6472,11 @@ const World = {
       if (fixed) for (const [iid, q] of fixed) { const it = Inv.makeItem(iid, q); Inv.add(f.inv, it); }
       if (f.pool) this.stock(f.inv, POOLS[f.pool], rng, 0.92 * (L.density || 1) * diff.loot);
     });
-    const st = { furniture, piles: [], initial: 0, depletedTo: 1, visits: 0, lastVisit: null };
+    for (const f of furniture) if (f.inv && f.inv.temp === 'freezer') Spoil.freezeContents(f.inv);
+    const st = { furniture, piles: [], initial: 0, depletedTo: 1, visits: 0, lastVisit: null, genAt: S.time.min };
     st.initial = this.countItems(st);
     S.locs[id] = st;
+    if (S.flags.outbreak) Spoil.catchUp(st);
     if (!S.flags.outbreak) this.markUnpaid(st, id);
     return st;
   },
@@ -6383,9 +6625,18 @@ const Power = {
   failDay() { return S ? (S.flags.failDayOverride || difficultyOf(S.difficulty).utilityFailDay) : 60; },
   brownoutStart() { return this.failDay() - 10; },
   /** Outage windows [startMin, endMin) (minutes into the day) for a given day number. */
+  _memo: new Map(),
   outages(day) {
     const F = this.failDay(), B = F - 10;
     if (day < B || day >= F) return [];
+    const key = day + '|' + F + '|' + (S ? S.lifeSeed : 1);
+    if (this._memo.has(key)) return this._memo.get(key);
+    const res = this._outages(day, F, B);
+    if (this._memo.size > 64) this._memo.clear();
+    this._memo.set(key, res);
+    return res;
+  },
+  _outages(day, F, B) {
     const k = day - B + 1;                          // 1..10
     const totalH = 1 + k * 1.1;                     // 2.1 h … 12 h per day
     const rng = RNG.local('brownout|' + (S ? S.lifeSeed : 1) + '|' + day);
@@ -6447,6 +6698,742 @@ const Power = {
       const on = this.gridOn(m);
       if (on !== was) { Bus.emit('power:changed', on); was = on; }
     });
+  },
+};
+
+/* ===== 26-food.js ===== */
+/* ==========================================================================
+   26 · FOOD SYSTEM (§6.3, §6.5, §6.6)
+   Item food state lives on the instance:
+     it.age  0 = fresh … 1 = spoiled … 1.4+ = rotten (progress against life hours)
+     it.frz  0 = thawed … 1 = frozen solid
+     it.st   { portionsLeft, portionsTotal, opened, nut (per-portion override for dishes),
+               cooked, soft, ruined, thawedRaw, risk, mustCookBy, quality }
+   Spoil — hourly ageing/freezing of every container (home, carried, visited places).
+   Food  — portions, opening, eating, poisoning risk.
+   Body  — two-layer hunger: satiety (Needs) + energy reserve & 4 nutrient buffers.
+   Meal  — "Eat Meal" planner by ration level.
+   ========================================================================== */
+
+const Food = {
+  def(it) { return itemDef(it.id); },
+  edibleDef(d) { return !!d.per; },
+  total(it) { return (it.st && it.st.portionsTotal) || itemDef(it.id).portions || 1; },
+  left(it) { return it.st && it.st.portionsLeft != null ? it.st.portionsLeft : this.total(it); },
+  per(it) { return (it.st && it.st.nut) || itemDef(it.id).per; },
+  isOpened(it) { return !!(it.st && it.st.opened); },
+  isRaw(it) { const d = itemDef(it.id); return d.tags.includes('raw') && !(it.st && it.st.cooked); },
+  ruined(it) { return !!(it.st && it.st.ruined); },
+  /** Freshness stage name key. */
+  stage(it) {
+    if (this.ruined(it)) return 'ruined';
+    const a = it.age || 0;
+    return a < FRESH.aging ? 'fresh' : a < FRESH.spoiled ? 'aging' : a < FRESH.rotten ? 'spoiled' : 'rotten';
+  },
+  /** Can this be eaten as-is? Returns null or a reason string. */
+  blockReason(it) {
+    const d = itemDef(it.id);
+    if (!d.per) return STR.notFood;
+    if (this.ruined(it)) return STR.ruinedItem;
+    if (this.stage(it) === 'rotten') return STR.rottenItem;
+    if ((it.frz || 0) > 0.3 && !d.tags.includes('sweet')) return STR.frozenSolid;
+    if (it.st && it.st.soft && d.tags.includes('veg')) return STR.softCookOnly;
+    return null;
+  },
+  /** Illness probability when eating this now. */
+  risk(it) {
+    let r = 0;
+    const s = this.stage(it);
+    if (s === 'spoiled') r += 0.35;
+    if (this.isRaw(it)) r += itemDef(it.id).tags.includes('meat') || itemDef(it.id).tags.includes('poultry') || itemDef(it.id).tags.includes('seafood') || itemDef(it.id).tags.includes('fish') ? 0.45 : 0.05;
+    if (it.st && it.st.risk) r += it.st.risk;
+    return U.clamp(r, 0, 0.95);
+  },
+  /** Open one unit (applies the opened spoilage clock, §6.5.2). env: storage environment. */
+  open(it, env) {
+    if (this.isOpened(it)) return;
+    const d = itemDef(it.id);
+    const remU = (1 - (it.age || 0)) * Spoil.lifeH(d, it, env);
+    it.st = Object.assign(it.st || {}, { opened: true });
+    const lifeO = Spoil.lifeH(d, it, env);
+    it.age = U.clamp(1 - Math.min(remU, lifeO) / lifeO, it.age || 0, 2);
+    if (it.st.portionsLeft == null) it.st.portionsLeft = this.total(it);
+  },
+  /**
+   * Take n portions from a slot (splits one unit off a stack and opens it).
+   * Returns { taken, per, unit } or null. Removes emptied units.
+   */
+  takePortions(ch, c, slot, n) {
+    const it = slot.it;
+    let unit = it, unitC = c;
+    if (it.qty > 1) {
+      unit = Inv.makeItem(it.id, 1);
+      unit.age = it.age; unit.frz = it.frz;
+      this.open(unit, Spoil.envOf(c));                 // opened units never stack back
+      it.qty -= 1;
+      const dest = [c, ...ch.containers().filter((x) => x !== c)].find((x) => Inv.add(x, unit) === 0);
+      if (!dest) { it.qty += 1; return null; }
+      unitC = dest;
+    }
+    this.open(unit, Spoil.envOf(unitC));
+    const left = this.left(unit);
+    const taken = Math.min(n, left);
+    const per = this.per(unit);
+    unit.st.portionsLeft = left - taken;
+    if (unit.st.portionsLeft <= 0) { const loc = Inv.locate(unitC, unit.uid); if (loc) Inv.remove(loc.c, loc.slot); }
+    return { taken, per, unit };
+  },
+  /**
+   * Eat n portions (§6.5.2): 2–5 game minutes each; nutrients credited per whole portion.
+   * Returns true if anything was eaten.
+   */
+  eat(ch, c, slot, n, opts = {}) {
+    const it = slot.it, d = itemDef(it.id);
+    const why = this.blockReason(it);
+    if (why) { Bus.emit('toast', { kind: 'warn', msg: why }); return false; }
+    const risk = this.risk(it);
+    const res = this.takePortions(ch, c, slot, n);
+    if (!res || !res.taken) { Bus.emit('toast', { kind: 'warn', msg: STR.containerFull }); return false; }
+    Body.intake(ch.d, res.per, res.taken);
+    if (!opts.noTime) GameClock.advance(Math.round(res.taken * (d.cat === 'drink' ? 1.5 : 3.5)));
+    if (risk > 0 && RNG.next('events') < risk) Illness.add(ch.d, 'food_poison', 0.4 + risk * 0.6);
+    if (!opts.silent) logEvent((d.cat === 'drink' ? STR.drank(d.name) : STR.ate(d.name)) + ' ×' + res.taken + ' ' + STR.portionUnit);
+    Bus.emit('inv:changed');
+    return true;
+  },
+  /** Display name with state suffixes. */
+  label(it) {
+    const d = itemDef(it.id);
+    let n = d.name;
+    if (it.st && it.st.ruined) n += ' ' + STR.suffixRuined;
+    else if (it.st && it.st.opened) n += ' ' + STR.suffixOpened;
+    return n;
+  },
+};
+
+const Spoil = {
+  envOf(c) {
+    if (!c) return 'ambient';
+    const cold = c.cold == null ? 1 : c.cold;
+    if (c.temp === 'freezer' && cold > 0) return 'freezer';
+    if (c.temp === 'fridge' && cold > 0) return 'fridge';
+    return 'ambient';
+  },
+  lifeH(d, it, env) {
+    const o = d.opened || { ambientH: 24, fridgeD: 2 };
+    const op = (it.st && (it.st.opened || it.st.cooked)) || d.cooked;
+    if (op) return Math.max(1, env === 'ambient' ? o.ambientH : o.fridgeD * 24);
+    const shelfH = Math.max(1, (d.shelf || 30) * 24), store = d.store || 'ambient';
+    if (store === 'ambient') return env === 'ambient' ? shelfH : shelfH * 1.5;
+    if (store === 'fridge') return env === 'ambient' ? Math.min(shelfH, o.ambientH) : shelfH;
+    return env === 'ambient' ? o.ambientH : o.fridgeD * 24;           // frozen goods once thawed
+  },
+  scale(d, base, exp) { return base * Math.pow(Math.max(0.05, d.weight) / 0.25, exp); },
+  thawH(d, env) { return env === 'fridge' ? this.scale(d, THAW.fridgeH, THAW.fridgeExp) : this.scale(d, THAW.ambientH, THAW.ambientExp); },
+  freezeH(d) { return this.scale(d, THAW.freezeH, THAW.freezeExp); },
+  /** Advance one item by h hours in environment env. */
+  stepItem(it, env, h) {
+    const d = itemDef(it.id);
+    if (it.inv) this.stepContainer(it.inv, h, env);
+    if (!d.per) return;
+    if (it.st && it.st.ruined) return;
+    let frz = it.frz || 0;
+    let effEnv = env;
+    if (env === 'freezer') {
+      if (d.freeze === 'no') {
+        frz = Math.min(1, frz + h / this.freezeH(d));
+        if (frz >= 0.5) { it.st = Object.assign(it.st || {}, { ruined: 'burst' }); it.frz = frz; return; }
+      } else if (it.st && it.st.thawedRaw) effEnv = 'fridge';            // fully thawed raw: cannot refreeze
+      else frz = Math.min(1, frz + h / this.freezeH(d));
+      if (frz > 0.999) frz = 1;
+    } else if (frz > 0) {
+      frz = Math.max(0, frz - h / this.thawH(d, env));
+      if (frz < 0.001) frz = 0;
+      if (frz === 0) {
+        it.st = it.st || {};
+        if (d.tags.includes('raw') && !it.st.cooked) it.st.thawedRaw = true;
+        if (d.freeze === 'texture') it.st.soft = true;
+      }
+    }
+    it.frz = frz;
+    if (frz >= 1) return;                                              // frozen solid: no spoilage
+    if ((effEnv === 'freezer' || effEnv === 'fridge') && frz > 0) return; // still partly frozen in the cold
+    if (effEnv === 'ambient' && frz > 0.5) return;                     // surface not yet warm
+    it.age = (it.age || 0) + h / this.lifeH(d, it, effEnv === 'freezer' ? 'fridge' : effEnv);
+    if (it.age > 3) it.age = 3;
+  },
+  stepContainer(c, h, envOverride) {
+    const env = envOverride && envOverride !== 'ambient' && c.temp === 'ambient' ? envOverride : this.envOf(c);
+    for (const s of c.slots) this.stepItem(s.it, env, h);
+  },
+  /** Cold-hold for a unit container: powered units recover; unpowered ones warm up. */
+  stepCold(c, holdKey, powered, h) {
+    if (c.cold == null) c.cold = 1;
+    if (powered) c.cold = Math.min(1, c.cold + h * 0.5);
+    else c.cold = Math.max(0, c.cold - h / (COLD_HOLD[holdKey] || 6));
+  },
+  /** Mark frozen goods in a freezer as frozen solid (initial stocking). */
+  freezeContents(c) { Inv.walk(c, (it) => { const d = itemDef(it.id); if (d.per && d.freeze !== 'no') it.frz = 1; }); },
+  /** Hour tick across the whole world. */
+  tickHour(h = 1, atMin = S.time.min) {
+    const grid = Power.gridOn(atMin);
+    for (const f of S.home.furniture) {
+      const def = FURNITURE[f.type];
+      if (f.inv && def.temp) this.stepCold(f.inv, def.hold, Appliances.powered(f, grid), h);
+      if (f.sub && def.sub) this.stepCold(f.sub, def.sub.hold, Appliances.powered(f, grid), h);
+      if (f.inv) this.stepContainer(f.inv, h);
+      if (f.sub) this.stepContainer(f.sub, h);
+    }
+    for (const p of S.home.piles || []) this.stepContainer(p.inv, h);
+    for (const d of S.chars) {
+      this.stepContainer(d.pockets, h);
+      for (const k of ['back', 'hand', 'weapon']) if (d.equip[k]) this.stepItem(d.equip[k], d.equip[k].inv && itemDef(d.equip[k].id).tags.includes('insulated') ? 'fridge' : 'ambient', h);
+    }
+    if (!S.flags.outbreak) return;                                     // shops restock until the outbreak
+    for (const id in S.locs) this.tickLoc(S.locs[id], h, grid);
+  },
+  tickLoc(st, h, grid) {
+    for (const f of st.furniture) {
+      if (!f.inv) continue;
+      const def = FURNITURE[f.type];
+      if (def.temp) this.stepCold(f.inv, def.hold, grid, h);
+      this.stepContainer(f.inv, h);
+    }
+    for (const p of st.piles) this.stepContainer(p.inv, h);
+  },
+  /** Bring a freshly generated location up to date (generated after the outbreak). */
+  catchUp(st) {
+    const from = CFG.OUTBREAK_MINUTE, to = S.time.min;
+    for (let t = from; t + 60 <= to; t += 60) this.tickLoc(st, 1, Power.gridOn(t));
+  },
+  init() { GameClock.onHour(() => this.tickHour(1)); },
+};
+
+/** Two-layer hunger model, long-term layer (§6.5.3). */
+const Body = {
+  init(d) {
+    if (!d.nut || typeof d.nut !== 'object') d.nut = {};
+    const n = d.nut;
+    n.reserve = U.num(n.reserve, 0, -60000, 8000);
+    n.buf = n.buf && typeof n.buf === 'object' ? n.buf : {};
+    for (const g of ['protein', 'carb', 'fat', 'micro']) n.buf[g] = U.num(n.buf[g], 6, 0, NUTRITION.bufferDays);
+    n.today = n.today && typeof n.today === 'object' ? n.today : { in: 0, out: 0 };
+    n.today.in = U.num(n.today.in, 0, 0, 1e6); n.today.out = U.num(n.today.out, 0, 0, 1e6);
+    n.hist = Array.isArray(n.hist) ? n.hist.filter((h) => h && isFinite(h.in) && isFinite(h.out)).slice(-14) : [];
+    if (!RATIONS[n.ration]) n.ration = 'normal';
+    n.auto = !!n.auto;
+    if (!Array.isArray(d.ill)) d.ill = [];
+    return n;
+  },
+  minute(d, act) {
+    const n = d.nut;
+    const ch = new Character(d);
+    const load = Math.max(0, ch.load() - 0.5);
+    const burn = (NUTRITION.baseKcal / 1440) * (NUTRITION.activity[act] || 1) * (1 + load * 0.35) * (d.ill.length ? 1.1 : 1);
+    n.reserve = Math.max(-60000, n.reserve - burn);
+    n.today.out += burn;
+    for (const g in n.buf) n.buf[g] = Math.max(0, n.buf[g] - 1 / 1440);
+  },
+  dayRoll(d, day) {
+    const n = d.nut;
+    n.hist.push({ day: day - 1, in: Math.round(n.today.in), out: Math.round(n.today.out) });
+    if (n.hist.length > 14) n.hist.shift();
+    n.today = { in: 0, out: 0 };
+  },
+  intake(d, per, portions) {
+    const n = d.nut, kcal = per.kcal * portions;
+    // Refeeding bonus only on the part of today's intake that exceeds today's expenditure.
+    const surplus = Math.max(0, Math.min(kcal, n.today.in + kcal - n.today.out));
+    const credit = kcal + (n.reserve < 0 ? surplus * (NUTRITION.refeedEfficiency - 1) : 0);
+    n.reserve = Math.min(8000, n.reserve + credit);
+    n.today.in += kcal;
+    for (const g of ['protein', 'carb', 'fat', 'micro']) n.buf[g] = U.clamp(n.buf[g] + (per[g] * portions) / NUTRITION.target[g], 0, NUTRITION.bufferDays);
+    const poisoned = d.ill.some((x) => x.type === 'food_poison');
+    d.needs.satiety = U.clamp(d.needs.satiety + per.satiety * 3.2 * portions * (poisoned ? 0.5 : 1), 0, 100);
+    d.needs.hydration = U.clamp(d.needs.hydration + (per.water || 0) * portions, 0, 100);
+  },
+  stage(d) { const r = d.nut.reserve; return NUTRITION.stages.find((s) => r >= s.min) || NUTRITION.stages[NUTRITION.stages.length - 1]; },
+  deficient(d) { return Object.keys(d.nut.buf).filter((g) => d.nut.buf[g] < NUTRITION.lowDays); },
+  /** Combined effect multipliers from energy stage and nutrient deficiencies. */
+  effects(d) {
+    const s = this.stage(d), def = this.deficient(d), balanced = Object.values(d.nut.buf).every((v) => v > 4);
+    return {
+      carry: s.carry * (def.includes('protein') ? 0.92 : 1),
+      speed: s.speed,
+      skill: s.skill,
+      heal: s.heal * (def.includes('protein') ? 0.6 : 1) * (def.includes('fat') ? 0.9 : 1) * (balanced ? 1.1 : 1),
+      staminaMax: def.includes('carb') ? 70 : 100,
+      staminaRegen: def.includes('fat') ? 0.7 : 1,
+      infection: (def.includes('micro') ? 1.35 : 1) * (s.key === 'weak' || s.key === 'veryweak' || s.key === 'starving' ? 1.25 : 1),
+    };
+  },
+  /** Estimated daily need (kcal) from the last two days of activity. */
+  need(d) {
+    const h = d.nut.hist.slice(-2);
+    return h.length ? Math.max(1600, h.reduce((a, x) => a + x.out, 0) / h.length) : NUTRITION.baseKcal * 1.15;
+  },
+  initHooks() {
+    GameClock.onDay((t) => { for (const d of S.chars) this.dayRoll(d, t.day); });
+  },
+};
+
+/** Conditions such as food poisoning (illness system is extended in 1D). */
+const Illness = {
+  add(d, type, sev) {
+    const ex = d.ill.find((x) => x.type === type);
+    if (ex) { ex.sev = Math.min(1, ex.sev + sev * 0.5); ex.h = Math.max(ex.h, 12 + sev * 24); }
+    else d.ill.push({ type, sev: U.clamp(sev, 0.1, 1), h: 12 + sev * 24 });
+    logEvent(STR.illPoison, 'bad');
+    Bus.emit('toast', { kind: 'bad', msg: STR.illPoison });
+  },
+  minute(d) {
+    for (const x of d.ill) {
+      if (x.type === 'food_poison') {
+        d.needs.hydration = Math.max(0, d.needs.hydration - x.sev * 0.06);
+        d.needs.energy = Math.max(0, d.needs.energy - x.sev * 0.02);
+      }
+      x.h -= 1 / 60;
+    }
+    d.ill = d.ill.filter((x) => x.h > 0);
+  },
+  /** Medicines for gut illness (ORS / antidiarrheal). Returns true if used. */
+  treat(d, item) {
+    const p = d.ill.find((x) => x.type === 'food_poison');
+    const tags = itemDef(item.id).tags;
+    if (tags.includes('electrolyte')) d.needs.hydration = Math.min(100, d.needs.hydration + 25);
+    if (!p) return tags.includes('electrolyte');
+    p.sev *= tags.includes('diarrhea') ? 0.5 : 0.75;
+    p.h *= 0.8;
+    return true;
+  },
+};
+
+/** Eat Meal planner (§6.5.4). */
+const Meal = {
+  sources(ch) {
+    const list = [...ch.containers()];
+    if (S.scene === 'home') {
+      for (const f of S.home.furniture) { if (f.inv) list.push(f.inv); if (f.sub) list.push(f.sub); }
+      for (const p of S.home.piles || []) list.push(p.inv);
+    }
+    return list;
+  },
+  /** Food candidates: [{it, c, slot, per, left, score…}] */
+  candidates(ch) {
+    const out = [], reserve = S.food.reserve, exclude = S.food.exclude;
+    const seen = new Set();
+    const visit = (c) => {
+      for (const s of c.slots) {
+        const it = s.it, d = itemDef(it.id);
+        if (it.inv) { visit(it.inv); continue; }
+        if (!d.per || seen.has(it.uid)) continue;
+        seen.add(it.uid);
+        if (Food.blockReason(it)) continue;
+        if (['spoiled', 'rotten'].includes(Food.stage(it))) continue;
+        if (Food.isRaw(it)) continue;
+        if (d.tags.some((t) => ['condiment', 'spice', 'drink_mix', 'alcohol', 'staple', 'curry_paste', 'flour'].includes(t)) && !d.cooked) continue;
+        if (exclude.includes(d.id)) continue;
+        if (reserve.includes(d.id) && !Food.isOpened(it)) continue;
+        if (d.per.kcal < 5) continue;
+        out.push({ it, c, slot: s, per: Food.per(it), avail: Food.left(it) + (it.qty - 1) * Food.total(it) });
+      }
+    };
+    for (const c of this.sources(ch)) visit(c);
+    return out;
+  },
+  /** Greedy composition to the ration target, preferring opened/expiring items and missing nutrients. */
+  plan(ch) {
+    const d = ch.d;
+    const target = (Body.need(d) * RATIONS[d.nut.ration].f) / 3;
+    const cands = this.candidates(ch);
+    const buf = Object.assign({}, d.nut.buf);
+    const picks = new Map();
+    let kcal = 0, guard = 0;
+    while (kcal < target * 0.95 && guard++ < 24) {
+      let best = null, bs = -Infinity;
+      for (const e of cands) {
+        const used = picks.get(e) || 0;
+        if (used >= e.avail) continue;
+        const p = e.per, st = Food.stage(e.it);
+        let s = 0;
+        if (Food.isOpened(e.it) || used > 0) s += 120;
+        if (st === 'aging') s += 70;
+        const remH = (1 - (e.it.age || 0)) * Spoil.lifeH(itemDef(e.it.id), e.it, Spoil.envOf(e.c));
+        if (remH < 72) s += 40 * (1 - remH / 72);
+        for (const g of ['protein', 'carb', 'fat', 'micro']) s += (p[g] / NUTRITION.target[g]) * (NUTRITION.bufferDays - buf[g]) * 12;
+        s += Math.min(10, p.kcal / 30);
+        if (kcal + p.kcal > target * 1.25) s -= 80;
+        // Meal suitability: real food over sweets/snacks; diminishing returns per extra portion of one item.
+        const tags = itemDef(e.it.id).tags;
+        if (tags.includes('cooked') || tags.includes('ready') || tags.includes('rice')) s += 25;
+        if (tags.includes('sweet') || tags.includes('dessert') || tags.includes('snack') || tags.includes('soda')) s -= 30 + used * 25;
+        s -= used * (Food.isOpened(e.it) ? 4 : 18);
+        if (s > bs) { bs = s; best = e; }
+      }
+      if (!best) break;
+      picks.set(best, (picks.get(best) || 0) + 1);
+      kcal += best.per.kcal;
+      for (const g of ['protein', 'carb', 'fat', 'micro']) buf[g] += best.per[g] / NUTRITION.target[g];
+    }
+    return { target, rows: [...picks.entries()].map(([e, n]) => ({ e, n })), cands };
+  },
+  totals(rows) {
+    const t = { kcal: 0, protein: 0, carb: 0, fat: 0, micro: 0, satiety: 0 };
+    for (const { e, n } of rows) for (const k in t) t[k] += (e.per[k] || 0) * n;
+    return t;
+  },
+  /** Execute a planned meal. */
+  eat(ch, rows) {
+    let total = 0, names = [];
+    for (const { e, n } of rows) {
+      let left = n;
+      while (left > 0) {
+        const loc = Inv.locate(e.c, e.it.uid) || this.sources(ch).map((c) => Inv.locate(c, e.it.uid)).find(Boolean);
+        if (!loc) break;
+        const take = Math.min(left, Food.left(loc.slot.it));
+        if (!Food.eat(ch, loc.c, loc.slot, take, { silent: true })) break;
+        left -= take; total += take;
+      }
+      names.push(itemDef(e.it.id).name + ' ×' + (n - left));
+    }
+    if (total) logEvent(STR.mealLog(names.join(', ')), 'info');
+    return total;
+  },
+  initAuto() {
+    GameClock.onHour((t) => {
+      if (![7, 12, 18].includes(t.hour)) return;
+      for (const d of S.chars) {
+        if (!d.alive || !d.nut.auto || d.sleeping || S.scene !== 'home') continue;
+        const ch = new Character(d);
+        const p = this.plan(ch);
+        if (p.rows.length) { this.eat(ch, p.rows); Bus.emit('toast', { kind: 'info', msg: STR.autoMealDone }); }
+      }
+    });
+  },
+};
+
+/* ===== 27-appliances.js ===== */
+/* ==========================================================================
+   27 · APPLIANCES & HOME POWER (§9.2, §6.6.1) — generator with fuel and
+   load management, appliance install into Large slots, pre-outbreak delivery.
+   ========================================================================== */
+
+const Appliances = {
+  /** Home furniture that draws power (watts) and can be switched in the load panel. */
+  consumers() {
+    const out = [];
+    for (const f of S.home.furniture) {
+      const def = FURNITURE[f.type];
+      if (def.temp || f.type === 'fridge') out.push({ key: f.uid, name: f.label, watts: def.power || 100, f });
+    }
+    out.push({ key: 'lights', name: STR.loadLights, watts: LOADS.lights });
+    return out;
+  },
+  generator() { return S.home.furniture.find((f) => f.type === 'generator') || null; },
+  genState(g) { if (!g.gen) g.gen = { on: false, fuel: 0, hours: 0 }; return g.gen; },
+  loadOn(key) { return S.home.loads[key] !== false; },
+  /** Which consumers the generator feeds (priority order, within capacity). */
+  allocation() {
+    const g = this.generator();
+    if (!g) return { set: new Set(), watts: 0, cap: 0 };
+    const st = this.genState(g), cap = FURNITURE.generator.capacityW;
+    const set = new Set();
+    let w = 0;
+    if (st.on && st.fuel > 0) {
+      for (const c of this.consumers()) {
+        if (!this.loadOn(c.key)) continue;
+        if (w + c.watts > cap) continue;
+        set.add(c.key); w += c.watts;
+      }
+    }
+    return { set, watts: w, cap };
+  },
+  /** Is this home appliance powered right now? (grid or generator) */
+  powered(f, grid = Power.gridOn()) {
+    if (grid) return true;
+    return this.allocation().set.has(f.uid);
+  },
+  lightsPowered() { return Power.gridOn() || this.allocation().set.has('lights'); },
+  /** Generator outdoor = noise source (§8.3); indoor generators are silent for gameplay. */
+  generatorNoise() {
+    const g = this.generator(); if (!g) return 0;
+    const st = this.genState(g);
+    return st.on && st.fuel > 0 && g.slot === 'G1' ? 25 : 0;
+  },
+  setGen(on) {
+    const g = this.generator(); if (!g) return;
+    const st = this.genState(g);
+    if (on && st.fuel <= 0) { Bus.emit('toast', { kind: 'warn', msg: STR.genNoFuel }); return; }
+    st.on = on;
+    logEvent(on ? STR.genStarted : STR.genStopped, 'info');
+  },
+  /** Pour carried/home gasoline into the tank. Returns litres added. */
+  refuel(ch) {
+    const g = this.generator(); if (!g) return 0;
+    const st = this.genState(g), cap = FURNITURE.generator.tankL;
+    let added = 0;
+    const sources = [...ch.containers(), ...S.home.furniture.filter((f) => f.inv).map((f) => f.inv)];
+    for (const c of sources) {
+      for (const s of [...c.slots]) {
+        const d = itemDef(s.it.id);
+        if (!d.fuelL) continue;
+        while (st.fuel < cap - 0.05 && c.slots.includes(s)) {      // drain one can at a time from the stack
+          const left = s.it.st && s.it.st.fuelLeft != null ? s.it.st.fuelLeft : d.fuelL;
+          const take = Math.min(left, cap - st.fuel);
+          st.fuel += take; added += take;
+          if (take >= left - 1e-6) { if (s.it.qty > 1) { s.it.qty -= 1; if (s.it.st) delete s.it.st.fuelLeft; } else Inv.remove(c, s); }
+          else { s.it.st = Object.assign(s.it.st || {}, { fuelLeft: left - take }); break; }
+        }
+      }
+    }
+    if (added) logEvent(STR.genRefuel(added.toFixed(1)), 'info');
+    return added;
+  },
+  minute() {
+    const g = this.generator(); if (!g) return;
+    const st = this.genState(g);
+    if (!st.on) return;
+    if (Power.gridOn()) return;                                      // grid present: generator idles at no load (switched off by auto-transfer)
+    const a = this.allocation();
+    const lph = 0.3 + 0.7 * (a.watts / a.cap);
+    st.fuel = Math.max(0, st.fuel - lph / 60);
+    st.hours += 1 / 60;
+    if (st.fuel <= 0) { st.on = false; logEvent(STR.genOut, 'bad'); Bus.emit('toast', { kind: 'bad', msg: STR.genOut }); }
+  },
+  init() { GameClock.onMinute(() => this.minute()); },
+};
+
+/** Installing large appliances into home slots + pre-outbreak delivery. */
+const HomeInstall = {
+  freeSlots(kind) {
+    return HOME_SLOTS.filter((s) => s.kind === kind && !S.home.furniture.some((f) => f.slot === s.id));
+  },
+  slotKind(type) { return type === 'generator' ? 'generator' : 'large'; },
+  /** Create the furniture in a slot (scene, nav and containers updated). */
+  place(type, slotId) {
+    const slot = HOME_SLOTS.find((s) => s.id === slotId);
+    const def = FURNITURE[type];
+    const f = { uid: U.uid(), type, floor: slot.floor, x: slot.x, z: slot.z, rot: slot.rot, label: def.name, slot: slot.id };
+    if (def.grid) { f.inv = Inv.makeContainer(def.grid[0], def.grid[1], def.limit, def.name, def.temp || 'ambient'); f.inv.cold = 0; }
+    if (type === 'generator') f.gen = { on: false, fuel: 0, hours: 0 };
+    S.home.furniture.push(f);
+    if (Scene.W && Scene.isHome()) { Scene.addFurniture(f); Nav.build(Scene.W, Scene.furnList()); }
+    return f;
+  },
+  /** Install an appliance item the character carries (or that sits in a home pile). */
+  installItem(ch, c, slot, slotId) {
+    const d = itemDef(slot.it.id), type = d.installs;
+    if (!type || S.scene !== 'home') return false;
+    Inv.remove(c, slot);
+    this.place(type, slotId);
+    GameClock.advance(FURNITURE[type].install || 30);
+    Skills.gain(ch, type === 'generator' ? 'mechanics' : 'carpentry', 6);
+    logEvent(STR.installed(FURNITURE[type].name), 'good');
+    Bus.emit('inv:changed');
+    return true;
+  },
+  /** Order with delivery (pre-outbreak only); arrival in DELIVERY.delayMin. */
+  order(itemId, price, slotId) {
+    const total = price + DELIVERY.fee;
+    if (S.cash < total) { Bus.emit('toast', { kind: 'bad', msg: STR.notEnoughCash }); return false; }
+    S.cash -= total;
+    S.deliveries.push({ id: U.uid(), item: itemId, slot: slotId, at: S.time.min + DELIVERY.delayMin, paid: total });
+    logEvent(STR.ordered(itemDef(itemId).name, U.money(total), U.timeOf(S.time.min + DELIVERY.delayMin).hhmm), 'info');
+    return true;
+  },
+  minute() {
+    if (!S.deliveries.length) return;
+    const due = S.deliveries.filter((x) => S.time.min >= x.at);
+    if (!due.length) return;
+    S.deliveries = S.deliveries.filter((x) => S.time.min < x.at);
+    for (const x of due) {
+      const type = itemDef(x.item).installs;
+      if (S.flags.outbreak) {
+        S.cash += x.paid;
+        logEvent(STR.deliveryCancelled(itemDef(x.item).name), 'bad');
+        Bus.emit('toast', { kind: 'bad', msg: STR.deliveryCancelled(itemDef(x.item).name) });
+        continue;
+      }
+      const slot = this.freeSlots(this.slotKind(type)).find((s) => s.id === x.slot) || this.freeSlots(this.slotKind(type))[0];
+      if (!slot) {
+        // No room: the courier leaves it boxed by the gate.
+        const pile = { uid: U.uid(), floor: 0, x: 2.8, z: HOME.lot.z1 - 1.6, inv: Inv.makeContainer(8, 6, 200, STR.ground) };
+        Inv.add(pile.inv, Inv.makeItem(x.item));
+        S.home.piles.push(pile);
+        if (Scene.isHome()) Scene.syncPiles();
+      } else this.place(type, slot.id);
+      logEvent(STR.delivered(itemDef(x.item).name), 'good');
+      Bus.emit('toast', { kind: 'good', msg: STR.delivered(itemDef(x.item).name) });
+    }
+  },
+  init() { GameClock.onMinute(() => this.minute()); },
+};
+
+
+/* ===== 28-cooking.js ===== */
+/* ==========================================================================
+   28 · COOKING (§6.5.5) — portion-aware recipes with tag substitutions,
+   batch multiplier, stations (home gas stove, portable stove, microwave,
+   no-cook), fuel/power/water use, cooking-from-frozen, quality from skill.
+   ========================================================================== */
+
+const Cook = {
+  /** Ingredient sources: carried + (at home, if enabled) every home container. */
+  sources(ch) {
+    const list = [...ch.containers()];
+    if (S.scene === 'home' && P.settings.autoDraw) {
+      for (const f of S.home.furniture) { if (f.inv) list.push(f.inv); if (f.sub) list.push(f.sub); }
+      for (const p of S.home.piles || []) list.push(p.inv);
+    }
+    return list;
+  },
+  matchesSlot(slot, d) {
+    return slot.any.some((m) => (m.startsWith('tag:') ? d.tags.includes(m.slice(4)) : d.id === m.slice(3)));
+  },
+  /** Candidate ingredient entries for a recipe slot. */
+  candidates(ch, slot) {
+    const out = [];
+    const visit = (c) => {
+      for (const s of c.slots) {
+        if (s.it.inv) { visit(s.it.inv); continue; }
+        const d = itemDef(s.it.id);
+        if (!d.per || !this.matchesSlot(slot, d)) continue;
+        if (Food.ruined(s.it) || Food.stage(s.it) === 'rotten') continue;
+        out.push({ it: s.it, c, slot: s, avail: Food.left(s.it) + (s.it.qty - 1) * Food.total(s.it) });
+      }
+    };
+    for (const c of this.sources(ch)) visit(c);
+    // Prefer opened and older items first (use them before they spoil)
+    out.sort((a, b) => (Food.isOpened(b.it) - Food.isOpened(a.it)) || ((b.it.age || 0) - (a.it.age || 0)));
+    return out;
+  },
+  /** Available cooking stations right now. */
+  stations(ch) {
+    const out = [];
+    const home = S.scene === 'home';
+    const stove = home && S.home.furniture.find((f) => f.type === 'stove');
+    if (stove) out.push({ id: 'stove', name: STR.stHomeStove + ' (' + STR.gasLeft(Math.round(S.home.gas)) + ')', ok: S.home.gas > 0, why: STR.noGas });
+    const portable = ch.containers().some((c) => Inv.count(c, 'portable_stove') > 0);
+    const canister = this.findTagged(ch, 'gas');
+    if (portable) out.push({ id: 'portable', kind: 'stove', name: STR.stPortable, ok: !!canister, why: STR.noCanister });
+    const mw = home && S.home.furniture.find((f) => f.type === 'microwave');
+    if (mw) out.push({ id: 'microwave', name: STR.stMicrowave, ok: Appliances.powered(mw) && (Power.gridOn() || Appliances.allocation().watts + 800 <= FURNITURE.generator.capacityW), why: STR.noPower });
+    out.push({ id: 'none', name: STR.stNone, ok: true });
+    return out;
+  },
+  findTagged(ch, tag) {
+    for (const c of this.sources(ch)) for (const s of c.slots) { const d = itemDef(s.it.id); if (d.tags.includes(tag) && (s.it.uses == null || s.it.uses > 0)) return { c, slot: s }; }
+    return null;
+  },
+  stationKind(st) { return st.kind || st.id; },
+  /**
+   * Validate and preview. choices: [{ entry, amt }] aligned with recipe.slots (entry null = skip).
+   * Returns {ok, why, minutes, outPortions, per, quality, risk, water}
+   */
+  preview(ch, r, choices, batch, station, longer) {
+    let kcalSum = 0, frozen = false, thick = false, seasoning = false, spoiledRisk = 0;
+    const sum = { kcal: 0, protein: 0, carb: 0, fat: 0, micro: 0, satiety: 0, water: 0 };
+    for (let i = 0; i < r.slots.length; i++) {
+      const sl = r.slots[i], ch_ = choices[i];
+      if (!ch_ || !ch_.entry) { if (!sl.optional) return { ok: false, why: STR.missingIng(sl.label) }; continue; }
+      const amt = ch_.amt * batch;
+      if (amt > ch_.entry.avail) return { ok: false, why: STR.notEnoughIng(sl.label) };
+      const it = ch_.entry.it, per = Food.per(it);
+      for (const k in sum) sum[k] += (per[k] || 0) * amt;
+      kcalSum += per.kcal * amt;
+      if ((it.frz || 0) > 0.3) { frozen = true; if (itemDef(it.id).weight > 0.6) thick = true; }
+      if (sl.seasoning) seasoning = true;
+      if (Food.stage(it) === 'spoiled') spoiledRisk += 0.25;
+    }
+    const kind = this.stationKind(station);
+    if (!r.station.includes(kind)) return { ok: false, why: STR.wrongStation };
+    if (!station.ok) return { ok: false, why: station.why };
+    const sk = ch.skill('cooking');
+    const quality = U.clamp(0.55 + sk * 0.04 + (seasoning ? 0.1 : 0) + (ch.hasTrait('thrifty') ? 0.03 : 0), 0.3, 1);
+    let minutes = r.time * Math.sqrt(batch) * (1 - sk * 0.035);
+    if (frozen) minutes *= THAW.cookFromFrozenMul * (longer ? 1.35 : 1);
+    if (kind === 'microwave') minutes *= 0.7;
+    const ref = itemDef(r.out).refKcal || 150;
+    const thrift = ch.hasTrait('thrifty') ? 1.1 : 1;
+    const outPortions = Math.max(1, Math.round((kcalSum * thrift) / ref));
+    const retention = 0.82 + quality * 0.18;
+    const per = {
+      kcal: (sum.kcal * thrift) / outPortions,
+      protein: sum.protein / outPortions,
+      carb: sum.carb / outPortions,
+      fat: sum.fat / outPortions,
+      micro: (sum.micro * retention) / outPortions,
+      satiety: Math.max(itemDef(r.out).per.satiety, (sum.satiety / outPortions) * (r.water ? 1.25 : 1.05)) * (0.9 + quality * 0.2),
+      water: (r.water ? 8 : 0) + sum.water / outPortions,
+    };
+    const risk = U.clamp((thick && !longer ? 0.3 : 0) * (1.2 - quality) + spoiledRisk * (r.method === 'none' ? 1 : 0.4), 0, 0.9);
+    const water = (r.water || 0) * Math.ceil(batch);
+    return { ok: true, minutes: Math.round(minutes), outPortions, per, quality, risk, water, frozen, thick };
+  },
+  /** Consume the water needed for boiling: tap (utilities on, at home) or carried drinking water. */
+  takeWater(ch, units) {
+    if (!units) return true;
+    if (S.scene === 'home' && Power.waterOn()) return true;
+    let need = units;
+    for (const c of this.sources(ch)) {
+      for (const s of [...c.slots]) {
+        if (need <= 0) break;
+        const d = itemDef(s.it.id);
+        if (!d.tags.includes('water')) continue;
+        while (need > 0 && Inv.locate(c, s.it.uid)) {
+          const r = Food.takePortions(ch, c, s, 1);
+          if (!r || !r.taken) break;
+          need -= 1;
+        }
+      }
+    }
+    return need <= 0;
+  },
+  /** Cook it. Returns the produced dish item or null. */
+  make(ch, r, choices, batch, station, longer) {
+    const pv = this.preview(ch, r, choices, batch, station, longer);
+    if (!pv.ok) { Bus.emit('toast', { kind: 'warn', msg: pv.why }); return null; }
+    if (!this.takeWater(ch, pv.water)) { Bus.emit('toast', { kind: 'warn', msg: STR.noWater }); return null; }
+    // Fuel / power
+    if (station.id === 'stove') S.home.gas = Math.max(0, S.home.gas - pv.minutes * 0.05);
+    if (station.id === 'portable') { const g = this.findTagged(ch, 'gas'); if (g) { g.slot.it.uses = Math.max(0, (g.slot.it.uses || 0) - Math.ceil(pv.minutes / 2)); if (g.slot.it.uses <= 0) Inv.remove(g.c, g.slot); } }
+    // Consume ingredients
+    for (let i = 0; i < r.slots.length; i++) {
+      const c = choices[i]; if (!c || !c.entry) continue;
+      let left = c.amt * batch;
+      while (left > 0) {
+        const loc = this.sources(ch).map((x) => Inv.locate(x, c.entry.it.uid)).find(Boolean);
+        if (!loc) break;
+        const res = Food.takePortions(ch, loc.c, loc.slot, left);
+        if (!res || !res.taken) break;
+        left -= res.taken;
+      }
+    }
+    GameClock.advance(pv.minutes);
+    const dish = Inv.makeItem(r.out, 1);
+    dish.age = 0; dish.frz = 0;
+    dish.st = { cooked: true, portionsTotal: pv.outPortions, portionsLeft: pv.outPortions, nut: pv.per, quality: Math.round(pv.quality * 100) / 100, risk: pv.risk || 0 };
+    const dest = [...ch.containers()];
+    if (Inv.addToAny(dest, dish) > 0) {
+      const pile = Scene.pileNear(ch.d.pos.floor, ch.d.pos.x, ch.d.pos.z, true);
+      Inv.add(pile.inv, dish); Scene.syncPiles();
+    }
+    Skills.gain(ch, 'cooking', 4 + pv.outPortions * 1.5);
+    logEvent(STR.cooked(r.name, pv.outPortions), 'good');
+    Bus.emit('inv:changed');
+    return dish;
+  },
+  /** Microwave defrost (§6.6.4): fast thaw, should be cooked soon after. */
+  microwaveThaw(ch, c, slot) {
+    const mw = S.home.furniture.find((f) => f.type === 'microwave');
+    if (!mw || S.scene !== 'home' || !Appliances.powered(mw)) { Bus.emit('toast', { kind: 'warn', msg: STR.noPower }); return false; }
+    const it = slot.it;
+    GameClock.advance(Math.round(THAW.microwaveMin * Math.sqrt(Math.max(0.25, itemDef(it.id).weight) / 0.25)));
+    it.frz = 0;
+    it.st = Object.assign(it.st || {}, { mustCookBy: S.time.min + 60 });
+    if (Food.isRaw(it)) it.st.thawedRaw = true;
+    logEvent(STR.microThawed(itemDef(it.id).name), 'info');
+    return true;
   },
 };
 
@@ -8674,10 +9661,11 @@ const Icons = {
     const rim = new THREE.DirectionalLight(0x9fc4ff, 1.4); rim.position.set(-3, 2, -2); this.scene.add(rim);
     this.cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 50);
   },
-  /** Data URL for an item id (cached). */
-  get(id) {
+  /** Data URL for an item id (cached). opened → the "Opened" variant (§6.5.2). */
+  get(id, opened = false) {
     const ov = ASSET_OVERRIDES['icon.' + id];
     if (ov && !/\.(glb|gltf)/i.test(ov)) return ov;
+    if (opened) return this.openedIcon(id);
     if (this.cache.has(id)) return this.cache.get(id);
     let url;
     try { url = this.r ? this.render(id) : this.vector(id); }
@@ -8712,6 +9700,30 @@ const Icons = {
     const url = this.r.domElement.toDataURL('image/png');
     this.scene.remove(obj);
     obj.traverse((o) => { if (o.isMesh) o.geometry.dispose(); });
+    return url;
+  },
+  /** Opened variant: the base icon with a torn corner and an open-lid marker. */
+  openedIcon(id) {
+    const key = id + '|open';
+    if (this.cache.has(key)) return this.cache.get(key);
+    const d = itemDef(id), [w, h] = d.size;
+    const c = document.createElement('canvas'); c.width = w * 64; c.height = h * 64;
+    const ctx = c.getContext('2d');
+    const url = this.get(id);
+    const img = new Image();
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0, c.width, c.height);
+      // torn top-right corner
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath(); ctx.moveTo(c.width, 0); ctx.lineTo(c.width - 26, 0); ctx.lineTo(c.width - 18, 7); ctx.lineTo(c.width - 12, 4); ctx.lineTo(c.width - 6, 12); ctx.lineTo(c.width, 26); ctx.closePath(); ctx.fill();
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = 'rgba(255,210,122,.95)'; ctx.beginPath(); ctx.arc(14, 14, 9, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#1a1208'; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('½', 14, 15);
+      this.cache.set(key, c.toDataURL());
+      if (InvUI.isOpen) InvUI.render();
+    };
+    img.src = url;
+    this.cache.set(key, url);       // base icon until the composite is ready
     return url;
   },
   /** Clean vector fallback (category colour + glyph). */
@@ -8790,6 +9802,7 @@ const IconModels = {
       case 'backpack': pb.box(0.9, 1.1, 0.5, Mat.tex('fabric', c, 0.9), 0, 0, 0, 0.18); pb.box(0.7, 0.45, 0.2, Mat.tex('fabric', c2, 0.9), 0, 0.15, 0.32, 0.08); pb.box(0.12, 0.6, 0.06, plain('#222', 0.7), -0.25, 0.4, -0.3); pb.box(0.12, 0.6, 0.06, plain('#222', 0.7), 0.25, 0.4, -0.3); pb.geo(new THREE.TorusGeometry(0.12, 0.03, 6, 12, Math.PI), plain('#222', 0.7), 0, 1.1, 0); break;
       case 'pouch': pb.box(0.9, 0.6, 0.35, Mat.tex('fabric', c, 0.9), 0, 0, 0, 0.12); pb.box(0.9, 0.08, 0.36, plain(c2, 0.6), 0, 0.45, 0); break;
       case 'crate': pb.box(0.95, 0.65, 0.65, plain(c, 0.35), 0, 0, 0, 0.05); pb.box(0.98, 0.08, 0.68, plain(c2, 0.35), 0, 0.65, 0, 0.03); break;
+      case 'plate': pb.cyl(0.62, 0.5, 0.08, plain('#f2f1ec', 0.25), 0, 0, 0, 28); pb.sphere(0.42, plain(c, 0.6), 0, 0.08, 0, 1, 0.42, 1, 18); pb.sphere(0.2, plain(c2, 0.6), 0.18, 0.2, 0.08, 1, 0.5, 1, 12); break;
       case 'candle': pb.cyl(0.15, 0.15, 0.7, plain(c, 0.6), 0, 0, 0, 14); pb.sphere(0.06, Mat.emissive(c2, 1.5), 0, 0.82, 0, 0.8, 1.6, 0.8, 8); break;
       default: pb.box(0.7, 0.6, 0.5, plain(c, 0.5), 0, 0, 0, 0.04);
     }
@@ -8934,6 +9947,11 @@ const Scene = {
   actions(f) {
     const def = FURNITURE[f.type], out = [];
     if (def.act === 'checkout') out.push({ key: 'checkout', label: STR.checkoutAct });
+    if (def.act === 'checkout' && DELIVERY[S.scene] && !S.flags.outbreak) out.push({ key: 'delivery', label: STR.orderDelivery });
+    if (def.act === 'cook') out.push({ key: 'cook', label: STR.cookAct });
+    if (def.act === 'microwave') out.push({ key: 'microwave', label: STR.cookAct + ' (' + STR.stMicrowave + ')' });
+    if (def.act === 'generator') out.push({ key: 'generator', label: STR.genAct });
+    if (f.type === 'car') out.push({ key: 'siphon', label: STR.siphonAct });
     if (f.inv) out.push({ key: 'open', label: STR.open + ' ' + f.label });
     if (def.act === 'sleep') out.push({ key: 'sleep', label: STR.sleepHere });
     if (def.act === 'water') out.push({ key: 'drink', label: STR.drinkTap });
@@ -8948,6 +9966,11 @@ const Scene = {
       sleep: () => SleepUI.open(f),
       drink: () => { Needs.drinkTap(activeChar()); },
       checkout: () => CheckoutUI.open(),
+      delivery: () => DeliveryUI.open(),
+      cook: () => CookUI.open('stove'),
+      microwave: () => CookUI.open('microwave'),
+      generator: () => GenUI.open(),
+      siphon: () => this.siphon(),
       walk: null,
     }[key];
     const ok = this.avatar.goTo({ x: ap.x, z: ap.z, floor: f.floor }, mode, () => {
@@ -8955,6 +9978,23 @@ const Scene = {
     });
     if (!ok) Bus.emit('toast', { kind: 'warn', msg: STR.cannotReach });
     else { Render.cam.follow = true; Render.flashClick(ap.x, this.W.groundY(ap.x, ap.z, f.floor), ap.z); }
+  },
+  /** Siphon fuel from the parked car into an empty jerry can (yields 5 L cans). */
+  siphon() {
+    const ch = activeChar();
+    if (S.home.carFuel == null) S.home.carFuel = 24;
+    if (S.home.carFuel < 1) { Toast.show(STR.carEmpty, 'warn'); return; }
+    let found = null;
+    for (const c of ch.containers()) for (const s of c.slots) if (s.it.id === 'jerry_can') found = { c, s };
+    if (!found) { Toast.show(STR.needJerry, 'warn'); return; }
+    Inv.remove(found.c, found.s);
+    const litres = Math.min(20, Math.floor(S.home.carFuel));
+    S.home.carFuel -= litres;
+    const n = Math.floor(litres / 5);
+    for (let i = 0; i < n; i++) { const it = Inv.makeItem('gasoline_5l', 1); if (Inv.addToAny(ch.containers(), it) > 0) { const pile = this.pileNear(0, ch.d.pos.x, ch.d.pos.z, true); Inv.add(pile.inv, it); } }
+    this.syncPiles();
+    GameClock.advance(15);
+    logEvent(STR.siphoned(litres), 'info'); Toast.show(STR.siphoned(litres), 'good');
   },
   face(f) { const d = S.chars[S.active]; d.pos.rot = Math.atan2(f.x - d.pos.x, f.z - d.pos.z); },
   /** Is a ground point beyond the exit (gate / shop door)? */
@@ -9051,7 +10091,7 @@ const Scene = {
     if (this.W.exitMarker) this.W.exitMarker.material.opacity = 0.45 + Math.sin(performance.now() * 0.004) * 0.25;
     Render.updateCamera(realDt, { x: p.x, z: p.z });
     Render.updateDayNight(S.time.min);
-    Render.updateLights({ x: p.x, z: p.z }, this.isHome() ? S.home.lightsOn : true, Power.gridOn());
+    Render.updateLights({ x: p.x, z: p.z }, this.isHome() ? S.home.lightsOn : true, this.isHome() ? Appliances.lightsPowered() : Power.gridOn());
   },
 };
 const HomeScene = Scene; // legacy alias used by older harnesses
@@ -9366,6 +10406,42 @@ const ShelfDresser = {
   },
 };
 
+/* ===== 40-appliance-props.js ===== */
+/* ==========================================================================
+   40 · APPLIANCE PROPS — chest / commercial freezers and the generator.
+   ========================================================================== */
+
+Object.assign(PROPS, {
+  'prop.chest_freezer': (o) => {
+    const pb = new PB(o.seed);
+    pb.box(1.3, 0.85, 0.75, Mat.color('#eef1f2', 0.35, 0.15), 0, 0, 0, 0.04);
+    pb.box(1.32, 0.06, 0.77, Mat.color('#dfe4e6', 0.3, 0.2), 0, 0.85, 0, 0.02);
+    pb.box(0.3, 0.04, 0.04, Mat.color('#9aa4ad', 0.3, 0.6), 0, 0.78, 0.39);
+    pb.box(0.12, 0.05, 0.01, Mat.emissive('#3aff8a', 0.6), 0.45, 0.6, 0.376);
+    return pb.build();
+  },
+  'prop.large_freezer': (o) => {
+    const pb = new PB(o.seed);
+    pb.box(2.0, 0.9, 0.85, Mat.color('#c9cdd1', 0.35, 0.4), 0, 0, 0, 0.04);
+    pb.box(0.98, 0.05, 0.83, Mat.color('#cfe4ec', 0.05, 0, { transparent: true, opacity: 0.35, depthWrite: false }), -0.5, 0.9, 0);
+    pb.box(0.98, 0.05, 0.83, Mat.color('#cfe4ec', 0.05, 0, { transparent: true, opacity: 0.35, depthWrite: false }), 0.5, 0.9, 0);
+    pb.box(2.0, 0.12, 0.85, Mat.color('#1f3f6a', 0.5), 0, 0, 0);
+    pb.box(0.16, 0.06, 0.01, Mat.emissive('#3aff8a', 0.6), 0.75, 0.7, 0.426);
+    return pb.build();
+  },
+  'prop.generator': (o) => {
+    const pb = new PB(o.seed);
+    const frame = Mat.color('#2b2b2b', 0.5, 0.6);
+    for (const x of [-0.33, 0.33]) for (const z of [-0.25, 0.25]) pb.box(0.03, 0.55, 0.03, frame, x, 0, z);
+    pb.box(0.6, 0.32, 0.42, Mat.color('#e07a2a', 0.45), 0, 0.12, 0, 0.04);
+    pb.box(0.42, 0.14, 0.3, Mat.color('#c4202a', 0.4), -0.05, 0.44, 0, 0.05);
+    pb.cyl(0.07, 0.07, 0.12, Mat.color('#5f656b', 0.4, 0.7), 0.25, 0.3, 0.18, 10, [Math.PI / 2, 0, 0]);
+    pb.box(0.12, 0.08, 0.02, Mat.color('#1a1a1a', 0.4), -0.2, 0.25, 0.22);
+    return pb.build();
+  },
+});
+for (const id of ['prop.chest_freezer', 'prop.large_freezer', 'prop.generator']) AssetRegistry.register(id, PROPS[id]);
+
 /* ===== 50-ui-core.js ===== */
 /* ==========================================================================
    50 · UI PRIMITIVES — toasts, modal stack (owns time), tooltip, context menu
@@ -9505,8 +10581,10 @@ const HUD = {
       e.needs[k] = { fill, val };
     }
     e.weight = U.el('div.wline');
+    e.ration = U.el('div.rationsel');
+    e.ill = U.el('div.ill');
     e.noise = U.el('div.noise', null, U.el('span', null, STR.noise), U.el('div.nbar', null, U.el('i')), U.el('em'));
-    needBox.append(e.weight, e.noise);
+    needBox.append(e.weight, e.noise, e.ration, e.ill);
     // Right column: cash, floors, lights, power
     e.place = U.el('div.place');
     e.cash = U.el('div.cash');
@@ -9520,6 +10598,10 @@ const HUD = {
     const bar = U.el('div.panel.bottombar', null,
       U.el('button.btn', { on: { click: () => InvUI.toggle() } }, '🎒 ' + STR.btnInventory),
       U.el('button.btn', { on: { click: () => MapUI.open(false) } }, '🗺 ' + STR.btnMap),
+      U.el('button.btn', { on: { click: () => MealUI.open() } }, '🍚 ' + STR.btnEatMeal),
+      U.el('button.btn', { on: { click: () => CookUI.open() } }, '🍳 ' + STR.btnCook),
+      U.el('button.btn', { on: { click: () => StockUI.open() } }, '📦 ' + STR.btnStock),
+      U.el('button.btn', { on: { click: () => NutritionUI.open() } }, '🥗 ' + STR.btnNutrition),
       U.el('button.btn', { on: { click: () => SkillsUI.open() } }, '📈 ' + STR.btnSkills),
       U.el('button.btn', { on: { click: () => LogUI.open() } }, '📜 ' + STR.btnLog),
       U.el('button.btn', { on: { click: () => HelpUI.open() } }, '⌨ ' + STR.btnHelp),
@@ -9563,6 +10645,13 @@ const HUD = {
       e.needs[k].val.textContent = Math.round(v);
       e.needs[k].fill.parentElement.classList.toggle('low', v < 25);
     }
+    const rk = d.nut.ration;
+    if (e.ration.dataset.k !== rk) {
+      e.ration.dataset.k = rk; e.ration.innerHTML = '';
+      e.ration.append(U.el('span', null, STR.rationShort), ...Object.entries(RATIONS).map(([k, r]) => U.el('button.rb' + (k === rk ? '.on' : ''), { title: Math.round(r.f * 100) + '%', on: { click: () => { d.nut.ration = k; } } }, r.name)));
+    }
+    const stg = Body.stage(d);
+    e.ill.textContent = [stg.key !== 'normal' ? '⚠ ' + stg.name : '', ...d.ill.map((x) => '🤢 ' + STR.illName[x.type]), ...Body.deficient(d).map((g) => '↓' + STR[g])].filter(Boolean).join(' · ');
     const load = ch.load();
     e.weight.textContent = STR.weight + ' ' + U.kg(ch.carried()) + ' / ' + ch.capacity().toFixed(1) + ' กก.' + (load > 1.5 ? ' · ' + STR.immobile : load > 1 ? ' · ' + STR.overloaded : '');
     e.weight.className = 'wline ' + (load > 1.5 ? 'bad' : load > 1 ? 'warn' : '');
@@ -9623,6 +10712,13 @@ const InvUI = {
     }
     this.tabs.push({ key: 'ground', label: STR.ground, c: this.ground.inv });
     this.tab = 0;
+    // Opening an unpowered cold unit lets cold air out (shortens cold-hold, §6.6.3).
+    if (furn) for (const c of [furn.inv, furn.sub]) {
+      if (!c || c.temp === 'ambient' || c.cold == null) continue;
+      const def = FURNITURE[furn.type], hold = c === furn.sub ? def.sub.hold : def.hold;
+      const powered = Scene.isHome() ? Appliances.powered(furn) : Power.gridOn();
+      if (!powered) c.cold = Math.max(0, c.cold - COLD_HOLD.holdLidH / (COLD_HOLD[hold] || 6));
+    }
     U.$('#inv').hidden = false;
     this.render();
   },
@@ -9735,20 +10831,25 @@ const InvUI = {
     const [w, h] = Inv.dims(s.it, s.r);
     const [bw, bh] = d.size;
     const cat = CATEGORIES[d.cat] || CATEGORIES.misc;
-    const el = U.el('div.item.r-' + (d.rarity || 'common'), { style: { left: s.x * cell + 'px', top: s.y * cell + 'px', width: w * cell + 'px', height: h * cell + 'px', '--cat': cat.color } });
-    const img = U.el('img', { src: Icons.get(s.it.id), draggable: false, style: s.r ? { width: bw * cell + 'px', height: bh * cell + 'px', transform: 'translate(-50%,-50%) rotate(90deg)' } : { width: bw * cell + 'px', height: bh * cell + 'px', transform: 'translate(-50%,-50%)' } });
+    const stg = d.per ? Food.stage(s.it) : 'fresh';
+    const el = U.el('div.item.r-' + (d.rarity || 'common') + (d.per ? '.st-' + stg : '') + (Food.isOpened(s.it) ? '.opened' : '') + ((s.it.frz || 0) >= 0.99 ? '.frozen' : ''), { style: { left: s.x * cell + 'px', top: s.y * cell + 'px', width: w * cell + 'px', height: h * cell + 'px', '--cat': cat.color } });
+    const img = U.el('img', { src: Icons.get(s.it.id, Food.isOpened(s.it)), draggable: false, style: s.r ? { width: bw * cell + 'px', height: bh * cell + 'px', transform: 'translate(-50%,-50%) rotate(90deg)' } : { width: bw * cell + 'px', height: bh * cell + 'px', transform: 'translate(-50%,-50%)' } });
     el.appendChild(img);
     if (s.it.qty > 1) el.appendChild(U.el('span.qty', null, '×' + s.it.qty));
-    if (s.it.st && s.it.st.portionsLeft != null) el.appendChild(U.el('span.portions', null, s.it.st.portionsLeft + '/' + d.portions));
+    if (s.it.st && s.it.st.portionsLeft != null) el.appendChild(U.el('span.portions', null, s.it.st.portionsLeft + '/' + Food.total(s.it)));
+    if (d.per && (s.it.frz || 0) > 0 && s.it.frz < 0.99) el.appendChild(U.el('span.thaw', null, '❄' + Math.round((1 - s.it.frz) * 100) + '%'));
+    else if ((s.it.frz || 0) >= 0.99) el.appendChild(U.el('span.thaw', null, '❄'));
+    if (stg === 'aging') el.appendChild(U.el('span.usesoon', null, STR.useSoon));
+    if (S.food.reserve.includes(d.id)) el.appendChild(U.el('span.reserve', null, 'R'));
     if (s.it.cond != null) el.appendChild(U.el('span.cond', null, U.el('i', { style: { width: Math.round(s.it.cond * 100) + '%', background: s.it.cond > 0.5 ? '#7fbf5f' : s.it.cond > 0.2 ? '#e0b23c' : '#d65a5a' } })));
     if (s.it.inv) el.appendChild(U.el('span.bagcount', null, s.it.inv.slots.length ? '▣' + s.it.inv.slots.length : '▢'));
     if (s.it.unpaid) { el.classList.add('unpaid'); el.appendChild(U.el('span.pricetag', null, '฿' + d.price * s.it.qty)); }
     el._slot = s; el._c = c;
     el.dataset.name = d.name.toLowerCase();
     el.addEventListener('pointerdown', (e) => { if (e.button === 0) this.startDrag(e, { c, slot: s, side }); });
-    el.addEventListener('dblclick', () => { if (s.it.inv) this.openBag(s.it); else if (d.per) this.useItem(c, s); });
+    el.addEventListener('dblclick', () => { if (s.it.inv) this.openBag(s.it); else if (d.per) EatUI.open(c, s); });
     el.addEventListener('contextmenu', (e) => { e.preventDefault(); Tooltip.hide(); this.itemMenu(e, { c, slot: s, side }); });
-    el.addEventListener('mouseenter', (e) => { if (!this.drag) Tooltip.show(this.tooltip(s.it), e.clientX, e.clientY); });
+    el.addEventListener('mouseenter', (e) => { if (!this.drag) Tooltip.show(this.tooltip(s.it, c), e.clientX, e.clientY); });
     el.addEventListener('mousemove', (e) => Tooltip.move(e.clientX, e.clientY));
     el.addEventListener('mouseleave', () => Tooltip.hide());
     return el;
@@ -9776,10 +10877,11 @@ const InvUI = {
   },
 
   /* ---------- Tooltip ---------- */
-  tooltip(it) {
+  tooltip(it, c) {
     const d = itemDef(it.id), cat = CATEGORIES[d.cat] || CATEGORIES.misc;
     const rows = [];
-    rows.push(`<div class="tt-h" style="--cat:${cat.color}">${d.name}</div><div class="tt-cat">${cat.name}</div>`);
+    rows.push(`<div class="tt-h" style="--cat:${cat.color}">${Food.label(it)}</div><div class="tt-cat">${cat.name}</div>`);
+    if (d.per) rows.push(FoodFmt.freshLine(it, c));
     rows.push(`<div class="tt-r"><span>${STR.ttWeight}</span><b>${U.kg(Inv.itemWeight(it))}</b></div>`);
     rows.push(`<div class="tt-r"><span>${STR.ttSize}</span><b>${d.size[0]}×${d.size[1]}</b></div>`);
     if (d.price) rows.push(`<div class="tt-r"><span>${STR.ttPrice}</span><b>${U.money(d.price)}</b></div>`);
@@ -9788,11 +10890,11 @@ const InvUI = {
     if (it.uses != null) rows.push(`<div class="tt-r"><span>${STR.ttUses}</span><b>${it.uses}</b></div>`);
     if (d.grid) rows.push(`<div class="tt-r"><span>${STR.ttCapacity}</span><b>${d.grid[0]}×${d.grid[1]} · ${d.limit} กก.</b></div>`);
     if (d.per) {
-      const left = it.st && it.st.portionsLeft != null ? it.st.portionsLeft : d.portions;
-      rows.push(`<div class="tt-r"><span>${STR.ttPortions}</span><b>${left}/${d.portions}</b></div>`);
-      const p = d.per;
-      rows.push(`<div class="tt-sub">${STR.ttPerPortion}: ${p.kcal} ${STR.kcal} · ${STR.protein} ${p.protein} ก. · ${STR.carb} ${p.carb} ก. · ${STR.fat} ${p.fat} ก.${p.water ? ' · ' + STR.water + ' +' + p.water : ''}</div>`);
-      rows.push(`<div class="tt-r"><span>${STR.ttShelf}</span><b>${d.shelf >= 1 ? d.shelf + ' วัน' : Math.round(d.shelf * 24) + ' ชม.'}</b></div>`);
+      rows.push(`<div class="tt-r"><span>${STR.ttPortions}</span><b>${Food.left(it)}/${Food.total(it)}</b></div>`);
+      const p = Food.per(it);
+      rows.push(`<div class="tt-sub">${STR.ttPerPortion}: ${Math.round(p.kcal)} ${STR.kcal} · ${STR.protein} ${p.protein.toFixed(1)} ก. · ${STR.carb} ${p.carb.toFixed(1)} ก. · ${STR.fat} ${p.fat.toFixed(1)} ก. · ${STR.micro} ${p.micro.toFixed(1)} · ${STR.satietyShort} ${Math.round(p.satiety)}${p.water ? ' · ' + STR.water + ' +' + Math.round(p.water) : ''}</div>`);
+      if (!d.cooked && !(it.st && it.st.opened)) rows.push(`<div class="tt-r"><span>${STR.ttShelf}</span><b>${d.shelf >= 1 ? d.shelf + ' วัน' : Math.round(d.shelf * 24) + ' ชม.'}</b></div>`);
+      if (it.st && it.st.quality) rows.push(`<div class="tt-sub">${STR.qualityLine(Math.round(it.st.quality * 100))}</div>`);
       rows.push(`<div class="tt-sub">${STR.ttStore[d.store] || ''} · ${STR.ttFreeze[d.freeze] || ''}</div>`);
     }
     return rows.join('');
@@ -9804,7 +10906,14 @@ const InvUI = {
   itemMenu(e, src) {
     const it = src.it || src.slot.it, d = itemDef(it.id), ch = activeChar();
     const items = [];
-    if (src.slot && d.per) items.push({ label: (d.cat === 'drink' ? STR.drink : STR.eat) + ' 1 ส่วน', fn: () => this.useItem(src.c, src.slot) });
+    if (src.slot && d.per) {
+      items.push({ label: (d.cat === 'drink' ? STR.drink : STR.eat) + '…', fn: () => EatUI.open(src.c, src.slot) });
+      if ((it.frz || 0) > 0 && S.scene === 'home') items.push({ label: STR.microThaw, fn: () => { if (Cook.microwaveThaw(activeChar(), src.c, src.slot)) this.changed(); } });
+      items.push({ label: S.food.reserve.includes(d.id) ? STR.unreserve : STR.reserve, fn: () => { const r = S.food.reserve; const i = r.indexOf(d.id); if (i >= 0) r.splice(i, 1); else r.push(d.id); this.changed(); } });
+      items.push({ label: S.food.exclude.includes(d.id) ? STR.unexclude : STR.exclude, fn: () => { const r = S.food.exclude; const i = r.indexOf(d.id); if (i >= 0) r.splice(i, 1); else r.push(d.id); this.changed(); } });
+    }
+    if (src.slot && (d.tags.includes('electrolyte') || d.tags.includes('diarrhea')) && !d.per) items.push({ label: STR.use, fn: () => { if (Illness.treat(activeChar().d, it)) { if (it.uses != null) it.uses--; if (it.uses == null || it.uses <= 0) { if (it.qty > 1) { it.qty--; if (d.uses) it.uses = d.uses; } else Inv.remove(src.c, src.slot); } logEvent(STR.usedMed(d.name)); } this.changed(); } });
+    if (src.slot && d.installs) items.push({ label: STR.installAct, fn: () => InstallUI.open(src.c, src.slot) });
     if (it.inv) items.push({ label: STR.openBag, fn: () => this.openBag(it) });
     if (src.slot && d.equip && !ch.d.equip[d.equip]) items.push({ label: STR.equip, fn: () => this.equipFrom(src.c, src.slot, d.equip) });
     if (src.slot && d.cat === 'weapon' && !ch.d.equip.weapon) items.push({ label: STR.equip, fn: () => this.equipFrom(src.c, src.slot, 'weapon') });
@@ -9814,7 +10923,6 @@ const InvUI = {
     if (src.slot && src.c !== this.ground.inv) items.push({ label: STR.drop, fn: () => { Inv.transfer(src.c, src.slot, [this.ground.inv]); this.changed(); } });
     ContextMenu.show(e.clientX, e.clientY, items);
   },
-  useItem(c, slot) { Needs.consume(activeChar(), c, slot); this.changed(); },
   split(c, slot) {
     const half = Math.floor(slot.it.qty / 2);
     const part = Object.assign(U.deepClone(slot.it), { uid: U.uid(), qty: half });
@@ -9843,6 +10951,7 @@ const InvUI = {
   quick(src) {
     const dst = this.otherSide(src.side);
     if (!dst.length) return;
+    if (dst[0].temp === 'freezer' && FreezeRules.check(src.slot.it, dst[0]) !== 'ok') { FreezeRules.guard(src.slot.it, dst[0], () => { Inv.transfer(src.c, src.slot, dst); this.changed(); }); return; }
     if (!Inv.transfer(src.c, src.slot, dst)) Toast.show(STR.containerFull, 'warn');
     this.changed();
   },
@@ -9862,8 +10971,10 @@ const InvUI = {
   },
   storeAll(pred) {
     const c = this.current(); if (!c) return;
-    let moved = 0, failed = 0;
-    for (const src of this.playerSide()) { const r = Inv.transferAll(src, [c], pred); moved += r.moved; failed += r.failed; }
+    let moved = 0, failed = 0, skipped = 0;
+    const freezeOk = (it) => { if (c.temp !== 'freezer' || FreezeRules.check(it, c) === 'ok') return true; skipped++; return false; };
+    for (const src of this.playerSide()) { const r = Inv.transferAll(src, [c], (it) => (!pred || pred(it)) && freezeOk(it)); moved += r.moved; failed += r.failed; }
+    if (skipped) Toast.show(STR.freezeSkipped(skipped), 'warn', 4000);
     Toast.show(STR.movedN(moved) + (failed ? ' · ' + STR.failedN(failed) : ''), failed ? 'warn' : 'info', 2400);
     this.changed();
   },
@@ -9983,6 +11094,12 @@ const InvUI = {
   drop(st) {
     const t = st.target;
     if (!t) return;
+    const destC = t.kind === 'into' && t.slot ? t.slot.it.inv : t.c;
+    if (destC && destC.temp === 'freezer') { FreezeRules.guard(st.it, destC, () => this.doDrop(st)); return; }
+    this.doDrop(st);
+  },
+  doDrop(st) {
+    const t = st.target;
     const ch = activeChar();
     const it = st.it;
     // Detach from the source (slot or equipment), remembering how to undo.
@@ -10257,6 +11374,12 @@ const DebugUI = {
       U.el('div.row', null,
         U.el('button.btn.sm', { on: { click: () => { const n = activeChar().d.needs; n.satiety = n.hydration = n.energy = n.stamina = 100; } } }, STR.dbgFill),
         U.el('button.btn.sm', { on: { click: () => { S.cash += 10000; } } }, STR.dbgCash)),
+      U.el('h4', null, STR.dbgUtilities + ' — ' + STR.dbgFailDay(Power.failDay())),
+      U.el('div.row', null,
+        ...[[Power.brownoutStart() - 1, STR.dbgBeforeBrown], [Power.brownoutStart(), STR.dbgBrown], [Power.failDay(), STR.dbgFail]].map(([day, label]) =>
+          U.el('button.btn.sm', { on: { click: () => { const target = day * 1440 + 8 * 60; if (target > S.time.min) GameClock.advance(target - S.time.min); Toast.show(label + ' → ' + STR.day + ' ' + U.timeOf(S.time.min).day, 'info', 2000); Modal.close(); } } }, label + ' (' + STR.day + ' ' + day + ')')),
+        U.el('button.btn.sm' + (S.flags.gridForcedOff ? '.on' : ''), { on: { click: () => { S.flags.gridForcedOff = !S.flags.gridForcedOff; Modal.close(); this.open(); } } }, STR.dbgCutGrid)),
+      U.el('div.row', null, STR.difficulty + ':', U.el('select.sel', { on: { change: (e) => { S.difficulty = e.target.value; Modal.close(); this.open(); } } }, ...Object.keys(DIFFICULTY).map((k) => U.el('option', { value: k, selected: S.difficulty === k }, STR.diffNames[k] + ' (ไฟดับวันที่ ' + DIFFICULTY[k].utilityFailDay + ')')))),
       U.el('p.dim', null, STR.dbgNotYet),
       U.el('details', null, U.el('summary', null, STR.dbgAssets + ' (' + AssetRegistry.list().length + ')'), U.el('pre.assets', null, AssetRegistry.list().join('\n'))),
     );
@@ -10405,10 +11528,333 @@ const CheckoutUI = {
       if (leaving) body.appendChild(U.el('p.warn', null, STR.mustPay));
     }
     const tot = Shop.total(list);
+    if (DELIVERY[S.scene]) body.appendChild(U.el('button.btn', { on: { click: () => { Modal.close(); DeliveryUI.open(); } } }, '🚚 ' + STR.orderDelivery));
     Modal.open({ title: STR.checkoutTitle, body, actions: list.length ? [
       { label: STR.returnItems, fn: () => { Shop.returnAll(ch); Toast.show(STR.itemsReturned, 'info'); } },
       { label: STR.payBtn(U.money(tot)), primary: true, fn: () => { if (!Shop.pay(ch)) { Toast.show(STR.notEnoughCash, 'bad'); return false; } Toast.show(STR.paid, 'good'); return true; } },
     ] : [{ label: STR.ok }] });
+  },
+};
+
+/* ===== 56-food-ui.js ===== */
+/* ==========================================================================
+   56 · FOOD UI — eat panel (portion buttons), Eat Meal preview, nutrition
+   panel, stock overview, cooking, generator / load management, appliance
+   install & delivery ordering, freezer placement warnings.
+   ========================================================================== */
+
+const FoodFmt = {
+  stageName(it) { return STR.stage[Food.stage(it)] || ''; },
+  /** Freshness line for tooltips, in the context of the container's environment. */
+  freshLine(it, c) {
+    const d = itemDef(it.id);
+    if (!d.per) return '';
+    if (Food.ruined(it)) return `<div class="tt-r bad"><span>${STR.stage.ruined}</span><b>${it.st.ruined === 'burst' ? STR.ruinedBurst : ''}</b></div>`;
+    const env = Spoil.envOf(c);
+    const frz = it.frz || 0;
+    if (frz >= 0.99) return `<div class="tt-r frozen"><span>❄ ${STR.frozenState}</span><b>${STR.noSpoil}</b></div>`;
+    const rows = [];
+    if (frz > 0) rows.push(`<div class="tt-r frozen"><span>${STR.thawing}</span><b>${Math.round((1 - frz) * 100)}%</b></div>`);
+    const st = Food.stage(it);
+    const lifeH = Spoil.lifeH(d, it, env === 'freezer' ? 'fridge' : env);
+    const rem = (FRESH.spoiled - (it.age || 0)) * lifeH;
+    const cls = st === 'fresh' ? '' : st === 'aging' ? 'warn' : 'bad';
+    rows.push(`<div class="tt-r ${cls}"><span>${STR.stage[st]}</span><b>${rem > 0 ? STR.leftTime(U.dur(rem * 60)) : STR.pastDue}</b></div>`);
+    rows.push(`<div class="tt-sub">${STR.envName[env]}${it.st && it.st.soft ? ' · ' + STR.softTexture : ''}${it.st && it.st.thawedRaw ? ' · ' + STR.noRefreeze : ''}${Food.isRaw(it) ? ' · ' + STR.rawCook : ''}</div>`);
+    return rows.join('');
+  },
+};
+
+/** Per-item eat dialog with ¼ / ½ / 1 portion / All quick choices (§6.5.2). */
+const EatUI = {
+  open(c, slot) {
+    const ch = activeChar(), it = slot.it, d = itemDef(it.id);
+    const why = Food.blockReason(it);
+    if (why) { Toast.show(why, 'warn'); return; }
+    const total = Food.total(it), left = Food.left(it), per = Food.per(it);
+    const opts = [];
+    const add = (label, n) => { if (n >= 1 && n <= left && !opts.some((o) => o.n === n)) opts.push({ label, n }); };
+    add(STR.eat1, 1);
+    add('¼ ' + STR.ofPack, Math.max(1, Math.round(total / 4)));
+    add('½ ' + STR.ofPack, Math.max(1, Math.round(total / 2)));
+    add(STR.eatAll + ' (' + left + ')', left);
+    const risk = Food.risk(it);
+    const body = U.el('div.eatbox', null,
+      U.el('div.eathead', null, U.el('img', { src: Icons.get(it.id, Food.isOpened(it)) }), U.el('div', null, U.el('b', null, Food.label(it)), U.el('div.dim', null, STR.portionsLeft(left, total)))),
+      U.el('div.dim', null, STR.perPortionLine(per)),
+      risk > 0.05 ? U.el('p.warn', null, STR.riskWarn(Math.round(risk * 100))) : null,
+      U.el('div.eatbtns', null, ...opts.map((o) => U.el('button.btn' + (o.n === 1 ? '.primary' : ''), { on: { click: () => { Modal.close(); Food.eat(ch, c, slot, o.n); InvUI.isOpen && InvUI.changed(); } } }, o.label + ' · ' + Math.round(per.kcal * o.n) + ' kcal'))),
+    );
+    Modal.open({ title: (d.cat === 'drink' ? STR.drink : STR.eat) + ' — ' + d.name, body });
+  },
+};
+
+/** Eat Meal preview with swap / adjust before confirming (§6.5.4). */
+const MealUI = {
+  open() {
+    const ch = activeChar();
+    if (ch.d.sleeping) return;
+    const plan = Meal.plan(ch);
+    let rows = plan.rows.map((r) => ({ e: r.e, n: r.n }));
+    const body = U.el('div.meal');
+    const render = () => {
+      body.innerHTML = '';
+      const t = Meal.totals(rows);
+      body.appendChild(U.el('div.mealhead', null, STR.mealTarget(Math.round(plan.target), RATIONS[ch.d.nut.ration].name)));
+      if (!rows.length) body.appendChild(U.el('p.warn', null, STR.mealNothing));
+      const list = U.el('div.mealrows');
+      rows.forEach((r, i) => {
+        const d = itemDef(r.e.it.id), st = Food.stage(r.e.it);
+        list.appendChild(U.el('div.mealrow', null,
+          U.el('img', { src: Icons.get(r.e.it.id, Food.isOpened(r.e.it)) }),
+          U.el('span.mn', null, d.name, Food.isOpened(r.e.it) ? U.el('em.tag', null, STR.suffixOpened) : null, st === 'aging' ? U.el('em.tag.warn', null, STR.useSoon) : null),
+          U.el('span.mk', null, Math.round(r.e.per.kcal * r.n) + ' kcal'),
+          U.el('button.btn.xs', { on: { click: () => { r.n = Math.max(0, r.n - 1); if (!r.n) rows.splice(i, 1); render(); } } }, '−'),
+          U.el('b', null, r.n),
+          U.el('button.btn.xs', { disabled: r.n >= r.e.avail, on: { click: () => { r.n++; render(); } } }, '+')));
+      });
+      body.appendChild(list);
+      const unused = plan.cands.filter((e) => !rows.some((r) => r.e === e));
+      if (unused.length) {
+        body.appendChild(U.el('select.sel', { on: { change: (ev) => { const e = unused[+ev.target.value]; if (e) { rows.push({ e, n: 1 }); render(); } } } },
+          U.el('option', { value: '' }, STR.mealAdd), ...unused.map((e, i) => U.el('option', { value: i }, itemDef(e.it.id).name + ' · ' + Math.round(e.per.kcal) + ' kcal/ส่วน'))));
+      }
+      body.appendChild(U.el('div.mealtot', null,
+        `${Math.round(t.kcal)} kcal · ${STR.protein} ${Math.round(t.protein)} ก. · ${STR.carb} ${Math.round(t.carb)} ก. · ${STR.fat} ${Math.round(t.fat)} ก. · ${STR.micro} ${t.micro.toFixed(1)}`));
+    };
+    render();
+    Modal.open({ title: STR.eatMeal, body, wide: true, actions: [
+      { label: STR.cancel },
+      { label: STR.eatConfirm, primary: true, fn: () => { const n = Meal.eat(ch, rows.filter((r) => r.n > 0)); if (InvUI.isOpen) InvUI.changed(); Toast.show(n ? STR.mealDone(n) : STR.mealNothing, n ? 'good' : 'warn'); } },
+    ] });
+  },
+};
+
+/** Nutrition panel: buffers, energy reserve and trend, ration, auto meals, conditions (§6.5.8). */
+const NutritionUI = {
+  open() {
+    const ch = activeChar(), d = ch.d, n = d.nut;
+    const body = U.el('div.nutri');
+    const st = Body.stage(d), fx = Body.effects(d);
+    body.appendChild(U.el('div.nstage.' + st.key, null, STR.bodyState + ': ', U.el('b', null, st.name), ' · ' + STR.reserveLine(Math.round(n.reserve))));
+    const bars = U.el('div.nbufs');
+    for (const g of ['protein', 'carb', 'fat', 'micro']) {
+      const v = n.buf[g];
+      bars.appendChild(U.el('div.nbuf' + (v < NUTRITION.lowDays ? '.low' : ''), null, U.el('span', null, STR[g]), U.el('div.bar', null, U.el('i', { style: { width: (v / NUTRITION.bufferDays) * 100 + '%' } })), U.el('em', null, v.toFixed(1) + ' / 7 วัน')));
+    }
+    body.appendChild(U.el('h4', null, STR.buffers7d)); body.appendChild(bars);
+    const h = n.hist.slice(-7);
+    const trend = U.el('div.ntrend');
+    const max = Math.max(1, ...h.map((x) => Math.max(x.in, x.out)), n.today.in, n.today.out);
+    for (const x of [...h, { day: 'วันนี้', in: n.today.in, out: n.today.out }]) {
+      trend.appendChild(U.el('div.ncol', { title: `${Math.round(x.in)} / ${Math.round(x.out)} kcal` }, U.el('i.in', { style: { height: (x.in / max) * 60 + 'px' } }), U.el('i.out', { style: { height: (x.out / max) * 60 + 'px' } }), U.el('small', null, typeof x.day === 'number' ? 'ว.' + x.day : x.day)));
+    }
+    body.append(U.el('h4', null, STR.energyTrend), trend, U.el('div.dim', null, STR.trendLegend));
+    body.append(U.el('h4', null, STR.effectsTitle), U.el('div.fx', null,
+      `${STR.fxCarry} ×${fx.carry.toFixed(2)} · ${STR.fxSpeed} ×${fx.speed.toFixed(2)} · ${STR.fxHeal} ×${fx.heal.toFixed(2)} · ${STR.fxSkill} ×${fx.skill.toFixed(2)} · ${STR.fxStamina} ${fx.staminaMax} · ${STR.fxInfect} ×${fx.infection.toFixed(2)}`));
+    if (d.ill.length) body.appendChild(U.el('p.warn', null, d.ill.map((x) => STR.illName[x.type] + ' (' + Math.round(x.sev * 100) + '%, ~' + Math.round(x.h) + ' ชม.)').join(', ')));
+    body.append(U.el('h4', null, STR.rationTitle), RationUI.selector(() => { Modal.close(); this.open(); }),
+      U.el('label.chk', null, U.el('input', { type: 'checkbox', checked: n.auto, on: { change: (e) => { n.auto = e.target.checked; } } }), STR.autoMeals));
+    Modal.open({ title: STR.nutritionTitle, body, wide: true, actions: [{ label: STR.eatMeal, primary: true, fn: () => { Modal.close(); MealUI.open(); return false; } }, { label: STR.close }] });
+  },
+};
+
+const RationUI = {
+  selector(after) {
+    const d = S.chars[S.active];
+    const row = U.el('div.rations');
+    for (const [k, r] of Object.entries(RATIONS)) row.appendChild(U.el('button.btn.sm' + (d.nut.ration === k ? '.on' : ''), { title: Math.round(r.f * 100) + '%', on: { click: () => { d.nut.ration = k; if (after) after(); } } }, r.name + ' ' + Math.round(r.f * 100) + '%'));
+    return row;
+  },
+};
+
+/** Stock overview / Loot Spotter (§6.3). */
+const StockUI = {
+  gather(ch) {
+    const cs = [...ch.containers()];
+    for (const f of S.home.furniture) { if (f.inv) cs.push(f.inv); if (f.sub) cs.push(f.sub); }
+    for (const p of S.home.piles || []) cs.push(p.inv);
+    const out = { cats: {}, kcal: 0, water: 0, gasoline: 0, med: { dressing: 0, antiseptic: 0, painkiller: 0, antibiotic: 0 }, items: 0, expiring: 0 };
+    const seen = new Set();
+    const visit = (c) => Inv.walk(c, (it) => {
+      if (seen.has(it.uid)) return; seen.add(it.uid);
+      const d = itemDef(it.id); out.items += it.qty;
+      out.cats[d.cat] = (out.cats[d.cat] || 0) + it.qty;
+      if (d.per && !Food.ruined(it) && !['spoiled', 'rotten'].includes(Food.stage(it)) && !d.tags.includes('condiment') && !d.tags.includes('spice')) {
+        const portions = Food.left(it) + (it.qty - 1) * Food.total(it);
+        out.kcal += Food.per(it).kcal * portions;
+        out.water += (Food.per(it).water || 0) * portions;
+        if (Food.stage(it) === 'aging') out.expiring += it.qty;
+      }
+      if (d.fuelL) out.gasoline += (it.st && it.st.fuelLeft != null ? it.st.fuelLeft : d.fuelL) * it.qty;
+      if (d.tags.includes('dressing') || d.tags.includes('bandage')) out.med.dressing += it.qty;
+      if (d.tags.includes('antiseptic')) out.med.antiseptic += it.qty;
+      if (d.tags.includes('painkiller')) out.med.painkiller += it.qty;
+      if (d.tags.includes('antibiotic')) out.med.antibiotic += it.qty;
+    });
+    cs.forEach(visit);
+    const g = Appliances.generator(); if (g) out.gasoline += Appliances.genState(g).fuel;
+    return out;
+  },
+  open() {
+    const ch = activeChar(), s = this.gather(ch), need = Body.need(ch.d);
+    const body = U.el('div.stock');
+    const days = U.el('div.sdays');
+    for (const [k, r] of Object.entries(RATIONS)) {
+      const v = s.kcal / (need * r.f);
+      days.appendChild(U.el('div.sday' + (v < 3 ? '.low' : ''), null, U.el('span', null, STR.foodDaysAt(r.name)), U.el('b', null, v.toFixed(1) + ' ' + STR.daysUnit)));
+    }
+    const waterDays = s.water / 80 + (Power.waterOn() ? Infinity : 0);
+    const fuelH = s.gasoline / 0.55;
+    body.append(U.el('h4', null, STR.stockFood + ' (' + Math.round(s.kcal).toLocaleString() + ' kcal · ' + STR.needPerDay(Math.round(need)) + ')'), days,
+      U.el('div.sgrid', null,
+        U.el('div.sday' + (waterDays < 3 ? '.low' : ''), null, U.el('span', null, STR.waterDays), U.el('b', null, isFinite(waterDays) ? waterDays.toFixed(1) + ' ' + STR.daysUnit : STR.tapRunning)),
+        U.el('div.sday' + (fuelH < 24 ? '.low' : ''), null, U.el('span', null, STR.fuelHours), U.el('b', null, fuelH.toFixed(1) + ' ชม. (' + s.gasoline.toFixed(1) + ' ล.)')),
+        U.el('div.sday' + (S.home.gas < 15 ? '.low' : ''), null, U.el('span', null, STR.cookGas), U.el('b', null, Math.round(S.home.gas) + '%')),
+        U.el('div.sday' + (s.expiring ? '.warn' : ''), null, U.el('span', null, STR.useSoon), U.el('b', null, s.expiring + ' ' + STR.pieces))),
+      U.el('h4', null, STR.medStock), U.el('div.sgrid', null, ...Object.entries(s.med).map(([k, v]) => U.el('div.sday' + (v === 0 ? '.low' : ''), null, U.el('span', null, STR.medNames[k]), U.el('b', null, v)))),
+      U.el('h4', null, STR.byCategory2), U.el('div.sgrid', null, ...Object.entries(s.cats).sort((a, b) => b[1] - a[1]).map(([k, v]) => U.el('div.sday', null, U.el('span', null, CATEGORIES[k].name), U.el('b', null, v)))));
+    Modal.open({ title: STR.stockTitle, body, wide: true });
+  },
+};
+
+/** Cooking panel (C or stove/microwave). */
+const CookUI = {
+  open(prefStation) {
+    const ch = activeChar();
+    if (ch.d.sleeping) return;
+    const stations = Cook.stations(ch);
+    let station = stations.find((s) => s.id === prefStation && s.ok) || stations.find((s) => s.ok && s.id !== 'none') || stations[stations.length - 1];
+    let recipe = RECIPES[0], batch = 1, longer = false, choices = [];
+    const body = U.el('div.cook');
+    const listEl = U.el('div.rlist'), detail = U.el('div.rdetail');
+    body.append(listEl, detail);
+    const pickDefaults = () => {
+      choices = recipe.slots.map((sl) => { const c = Cook.candidates(ch, sl); return c.length && !sl.optional ? { entry: c[0], amt: sl.amt } : (c.length ? { entry: null, amt: sl.amt, cands: c } : { entry: null, amt: sl.amt }); });
+    };
+    const renderList = () => {
+      listEl.innerHTML = '';
+      listEl.appendChild(U.el('select.sel', { on: { change: (e) => { station = stations[+e.target.value]; renderList(); renderDetail(); } } }, ...stations.map((s, i) => U.el('option', { value: i, selected: s === station, disabled: !s.ok }, s.name + (s.ok ? '' : ' — ' + s.why)))));
+      for (const r of RECIPES) {
+        const can = r.station.includes(Cook.stationKind(station));
+        const have = r.slots.every((sl) => sl.optional || Cook.candidates(ch, sl).length);
+        listEl.appendChild(U.el('button.rbtn' + (r === recipe ? '.on' : '') + (!can || !have ? '.dim' : ''), { on: { click: () => { recipe = r; pickDefaults(); renderList(); renderDetail(); } } }, U.el('img', { src: Icons.get(r.out) }), r.name, have ? null : U.el('em', null, STR.missing)));
+      }
+    };
+    const renderDetail = () => {
+      detail.innerHTML = '';
+      detail.appendChild(U.el('h3', null, recipe.name));
+      detail.appendChild(U.el('div.dim', null, STR.methodName[recipe.method] + ' · ' + STR.stationsOk(recipe.station.map((s) => STR.stationName[s]).join(' / '))));
+      recipe.slots.forEach((sl, i) => {
+        const cands = Cook.candidates(ch, sl);
+        const ch_ = choices[i] || (choices[i] = { entry: null, amt: sl.amt });
+        const sel = U.el('select.sel', { on: { change: (e) => { ch_.entry = e.target.value === '' ? null : cands[+e.target.value]; renderDetail(); } } },
+          sl.optional ? U.el('option', { value: '' }, STR.skipOpt) : null,
+          ...cands.map((e, k) => U.el('option', { value: k, selected: ch_.entry === e || (ch_.entry && ch_.entry.it.uid === e.it.uid) }, itemDef(e.it.id).name + (Food.isOpened(e.it) ? ' (' + STR.suffixOpened + ')' : '') + ((e.it.frz || 0) > 0.3 ? ' ❄' : '') + ' · ' + e.avail + ' ' + STR.portionUnit)));
+        if (ch_.entry) ch_.entry = cands.find((e) => e.it.uid === ch_.entry.it.uid) || null;
+        const amtRow = ch_.entry ? U.el('span.amt', null,
+          U.el('button.btn.xs', { on: { click: () => { ch_.amt = Math.max(1, ch_.amt - 1); renderDetail(); } } }, '−'),
+          U.el('b', null, ch_.amt * batch + ' ' + STR.portionUnit),
+          U.el('button.btn.xs', { on: { click: () => { ch_.amt = Math.min(Math.floor(ch_.entry.avail / batch), ch_.amt + 1); renderDetail(); } } }, '+')) : null;
+        detail.appendChild(U.el('div.slot' + (!cands.length && !sl.optional ? '.miss' : ''), null, U.el('span.sl', null, sl.label + (sl.optional ? ' (' + STR.optional + ')' : '')), cands.length ? sel : U.el('em', null, STR.noneAvailable), amtRow));
+      });
+      detail.appendChild(U.el('div.row', null, STR.batch + ':', ...[1, 2, 3, 4].map((b) => U.el('button.btn.xs' + (b === batch ? '.on' : ''), { on: { click: () => { batch = b; renderDetail(); } } }, '×' + b)),
+        U.el('label.chk', null, U.el('input', { type: 'checkbox', checked: longer, on: { change: (e) => { longer = e.target.checked; renderDetail(); } } }), STR.cookLonger)));
+      const pv = Cook.preview(ch, recipe, choices, batch, station, longer);
+      if (!pv.ok) detail.appendChild(U.el('p.warn', null, pv.why));
+      else {
+        detail.appendChild(U.el('div.pv', null,
+          U.el('div', null, STR.cookOut(itemDef(recipe.out).name, pv.outPortions), ' · ', STR.cookTime(pv.minutes)),
+          U.el('div.dim', null, STR.perPortionLine(pv.per)),
+          U.el('div.dim', null, STR.qualityLine(Math.round(pv.quality * 100)) + (pv.water ? ' · ' + STR.waterUse(pv.water) : '') + (pv.frozen ? ' · ' + STR.fromFrozen : '')),
+          pv.risk > 0.05 ? U.el('p.warn', null, STR.riskWarn(Math.round(pv.risk * 100))) : null));
+      }
+      detail.appendChild(U.el('button.btn.primary', { disabled: !pv.ok, on: { click: () => { if (Cook.make(ch, recipe, choices, batch, station, longer)) { Toast.show(STR.cookedToast(recipe.name), 'good'); pickDefaults(); renderList(); renderDetail(); } } } }, '🍳 ' + STR.cookBtn));
+    };
+    pickDefaults(); renderList(); renderDetail();
+    Modal.open({ title: STR.cookTitle, body, wide: true, cls: 'cookmodal' });
+  },
+};
+
+/** Generator & load management (§9.2). */
+const GenUI = {
+  open() {
+    const g = Appliances.generator(); if (!g) return;
+    const st = Appliances.genState(g), ch = activeChar();
+    const body = U.el('div.gen');
+    const render = () => {
+      body.innerHTML = '';
+      const a = Appliances.allocation();
+      body.append(
+        U.el('div.tt-r', null, U.el('span', null, STR.genStatus), U.el('b', null, st.on ? STR.genOn : STR.genOff)),
+        U.el('div.tt-r', null, U.el('span', null, STR.genFuel), U.el('b', null, st.fuel.toFixed(1) + ' / ' + FURNITURE.generator.tankL + ' ล.')),
+        U.el('div.tt-r', null, U.el('span', null, STR.gridState), U.el('b', null, Power.gridOn() ? STR.powerOk : STR.powerOff)),
+        U.el('div.tt-r', null, U.el('span', null, STR.genLoad), U.el('b', null, a.watts + ' / ' + a.cap + ' W')),
+        g.slot === 'G1' ? U.el('p.warn', null, STR.genOutdoorNoise) : U.el('p.dim', null, STR.genIndoor),
+        U.el('div.row', null,
+          U.el('button.btn' + (st.on ? '' : '.primary'), { on: { click: () => { Appliances.setGen(!st.on); render(); } } }, st.on ? STR.genStop : STR.genStart),
+          U.el('button.btn', { on: { click: () => { const l = Appliances.refuel(ch); Toast.show(l ? STR.genRefuel(l.toFixed(1)) : STR.noGasoline, l ? 'good' : 'warn'); render(); } } }, '⛽ ' + STR.genRefuelBtn)),
+        U.el('h4', null, STR.loadPanel));
+      for (const c of Appliances.consumers()) {
+        body.appendChild(U.el('label.chk', null, U.el('input', { type: 'checkbox', checked: Appliances.loadOn(c.key), on: { change: (e) => { S.home.loads[c.key] = e.target.checked; render(); } } }), c.name + ' · ' + c.watts + ' W' + (a.set.has(c.key) ? ' ⚡' : '')));
+      }
+    };
+    render();
+    Modal.open({ title: FURNITURE.generator.name, body });
+  },
+};
+
+/** Install an appliance item into a free home slot. */
+const InstallUI = {
+  open(c, slot) {
+    const d = itemDef(slot.it.id), type = d.installs;
+    if (S.scene !== 'home') { Toast.show(STR.installHomeOnly, 'warn'); return; }
+    const free = HomeInstall.freeSlots(HomeInstall.slotKind(type));
+    if (!free.length) { Toast.show(STR.noFreeSlot, 'warn'); return; }
+    const body = U.el('div.sleepopts', null, U.el('p.dim', null, STR.installTime(FURNITURE[type].install || 30)), ...free.map((s) => U.el('button.mbtn', { on: { click: () => { Modal.close(); if (HomeInstall.installItem(activeChar(), c, slot, s.id)) { Toast.show(STR.installed(FURNITURE[type].name), 'good'); if (InvUI.isOpen) InvUI.changed(); } } } }, s.name)));
+    Modal.open({ title: STR.installTitle + ' — ' + FURNITURE[type].name, body });
+  },
+};
+
+/** Appliance ordering with delivery at a shop counter (pre-outbreak). */
+const DeliveryUI = {
+  open() {
+    const list = DELIVERY[S.scene];
+    if (!list || S.flags.outbreak) return;
+    const body = U.el('div.deliv', null, U.el('p.dim', null, STR.deliveryNote(U.money(DELIVERY.fee), Math.round(DELIVERY.delayMin / 60))));
+    for (const [id, price] of list) {
+      const type = itemDef(id).installs;
+      const free = HomeInstall.freeSlots(HomeInstall.slotKind(type)).filter((s) => !S.deliveries.some((x) => x.slot === s.id));
+      const sel = U.el('select.sel', null, ...free.map((s) => U.el('option', { value: s.id }, s.name)));
+      body.appendChild(U.el('div.drow', null, U.el('img', { src: Icons.get(id) }), U.el('div', null, U.el('b', null, itemDef(id).name), U.el('div.dim', null, U.money(price) + ' + ' + STR.fee + ' ' + U.money(DELIVERY.fee))),
+        free.length ? sel : U.el('em.warn', null, STR.noFreeSlot),
+        U.el('button.btn.primary', { disabled: !free.length, on: { click: () => { if (HomeInstall.order(id, price, sel.value)) { Toast.show(STR.orderedToast, 'good'); Modal.close(); } } } }, STR.orderBtn)));
+    }
+    Modal.open({ title: STR.deliveryTitle, body, wide: true });
+  },
+};
+
+/** Freezer placement rules (§6.6.5, §6.6.6). Returns 'ok' | 'warn' | 'block'. */
+const FreezeRules = {
+  check(it, c) {
+    if (!c || c.temp !== 'freezer') return 'ok';
+    let worst = 'ok';
+    const visit = (x) => {
+      const d = itemDef(x.id);
+      if (x.inv) x.inv.slots.forEach((s) => visit(s.it));
+      if (!d.per || Food.ruined(x)) return;
+      if (x.st && x.st.thawedRaw && !x.st.cooked) worst = 'block';
+      else if (d.freeze === 'no' && worst !== 'block') worst = 'warn';
+    };
+    visit(it);
+    return worst;
+  },
+  /** Run cb() if placement is acceptable, after a confirmation for risky items. */
+  guard(it, c, cb) {
+    const r = this.check(it, c);
+    if (r === 'block') { Toast.show(STR.noRefreezeMsg, 'bad', 5000); return; }
+    if (r === 'warn') { Modal.confirm(STR.freezeWarnTitle, STR.freezeWarn(itemDef(it.id).name), cb, STR.freezeAnyway, true); return; }
+    cb();
   },
 };
 
@@ -10450,6 +11896,11 @@ const Game = {
     Needs.init();
     Outbreak.init();
     Power.init();
+    Spoil.init();
+    Body.initHooks();
+    Meal.initAuto();
+    Appliances.init();
+    HomeInstall.init();
     GameClock.onDay(() => { if (Game.mode === 'play') Save.saveRun('day'); });
     const run = Save.loadRun();
     S = run || createRun({ bg: 'warehouse', difficulty: 'standard', name: '' });
@@ -10633,8 +12084,10 @@ const Game = {
         case 'PageUp': Render.cam.follow = false; Render.setViewFloor(Render.viewFloor + 1); break;
         case 'PageDown': Render.cam.follow = false; Render.setViewFloor(Render.viewFloor - 1); break;
         case 'KeyM': MapUI.open(false); break;
-        case 'KeyH': case 'KeyB': case 'KeyC':
-          Toast.show({ KeyH: 'หน้าต่างสุขภาพ', KeyB: 'โหมดสร้าง', KeyC: 'การคราฟต์' }[e.code] + ' จะเปิดใช้งานใน Phase ' + { KeyH: '1D', KeyB: '1D', KeyC: '1C' }[e.code], 'info', 2200);
+        case 'KeyC': CookUI.open(); break;
+        case 'KeyN': NutritionUI.open(); break;
+        case 'KeyH': case 'KeyB':
+          Toast.show({ KeyH: 'หน้าต่างสุขภาพ', KeyB: 'โหมดสร้าง' }[e.code] + ' จะเปิดใช้งานใน Phase 1D', 'info', 2200);
           break;
         default: break;
       }

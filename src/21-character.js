@@ -27,8 +27,12 @@ function createCharacterData({ name, bg, profileSkills }) {
     pockets: Inv.makeContainer(4, 2, 4, 'กระเป๋ากางเกง/เสื้อ'),
     sleeping: false,
     alive: true,
+    nut: null,
+    ill: [],
   };
 }
+/** Create a character record with its nutrition state initialised. */
+function newCharacter(opts) { const d = createCharacterData(opts); Body.init(d); return d; }
 
 class Character {
   constructor(data) { this.d = data; }
@@ -68,6 +72,7 @@ class Character {
     const armF = (b.armL.hp / BODY_PARTS.armL.hp + b.armR.hp / BODY_PARTS.armR.hp) / 2;
     const legF = (b.legL.hp / BODY_PARTS.legL.hp + b.legR.hp / BODY_PARTS.legR.hp) / 2;
     cap *= 0.55 + 0.25 * armF + 0.2 * legF;
+    if (this.d.nut) cap *= Body.effects(this.d).carry;
     return cap;
   }
   /** Load ratio: ≤1 normal; 1..1.5 overloaded (slow, loud); ≥1.5 immobile. */
@@ -79,6 +84,7 @@ class Character {
     const legF = Math.min(b.legL.hp / BODY_PARTS.legL.hp, b.legR.hp / BODY_PARTS.legR.hp);
     f *= 0.45 + 0.55 * legF;
     if (this.d.needs.energy < 15) f *= 0.8;
+    if (this.d.nut) f *= Body.effects(this.d).speed;
     return Math.max(0, f * this.cartFactor());
   }
   health() {
@@ -94,7 +100,7 @@ const Skills = {
     const s = ch.d.skills[key];
     if (!s || s.lv >= 10) return;
     // Exhaustion slows learning (§5.3)
-    const mult = ch.d.needs.energy < 20 ? 0.5 : 1;
+    const mult = (ch.d.needs.energy < 20 ? 0.5 : 1) * (ch.d.nut ? Body.effects(ch.d).skill : 1);
     s.xp += xp * mult;
     while (s.lv < 10 && s.xp >= xpForLevel(s.lv + 1)) {
       s.xp -= xpForLevel(s.lv + 1);

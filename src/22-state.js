@@ -35,14 +35,18 @@ function createRun({ bg, difficulty, name }) {
     difficulty: DIFFICULTY[difficulty] ? difficulty : 'standard',
     time: { min: CFG.START_MINUTE, speedIdx: 2 },
     cash: CFG.START_CASH,
-    chars: [createCharacterData({ name, bg, profileSkills: P.skills })],
+    chars: [newCharacter({ name, bg, profileSkills: P.skills })],
     active: 0,
     home: { furniture: [], lightsOn: true, piles: [] },
     locs: {},
+    food: { reserve: [], exclude: [] },
+    deliveries: [],
     flags: { outbreak: false },
     log: [],
     scene: 'home',
   };
+  st.home.gas = 70;
+  st.home.loads = {};
   st.home.furniture = buildHomeFurniture(st.worldSeed);
   return st;
 }
@@ -73,6 +77,7 @@ function buildHomeFurniture(worldSeed) {
       left -= q;
     }
   }
+  for (const f of list) { if (f.sub && f.sub.temp === 'freezer') Spoil.freezeContents(f.sub); if (f.inv && f.inv.temp === 'freezer') Spoil.freezeContents(f.inv); }
   return list;
 }
 
@@ -95,6 +100,7 @@ const Sanitize = {
     c.label = typeof c.label === 'string' ? c.label : (label || '');
     if (!['ambient', 'fridge', 'freezer'].includes(c.temp)) c.temp = 'ambient';
     if (c.shop != null && !LOCATIONS[c.shop]) delete c.shop;
+    if (c.cold != null) c.cold = U.num(c.cold, 1, 0, 1);
     const old = Array.isArray(c.slots) ? c.slots : [];
     c.slots = [];
     const overflow = [];
@@ -126,6 +132,9 @@ const Sanitize = {
     else delete it.inv;
     if (it.st != null && typeof it.st !== 'object') delete it.st;
     if (it.unpaid != null && !LOCATIONS[it.unpaid]) delete it.unpaid;
+    if (it.age != null) it.age = U.num(it.age, 0, 0, 3);
+    if (it.frz != null) it.frz = U.num(it.frz, 0, 0, 1);
+    if (it.st && it.st.nut && typeof it.st.nut !== 'object') delete it.st.nut;
     return it;
   },
   character(c) {
@@ -157,6 +166,8 @@ const Sanitize = {
     }
     c.sleeping = false;
     c.alive = c.alive !== false;
+    Body.init(c);
+    c.ill = c.ill.filter((x) => x && typeof x.type === 'string').map((x) => ({ type: x.type, sev: U.num(x.sev, 0.3, 0, 1), h: U.num(x.h, 6, 0, 500) }));
     return c;
   },
   run(st) {
@@ -165,7 +176,7 @@ const Sanitize = {
     const tmpl = {
       schema: CFG.SCHEMA_RUN, build: BUILD, life: 1, createdAt: Date.now(), worldSeed: P.worldSeed,
       lifeSeed: 1, rng: {}, difficulty: 'standard', time: { min: CFG.START_MINUTE, speedIdx: 2 },
-      cash: CFG.START_CASH, chars: [], active: 0, home: { furniture: [], lightsOn: true, piles: [] }, locs: {},
+      cash: CFG.START_CASH, chars: [], active: 0, home: { furniture: [], lightsOn: true, piles: [], gas: 70, loads: {} }, locs: {}, food: { reserve: [], exclude: [] }, deliveries: [],
       flags: { outbreak: false }, log: [], scene: 'home',
     };
     U.deepFill(st, tmpl);
@@ -201,7 +212,7 @@ const Sanitize = {
         return out;
       });
       if (furn.length !== fixtures.length) continue;   // garbled → regenerate on next visit
-      locs[id] = { furniture: furn, piles: pileList(L.piles), initial: U.num(L.initial, 1, 1, 1e6), depletedTo: U.num(L.depletedTo, 1, 0, 1), visits: U.num(L.visits, 0, 0, 1e6) | 0, lastVisit: L.lastVisit == null ? null : U.num(L.lastVisit, 0, 0, 1e9) };
+      locs[id] = { genAt: U.num(L.genAt, 0, 0, 1e9), furniture: furn, piles: pileList(L.piles), initial: U.num(L.initial, 1, 1, 1e6), depletedTo: U.num(L.depletedTo, 1, 0, 1), visits: U.num(L.visits, 0, 0, 1e6) | 0, lastVisit: L.lastVisit == null ? null : U.num(L.lastVisit, 0, 0, 1e9) };
     }
     st.locs = locs;
     if (st.scene !== 'home' && !st.locs[st.scene]) st.scene = 'home';
@@ -217,6 +228,8 @@ const Sanitize = {
         f.x = U.num(f.x, 0, -40, 40); f.z = U.num(f.z, 0, -40, 40);
         f.rot = U.num(f.rot, 0, 0, 3) | 0;
         f.label = typeof f.label === 'string' ? f.label : def.name;
+        if (f.slot != null && !HOME_SLOTS.some((s) => s.id === f.slot)) delete f.slot;
+        if (f.type === 'generator') f.gen = { on: !!(f.gen && f.gen.on), fuel: U.num(f.gen && f.gen.fuel, 0, 0, 50), hours: U.num(f.gen && f.gen.hours, 0, 0, 1e6) };
         // Grid size and temperature always come from the current furniture definition.
         const fixC = (c, spec, temp, label) => {
           const out = c && typeof c === 'object' ? c : Inv.makeContainer(1, 1, 1, label);
@@ -229,6 +242,12 @@ const Sanitize = {
       });
     }
     st.home.lightsOn = st.home.lightsOn !== false;
+    st.home.gas = U.num(st.home.gas, 70, 0, 100);
+    st.home.carFuel = U.num(st.home.carFuel, 24, 0, 60);
+    if (!st.home.loads || typeof st.home.loads !== 'object' || Array.isArray(st.home.loads)) st.home.loads = {};
+    st.food.reserve = Array.isArray(st.food.reserve) ? st.food.reserve.filter((x) => ITEMS[x]) : [];
+    st.food.exclude = Array.isArray(st.food.exclude) ? st.food.exclude.filter((x) => ITEMS[x]) : [];
+    st.deliveries = (Array.isArray(st.deliveries) ? st.deliveries : []).filter((x) => x && ITEMS[x.item] && isFinite(x.at)).map((x) => ({ id: String(x.id), item: x.item, slot: String(x.slot), at: +x.at, paid: U.num(x.paid, 0, 0, 1e7) }));
     if (typeof st.rng !== 'object' || !st.rng) st.rng = {};
     // Schema migrations go here, oldest first: if (fromSchema < 2) {...}
     void fromSchema;

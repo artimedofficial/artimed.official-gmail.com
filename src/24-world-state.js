@@ -27,9 +27,11 @@ const World = {
       if (fixed) for (const [iid, q] of fixed) { const it = Inv.makeItem(iid, q); Inv.add(f.inv, it); }
       if (f.pool) this.stock(f.inv, POOLS[f.pool], rng, 0.92 * (L.density || 1) * diff.loot);
     });
-    const st = { furniture, piles: [], initial: 0, depletedTo: 1, visits: 0, lastVisit: null };
+    for (const f of furniture) if (f.inv && f.inv.temp === 'freezer') Spoil.freezeContents(f.inv);
+    const st = { furniture, piles: [], initial: 0, depletedTo: 1, visits: 0, lastVisit: null, genAt: S.time.min };
     st.initial = this.countItems(st);
     S.locs[id] = st;
+    if (S.flags.outbreak) Spoil.catchUp(st);
     if (!S.flags.outbreak) this.markUnpaid(st, id);
     return st;
   },

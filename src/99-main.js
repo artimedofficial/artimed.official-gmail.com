@@ -35,6 +35,11 @@ const Game = {
     Needs.init();
     Outbreak.init();
     Power.init();
+    Spoil.init();
+    Body.initHooks();
+    Meal.initAuto();
+    Appliances.init();
+    HomeInstall.init();
     GameClock.onDay(() => { if (Game.mode === 'play') Save.saveRun('day'); });
     const run = Save.loadRun();
     S = run || createRun({ bg: 'warehouse', difficulty: 'standard', name: '' });
@@ -218,8 +223,10 @@ const Game = {
         case 'PageUp': Render.cam.follow = false; Render.setViewFloor(Render.viewFloor + 1); break;
         case 'PageDown': Render.cam.follow = false; Render.setViewFloor(Render.viewFloor - 1); break;
         case 'KeyM': MapUI.open(false); break;
-        case 'KeyH': case 'KeyB': case 'KeyC':
-          Toast.show({ KeyH: 'หน้าต่างสุขภาพ', KeyB: 'โหมดสร้าง', KeyC: 'การคราฟต์' }[e.code] + ' จะเปิดใช้งานใน Phase ' + { KeyH: '1D', KeyB: '1D', KeyC: '1C' }[e.code], 'info', 2200);
+        case 'KeyC': CookUI.open(); break;
+        case 'KeyN': NutritionUI.open(); break;
+        case 'KeyH': case 'KeyB':
+          Toast.show({ KeyH: 'หน้าต่างสุขภาพ', KeyB: 'โหมดสร้าง' }[e.code] + ' จะเปิดใช้งานใน Phase 1D', 'info', 2200);
           break;
         default: break;
       }

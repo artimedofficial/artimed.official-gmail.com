@@ -24,10 +24,11 @@ const Icons = {
     const rim = new THREE.DirectionalLight(0x9fc4ff, 1.4); rim.position.set(-3, 2, -2); this.scene.add(rim);
     this.cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 50);
   },
-  /** Data URL for an item id (cached). */
-  get(id) {
+  /** Data URL for an item id (cached). opened → the "Opened" variant (§6.5.2). */
+  get(id, opened = false) {
     const ov = ASSET_OVERRIDES['icon.' + id];
     if (ov && !/\.(glb|gltf)/i.test(ov)) return ov;
+    if (opened) return this.openedIcon(id);
     if (this.cache.has(id)) return this.cache.get(id);
     let url;
     try { url = this.r ? this.render(id) : this.vector(id); }
@@ -62,6 +63,30 @@ const Icons = {
     const url = this.r.domElement.toDataURL('image/png');
     this.scene.remove(obj);
     obj.traverse((o) => { if (o.isMesh) o.geometry.dispose(); });
+    return url;
+  },
+  /** Opened variant: the base icon with a torn corner and an open-lid marker. */
+  openedIcon(id) {
+    const key = id + '|open';
+    if (this.cache.has(key)) return this.cache.get(key);
+    const d = itemDef(id), [w, h] = d.size;
+    const c = document.createElement('canvas'); c.width = w * 64; c.height = h * 64;
+    const ctx = c.getContext('2d');
+    const url = this.get(id);
+    const img = new Image();
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0, c.width, c.height);
+      // torn top-right corner
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath(); ctx.moveTo(c.width, 0); ctx.lineTo(c.width - 26, 0); ctx.lineTo(c.width - 18, 7); ctx.lineTo(c.width - 12, 4); ctx.lineTo(c.width - 6, 12); ctx.lineTo(c.width, 26); ctx.closePath(); ctx.fill();
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = 'rgba(255,210,122,.95)'; ctx.beginPath(); ctx.arc(14, 14, 9, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#1a1208'; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('½', 14, 15);
+      this.cache.set(key, c.toDataURL());
+      if (InvUI.isOpen) InvUI.render();
+    };
+    img.src = url;
+    this.cache.set(key, url);       // base icon until the composite is ready
     return url;
   },
   /** Clean vector fallback (category colour + glyph). */
@@ -140,6 +165,7 @@ const IconModels = {
       case 'backpack': pb.box(0.9, 1.1, 0.5, Mat.tex('fabric', c, 0.9), 0, 0, 0, 0.18); pb.box(0.7, 0.45, 0.2, Mat.tex('fabric', c2, 0.9), 0, 0.15, 0.32, 0.08); pb.box(0.12, 0.6, 0.06, plain('#222', 0.7), -0.25, 0.4, -0.3); pb.box(0.12, 0.6, 0.06, plain('#222', 0.7), 0.25, 0.4, -0.3); pb.geo(new THREE.TorusGeometry(0.12, 0.03, 6, 12, Math.PI), plain('#222', 0.7), 0, 1.1, 0); break;
       case 'pouch': pb.box(0.9, 0.6, 0.35, Mat.tex('fabric', c, 0.9), 0, 0, 0, 0.12); pb.box(0.9, 0.08, 0.36, plain(c2, 0.6), 0, 0.45, 0); break;
       case 'crate': pb.box(0.95, 0.65, 0.65, plain(c, 0.35), 0, 0, 0, 0.05); pb.box(0.98, 0.08, 0.68, plain(c2, 0.35), 0, 0.65, 0, 0.03); break;
+      case 'plate': pb.cyl(0.62, 0.5, 0.08, plain('#f2f1ec', 0.25), 0, 0, 0, 28); pb.sphere(0.42, plain(c, 0.6), 0, 0.08, 0, 1, 0.42, 1, 18); pb.sphere(0.2, plain(c2, 0.6), 0.18, 0.2, 0.08, 1, 0.5, 1, 12); break;
       case 'candle': pb.cyl(0.15, 0.15, 0.7, plain(c, 0.6), 0, 0, 0, 14); pb.sphere(0.06, Mat.emissive(c2, 1.5), 0, 0.82, 0, 0.8, 1.6, 0.8, 8); break;
       default: pb.box(0.7, 0.6, 0.5, plain(c, 0.5), 0, 0, 0, 0.04);
     }

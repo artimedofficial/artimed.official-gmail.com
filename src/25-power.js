@@ -10,9 +10,18 @@ const Power = {
   failDay() { return S ? (S.flags.failDayOverride || difficultyOf(S.difficulty).utilityFailDay) : 60; },
   brownoutStart() { return this.failDay() - 10; },
   /** Outage windows [startMin, endMin) (minutes into the day) for a given day number. */
+  _memo: new Map(),
   outages(day) {
     const F = this.failDay(), B = F - 10;
     if (day < B || day >= F) return [];
+    const key = day + '|' + F + '|' + (S ? S.lifeSeed : 1);
+    if (this._memo.has(key)) return this._memo.get(key);
+    const res = this._outages(day, F, B);
+    if (this._memo.size > 64) this._memo.clear();
+    this._memo.set(key, res);
+    return res;
+  },
+  _outages(day, F, B) {
     const k = day - B + 1;                          // 1..10
     const totalH = 1 + k * 1.1;                     // 2.1 h … 12 h per day
     const rng = RNG.local('brownout|' + (S ? S.lifeSeed : 1) + '|' + day);

@@ -39,6 +39,12 @@ const DebugUI = {
       U.el('div.row', null,
         U.el('button.btn.sm', { on: { click: () => { const n = activeChar().d.needs; n.satiety = n.hydration = n.energy = n.stamina = 100; } } }, STR.dbgFill),
         U.el('button.btn.sm', { on: { click: () => { S.cash += 10000; } } }, STR.dbgCash)),
+      U.el('h4', null, STR.dbgUtilities + ' — ' + STR.dbgFailDay(Power.failDay())),
+      U.el('div.row', null,
+        ...[[Power.brownoutStart() - 1, STR.dbgBeforeBrown], [Power.brownoutStart(), STR.dbgBrown], [Power.failDay(), STR.dbgFail]].map(([day, label]) =>
+          U.el('button.btn.sm', { on: { click: () => { const target = day * 1440 + 8 * 60; if (target > S.time.min) GameClock.advance(target - S.time.min); Toast.show(label + ' → ' + STR.day + ' ' + U.timeOf(S.time.min).day, 'info', 2000); Modal.close(); } } }, label + ' (' + STR.day + ' ' + day + ')')),
+        U.el('button.btn.sm' + (S.flags.gridForcedOff ? '.on' : ''), { on: { click: () => { S.flags.gridForcedOff = !S.flags.gridForcedOff; Modal.close(); this.open(); } } }, STR.dbgCutGrid)),
+      U.el('div.row', null, STR.difficulty + ':', U.el('select.sel', { on: { change: (e) => { S.difficulty = e.target.value; Modal.close(); this.open(); } } }, ...Object.keys(DIFFICULTY).map((k) => U.el('option', { value: k, selected: S.difficulty === k }, STR.diffNames[k] + ' (ไฟดับวันที่ ' + DIFFICULTY[k].utilityFailDay + ')')))),
       U.el('p.dim', null, STR.dbgNotYet),
       U.el('details', null, U.el('summary', null, STR.dbgAssets + ' (' + AssetRegistry.list().length + ')'), U.el('pre.assets', null, AssetRegistry.list().join('\n'))),
     );

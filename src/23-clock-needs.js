@@ -86,8 +86,12 @@ const Needs = {
           n.hydration -= NEEDS.hydrationDecay * actMul * (Needs.isHotHour() ? 1.25 : 1);
           n.energy -= NEEDS.energyDecay * (ch.hasTrait('hardy') ? 0.9 : 1) * (moving === 'run' ? 1.6 : 1);
         }
-        if (moving === 'run') n.stamina -= 0.9; else n.stamina += moving === 'walk' ? 0.4 : 1.2;
+        const fx = Body.effects(d);
+        if (moving === 'run') n.stamina -= 0.9; else n.stamina += (moving === 'walk' ? 0.4 : 1.2) * fx.staminaRegen * (n.satiety < 15 ? 0.5 : 1);
         for (const k of ['satiety', 'hydration', 'energy', 'stamina']) n[k] = U.clamp(n[k], 0, 100);
+        n.stamina = Math.min(n.stamina, fx.staminaMax);
+        Body.minute(d, d.sleeping ? 'sleep' : moving || 'idle');
+        Illness.minute(d);
         // Walking with a load trains fitness/strength (§5.6).
         if (moving) {
           Skills.gain(ch, 'fitness', moving === 'run' ? 0.12 : 0.04);
@@ -110,35 +114,6 @@ const Needs = {
     check('sat', d.needs.satiety, 25, STR.hungry);
     check('hyd', d.needs.hydration, 25, STR.thirsty);
     check('en', d.needs.energy, 20, STR.tired);
-  },
-  /** Consume an item: drink/eat one portion (1A). Returns true if consumed. */
-  consume(ch, container, slot) {
-    const it = slot.it, d = itemDef(it.id);
-    if (!d.per) return false;
-    const portions = d.portions || 1;
-    // Eating from a stack opens exactly one unit, which becomes its own non-stacking instance.
-    let unit = it, unitC = container;
-    if (it.qty > 1) {
-      if (portions > 1) {
-        unit = Inv.makeItem(it.id, 1);
-        unit.st = { portionsLeft: portions };
-        it.qty -= 1;
-        const dest = [container, ...ch.containers().filter((c) => c !== container)].find((c) => Inv.add(c, unit) === 0);
-        if (!dest) { it.qty += 1; Bus.emit('toast', { kind: 'warn', msg: STR.containerFull }); return false; }
-        unitC = dest;
-      } else { it.qty -= 1; unit = null; }
-    }
-    if (unit) {
-      unit.st = unit.st || {};
-      unit.st.portionsLeft = (unit.st.portionsLeft == null ? portions : unit.st.portionsLeft) - 1;
-      if (unit.st.portionsLeft <= 0) { const loc = Inv.locate(unitC, unit.uid); if (loc) Inv.remove(loc.c, loc.slot); }
-    }
-    const n = ch.d.needs;
-    n.satiety = U.clamp(n.satiety + d.per.satiety * 3.2, 0, 100);
-    n.hydration = U.clamp(n.hydration + (d.per.water || 0) * 1.0, 0, 100);
-    logEvent(d.cat === 'drink' ? STR.drank(d.name) : STR.ate(d.name));
-    Bus.emit('inv:changed');
-    return true;
   },
   drinkTap(ch) {
     ch.d.needs.hydration = U.clamp(ch.d.needs.hydration + 35, 0, 100);

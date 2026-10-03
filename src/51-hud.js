@@ -42,8 +42,10 @@ const HUD = {
       e.needs[k] = { fill, val };
     }
     e.weight = U.el('div.wline');
+    e.ration = U.el('div.rationsel');
+    e.ill = U.el('div.ill');
     e.noise = U.el('div.noise', null, U.el('span', null, STR.noise), U.el('div.nbar', null, U.el('i')), U.el('em'));
-    needBox.append(e.weight, e.noise);
+    needBox.append(e.weight, e.noise, e.ration, e.ill);
     // Right column: cash, floors, lights, power
     e.place = U.el('div.place');
     e.cash = U.el('div.cash');
@@ -57,6 +59,10 @@ const HUD = {
     const bar = U.el('div.panel.bottombar', null,
       U.el('button.btn', { on: { click: () => InvUI.toggle() } }, '🎒 ' + STR.btnInventory),
       U.el('button.btn', { on: { click: () => MapUI.open(false) } }, '🗺 ' + STR.btnMap),
+      U.el('button.btn', { on: { click: () => MealUI.open() } }, '🍚 ' + STR.btnEatMeal),
+      U.el('button.btn', { on: { click: () => CookUI.open() } }, '🍳 ' + STR.btnCook),
+      U.el('button.btn', { on: { click: () => StockUI.open() } }, '📦 ' + STR.btnStock),
+      U.el('button.btn', { on: { click: () => NutritionUI.open() } }, '🥗 ' + STR.btnNutrition),
       U.el('button.btn', { on: { click: () => SkillsUI.open() } }, '📈 ' + STR.btnSkills),
       U.el('button.btn', { on: { click: () => LogUI.open() } }, '📜 ' + STR.btnLog),
       U.el('button.btn', { on: { click: () => HelpUI.open() } }, '⌨ ' + STR.btnHelp),
@@ -100,6 +106,13 @@ const HUD = {
       e.needs[k].val.textContent = Math.round(v);
       e.needs[k].fill.parentElement.classList.toggle('low', v < 25);
     }
+    const rk = d.nut.ration;
+    if (e.ration.dataset.k !== rk) {
+      e.ration.dataset.k = rk; e.ration.innerHTML = '';
+      e.ration.append(U.el('span', null, STR.rationShort), ...Object.entries(RATIONS).map(([k, r]) => U.el('button.rb' + (k === rk ? '.on' : ''), { title: Math.round(r.f * 100) + '%', on: { click: () => { d.nut.ration = k; } } }, r.name)));
+    }
+    const stg = Body.stage(d);
+    e.ill.textContent = [stg.key !== 'normal' ? '⚠ ' + stg.name : '', ...d.ill.map((x) => '🤢 ' + STR.illName[x.type]), ...Body.deficient(d).map((g) => '↓' + STR[g])].filter(Boolean).join(' · ');
     const load = ch.load();
     e.weight.textContent = STR.weight + ' ' + U.kg(ch.carried()) + ' / ' + ch.capacity().toFixed(1) + ' กก.' + (load > 1.5 ? ' · ' + STR.immobile : load > 1 ? ' · ' + STR.overloaded : '');
     e.weight.className = 'wline ' + (load > 1.5 ? 'bad' : load > 1 ? 'warn' : '');

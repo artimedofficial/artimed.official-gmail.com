@@ -35,6 +35,13 @@ const InvUI = {
     }
     this.tabs.push({ key: 'ground', label: STR.ground, c: this.ground.inv });
     this.tab = 0;
+    // Opening an unpowered cold unit lets cold air out (shortens cold-hold, §6.6.3).
+    if (furn) for (const c of [furn.inv, furn.sub]) {
+      if (!c || c.temp === 'ambient' || c.cold == null) continue;
+      const def = FURNITURE[furn.type], hold = c === furn.sub ? def.sub.hold : def.hold;
+      const powered = Scene.isHome() ? Appliances.powered(furn) : Power.gridOn();
+      if (!powered) c.cold = Math.max(0, c.cold - COLD_HOLD.holdLidH / (COLD_HOLD[hold] || 6));
+    }
     U.$('#inv').hidden = false;
     this.render();
   },
@@ -147,20 +154,25 @@ const InvUI = {
     const [w, h] = Inv.dims(s.it, s.r);
     const [bw, bh] = d.size;
     const cat = CATEGORIES[d.cat] || CATEGORIES.misc;
-    const el = U.el('div.item.r-' + (d.rarity || 'common'), { style: { left: s.x * cell + 'px', top: s.y * cell + 'px', width: w * cell + 'px', height: h * cell + 'px', '--cat': cat.color } });
-    const img = U.el('img', { src: Icons.get(s.it.id), draggable: false, style: s.r ? { width: bw * cell + 'px', height: bh * cell + 'px', transform: 'translate(-50%,-50%) rotate(90deg)' } : { width: bw * cell + 'px', height: bh * cell + 'px', transform: 'translate(-50%,-50%)' } });
+    const stg = d.per ? Food.stage(s.it) : 'fresh';
+    const el = U.el('div.item.r-' + (d.rarity || 'common') + (d.per ? '.st-' + stg : '') + (Food.isOpened(s.it) ? '.opened' : '') + ((s.it.frz || 0) >= 0.99 ? '.frozen' : ''), { style: { left: s.x * cell + 'px', top: s.y * cell + 'px', width: w * cell + 'px', height: h * cell + 'px', '--cat': cat.color } });
+    const img = U.el('img', { src: Icons.get(s.it.id, Food.isOpened(s.it)), draggable: false, style: s.r ? { width: bw * cell + 'px', height: bh * cell + 'px', transform: 'translate(-50%,-50%) rotate(90deg)' } : { width: bw * cell + 'px', height: bh * cell + 'px', transform: 'translate(-50%,-50%)' } });
     el.appendChild(img);
     if (s.it.qty > 1) el.appendChild(U.el('span.qty', null, '×' + s.it.qty));
-    if (s.it.st && s.it.st.portionsLeft != null) el.appendChild(U.el('span.portions', null, s.it.st.portionsLeft + '/' + d.portions));
+    if (s.it.st && s.it.st.portionsLeft != null) el.appendChild(U.el('span.portions', null, s.it.st.portionsLeft + '/' + Food.total(s.it)));
+    if (d.per && (s.it.frz || 0) > 0 && s.it.frz < 0.99) el.appendChild(U.el('span.thaw', null, '❄' + Math.round((1 - s.it.frz) * 100) + '%'));
+    else if ((s.it.frz || 0) >= 0.99) el.appendChild(U.el('span.thaw', null, '❄'));
+    if (stg === 'aging') el.appendChild(U.el('span.usesoon', null, STR.useSoon));
+    if (S.food.reserve.includes(d.id)) el.appendChild(U.el('span.reserve', null, 'R'));
     if (s.it.cond != null) el.appendChild(U.el('span.cond', null, U.el('i', { style: { width: Math.round(s.it.cond * 100) + '%', background: s.it.cond > 0.5 ? '#7fbf5f' : s.it.cond > 0.2 ? '#e0b23c' : '#d65a5a' } })));
     if (s.it.inv) el.appendChild(U.el('span.bagcount', null, s.it.inv.slots.length ? '▣' + s.it.inv.slots.length : '▢'));
     if (s.it.unpaid) { el.classList.add('unpaid'); el.appendChild(U.el('span.pricetag', null, '฿' + d.price * s.it.qty)); }
     el._slot = s; el._c = c;
     el.dataset.name = d.name.toLowerCase();
     el.addEventListener('pointerdown', (e) => { if (e.button === 0) this.startDrag(e, { c, slot: s, side }); });
-    el.addEventListener('dblclick', () => { if (s.it.inv) this.openBag(s.it); else if (d.per) this.useItem(c, s); });
+    el.addEventListener('dblclick', () => { if (s.it.inv) this.openBag(s.it); else if (d.per) EatUI.open(c, s); });
     el.addEventListener('contextmenu', (e) => { e.preventDefault(); Tooltip.hide(); this.itemMenu(e, { c, slot: s, side }); });
-    el.addEventListener('mouseenter', (e) => { if (!this.drag) Tooltip.show(this.tooltip(s.it), e.clientX, e.clientY); });
+    el.addEventListener('mouseenter', (e) => { if (!this.drag) Tooltip.show(this.tooltip(s.it, c), e.clientX, e.clientY); });
     el.addEventListener('mousemove', (e) => Tooltip.move(e.clientX, e.clientY));
     el.addEventListener('mouseleave', () => Tooltip.hide());
     return el;
@@ -188,10 +200,11 @@ const InvUI = {
   },
 
   /* ---------- Tooltip ---------- */
-  tooltip(it) {
+  tooltip(it, c) {
     const d = itemDef(it.id), cat = CATEGORIES[d.cat] || CATEGORIES.misc;
     const rows = [];
-    rows.push(`<div class="tt-h" style="--cat:${cat.color}">${d.name}</div><div class="tt-cat">${cat.name}</div>`);
+    rows.push(`<div class="tt-h" style="--cat:${cat.color}">${Food.label(it)}</div><div class="tt-cat">${cat.name}</div>`);
+    if (d.per) rows.push(FoodFmt.freshLine(it, c));
     rows.push(`<div class="tt-r"><span>${STR.ttWeight}</span><b>${U.kg(Inv.itemWeight(it))}</b></div>`);
     rows.push(`<div class="tt-r"><span>${STR.ttSize}</span><b>${d.size[0]}×${d.size[1]}</b></div>`);
     if (d.price) rows.push(`<div class="tt-r"><span>${STR.ttPrice}</span><b>${U.money(d.price)}</b></div>`);
@@ -200,11 +213,11 @@ const InvUI = {
     if (it.uses != null) rows.push(`<div class="tt-r"><span>${STR.ttUses}</span><b>${it.uses}</b></div>`);
     if (d.grid) rows.push(`<div class="tt-r"><span>${STR.ttCapacity}</span><b>${d.grid[0]}×${d.grid[1]} · ${d.limit} กก.</b></div>`);
     if (d.per) {
-      const left = it.st && it.st.portionsLeft != null ? it.st.portionsLeft : d.portions;
-      rows.push(`<div class="tt-r"><span>${STR.ttPortions}</span><b>${left}/${d.portions}</b></div>`);
-      const p = d.per;
-      rows.push(`<div class="tt-sub">${STR.ttPerPortion}: ${p.kcal} ${STR.kcal} · ${STR.protein} ${p.protein} ก. · ${STR.carb} ${p.carb} ก. · ${STR.fat} ${p.fat} ก.${p.water ? ' · ' + STR.water + ' +' + p.water : ''}</div>`);
-      rows.push(`<div class="tt-r"><span>${STR.ttShelf}</span><b>${d.shelf >= 1 ? d.shelf + ' วัน' : Math.round(d.shelf * 24) + ' ชม.'}</b></div>`);
+      rows.push(`<div class="tt-r"><span>${STR.ttPortions}</span><b>${Food.left(it)}/${Food.total(it)}</b></div>`);
+      const p = Food.per(it);
+      rows.push(`<div class="tt-sub">${STR.ttPerPortion}: ${Math.round(p.kcal)} ${STR.kcal} · ${STR.protein} ${p.protein.toFixed(1)} ก. · ${STR.carb} ${p.carb.toFixed(1)} ก. · ${STR.fat} ${p.fat.toFixed(1)} ก. · ${STR.micro} ${p.micro.toFixed(1)} · ${STR.satietyShort} ${Math.round(p.satiety)}${p.water ? ' · ' + STR.water + ' +' + Math.round(p.water) : ''}</div>`);
+      if (!d.cooked && !(it.st && it.st.opened)) rows.push(`<div class="tt-r"><span>${STR.ttShelf}</span><b>${d.shelf >= 1 ? d.shelf + ' วัน' : Math.round(d.shelf * 24) + ' ชม.'}</b></div>`);
+      if (it.st && it.st.quality) rows.push(`<div class="tt-sub">${STR.qualityLine(Math.round(it.st.quality * 100))}</div>`);
       rows.push(`<div class="tt-sub">${STR.ttStore[d.store] || ''} · ${STR.ttFreeze[d.freeze] || ''}</div>`);
     }
     return rows.join('');
@@ -216,7 +229,14 @@ const InvUI = {
   itemMenu(e, src) {
     const it = src.it || src.slot.it, d = itemDef(it.id), ch = activeChar();
     const items = [];
-    if (src.slot && d.per) items.push({ label: (d.cat === 'drink' ? STR.drink : STR.eat) + ' 1 ส่วน', fn: () => this.useItem(src.c, src.slot) });
+    if (src.slot && d.per) {
+      items.push({ label: (d.cat === 'drink' ? STR.drink : STR.eat) + '…', fn: () => EatUI.open(src.c, src.slot) });
+      if ((it.frz || 0) > 0 && S.scene === 'home') items.push({ label: STR.microThaw, fn: () => { if (Cook.microwaveThaw(activeChar(), src.c, src.slot)) this.changed(); } });
+      items.push({ label: S.food.reserve.includes(d.id) ? STR.unreserve : STR.reserve, fn: () => { const r = S.food.reserve; const i = r.indexOf(d.id); if (i >= 0) r.splice(i, 1); else r.push(d.id); this.changed(); } });
+      items.push({ label: S.food.exclude.includes(d.id) ? STR.unexclude : STR.exclude, fn: () => { const r = S.food.exclude; const i = r.indexOf(d.id); if (i >= 0) r.splice(i, 1); else r.push(d.id); this.changed(); } });
+    }
+    if (src.slot && (d.tags.includes('electrolyte') || d.tags.includes('diarrhea')) && !d.per) items.push({ label: STR.use, fn: () => { if (Illness.treat(activeChar().d, it)) { if (it.uses != null) it.uses--; if (it.uses == null || it.uses <= 0) { if (it.qty > 1) { it.qty--; if (d.uses) it.uses = d.uses; } else Inv.remove(src.c, src.slot); } logEvent(STR.usedMed(d.name)); } this.changed(); } });
+    if (src.slot && d.installs) items.push({ label: STR.installAct, fn: () => InstallUI.open(src.c, src.slot) });
     if (it.inv) items.push({ label: STR.openBag, fn: () => this.openBag(it) });
     if (src.slot && d.equip && !ch.d.equip[d.equip]) items.push({ label: STR.equip, fn: () => this.equipFrom(src.c, src.slot, d.equip) });
     if (src.slot && d.cat === 'weapon' && !ch.d.equip.weapon) items.push({ label: STR.equip, fn: () => this.equipFrom(src.c, src.slot, 'weapon') });
@@ -226,7 +246,6 @@ const InvUI = {
     if (src.slot && src.c !== this.ground.inv) items.push({ label: STR.drop, fn: () => { Inv.transfer(src.c, src.slot, [this.ground.inv]); this.changed(); } });
     ContextMenu.show(e.clientX, e.clientY, items);
   },
-  useItem(c, slot) { Needs.consume(activeChar(), c, slot); this.changed(); },
   split(c, slot) {
     const half = Math.floor(slot.it.qty / 2);
     const part = Object.assign(U.deepClone(slot.it), { uid: U.uid(), qty: half });
@@ -255,6 +274,7 @@ const InvUI = {
   quick(src) {
     const dst = this.otherSide(src.side);
     if (!dst.length) return;
+    if (dst[0].temp === 'freezer' && FreezeRules.check(src.slot.it, dst[0]) !== 'ok') { FreezeRules.guard(src.slot.it, dst[0], () => { Inv.transfer(src.c, src.slot, dst); this.changed(); }); return; }
     if (!Inv.transfer(src.c, src.slot, dst)) Toast.show(STR.containerFull, 'warn');
     this.changed();
   },
@@ -274,8 +294,10 @@ const InvUI = {
   },
   storeAll(pred) {
     const c = this.current(); if (!c) return;
-    let moved = 0, failed = 0;
-    for (const src of this.playerSide()) { const r = Inv.transferAll(src, [c], pred); moved += r.moved; failed += r.failed; }
+    let moved = 0, failed = 0, skipped = 0;
+    const freezeOk = (it) => { if (c.temp !== 'freezer' || FreezeRules.check(it, c) === 'ok') return true; skipped++; return false; };
+    for (const src of this.playerSide()) { const r = Inv.transferAll(src, [c], (it) => (!pred || pred(it)) && freezeOk(it)); moved += r.moved; failed += r.failed; }
+    if (skipped) Toast.show(STR.freezeSkipped(skipped), 'warn', 4000);
     Toast.show(STR.movedN(moved) + (failed ? ' · ' + STR.failedN(failed) : ''), failed ? 'warn' : 'info', 2400);
     this.changed();
   },
@@ -395,6 +417,12 @@ const InvUI = {
   drop(st) {
     const t = st.target;
     if (!t) return;
+    const destC = t.kind === 'into' && t.slot ? t.slot.it.inv : t.c;
+    if (destC && destC.temp === 'freezer') { FreezeRules.guard(st.it, destC, () => this.doDrop(st)); return; }
+    this.doDrop(st);
+  },
+  doDrop(st) {
+    const t = st.target;
     const ch = activeChar();
     const it = st.it;
     // Detach from the source (slot or equipment), remembering how to undo.
