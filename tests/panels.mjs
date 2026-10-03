@@ -31,6 +31,7 @@ for (const [label, shot] of [['ทักษะ', 'skills'], ['บันทึก
   await page.screenshot({ path: `shots/${shot}.png` });
   await page.keyboard.press('Escape');
 }
+console.log('state before pause:', await page.evaluate(() => ({ mode: HH.Game.mode, modal: HH.Modal.isOpen(), inv: HH.InvUI.isOpen, title: document.querySelector('.modal h3, .modal .mtitle') && document.querySelector('.modal h3, .modal .mtitle').textContent })));
 await page.keyboard.press('Escape'); await page.waitForSelector('.pmenu');
 await page.click('.pmenu >> text=ตั้งค่า'); await page.waitForSelector('.settings'); await page.waitForTimeout(150);
 await page.screenshot({ path: 'shots/settings.png' });
