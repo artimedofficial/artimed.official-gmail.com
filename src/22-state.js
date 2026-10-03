@@ -37,7 +37,8 @@ function createRun({ bg, difficulty, name }) {
     cash: CFG.START_CASH,
     chars: [createCharacterData({ name, bg, profileSkills: P.skills })],
     active: 0,
-    home: { furniture: [], lightsOn: true },
+    home: { furniture: [], lightsOn: true, piles: [] },
+    locs: {},
     flags: { outbreak: false },
     log: [],
     scene: 'home',
@@ -93,6 +94,7 @@ const Sanitize = {
     c.limit = U.num(c.limit, 20, 0.1, 9999);
     c.label = typeof c.label === 'string' ? c.label : (label || '');
     if (!['ambient', 'fridge', 'freezer'].includes(c.temp)) c.temp = 'ambient';
+    if (c.shop != null && !LOCATIONS[c.shop]) delete c.shop;
     const old = Array.isArray(c.slots) ? c.slots : [];
     c.slots = [];
     const overflow = [];
@@ -123,6 +125,7 @@ const Sanitize = {
     if (d.grid) it.inv = Sanitize.container(it.inv, d.name);
     else delete it.inv;
     if (it.st != null && typeof it.st !== 'object') delete it.st;
+    if (it.unpaid != null && !LOCATIONS[it.unpaid]) delete it.unpaid;
     return it;
   },
   character(c) {
@@ -162,7 +165,7 @@ const Sanitize = {
     const tmpl = {
       schema: CFG.SCHEMA_RUN, build: BUILD, life: 1, createdAt: Date.now(), worldSeed: P.worldSeed,
       lifeSeed: 1, rng: {}, difficulty: 'standard', time: { min: CFG.START_MINUTE, speedIdx: 2 },
-      cash: CFG.START_CASH, chars: [], active: 0, home: { furniture: [], lightsOn: true },
+      cash: CFG.START_CASH, chars: [], active: 0, home: { furniture: [], lightsOn: true, piles: [] }, locs: {},
       flags: { outbreak: false }, log: [], scene: 'home',
     };
     U.deepFill(st, tmpl);
@@ -180,7 +183,28 @@ const Sanitize = {
     st.log = st.log.filter((e) => e && typeof e.t === 'number' && typeof e.msg === 'string').slice(-200);
     if (typeof st.flags !== 'object' || !st.flags) st.flags = { outbreak: false };
     st.flags.outbreak = !!st.flags.outbreak;
-    if (!['home'].includes(st.scene)) st.scene = 'home';
+    if (st.scene !== 'home' && !LOC_IDS.includes(st.scene)) st.scene = 'home';
+    const pileList = (arr) => (Array.isArray(arr) ? arr : []).filter((p) => p && typeof p === 'object').map((p) => ({
+      uid: typeof p.uid === 'string' ? p.uid : U.uid(), floor: U.num(p.floor, 0, 0, 1) | 0, x: U.num(p.x, 0, -60, 60), z: U.num(p.z, 0, -60, 60),
+      inv: Object.assign(Sanitize.container(p.inv, STR.ground), { w: 8, h: 6, limit: 200 }),
+    })).filter((p) => p.inv.slots.length);
+    st.home.piles = pileList(st.home.piles);
+    const locs = {};
+    for (const id of LOC_IDS) {
+      const L = st.locs[id];
+      if (!L || typeof L !== 'object' || !Array.isArray(L.furniture)) continue;
+      const fixtures = locDef(id).fixtures;
+      const furn = L.furniture.filter((f) => f && FURNITURE[f.type]).map((f, i) => {
+        const def = FURNITURE[f.type], fx = fixtures.find((q, k) => id + ':' + k === f.uid);
+        const out = { uid: String(f.uid), type: f.type, floor: 0, x: fx ? fx[1] : U.num(f.x, 0, -30, 30), z: fx ? fx[2] : U.num(f.z, 0, -30, 30), rot: fx ? fx[3] : (U.num(f.rot, 0, 0, 3) | 0), label: def.name, pool: fx ? fx[4] : null };
+        if (def.grid) { const c = f.inv && typeof f.inv === 'object' ? f.inv : Inv.makeContainer(1, 1, 1); c.w = def.grid[0]; c.h = def.grid[1]; c.limit = def.limit; c.temp = def.temp || 'ambient'; out.inv = Sanitize.container(c, def.name); out.inv.shop = id; }
+        return out;
+      });
+      if (furn.length !== fixtures.length) continue;   // garbled → regenerate on next visit
+      locs[id] = { furniture: furn, piles: pileList(L.piles), initial: U.num(L.initial, 1, 1, 1e6), depletedTo: U.num(L.depletedTo, 1, 0, 1), visits: U.num(L.visits, 0, 0, 1e6) | 0, lastVisit: L.lastVisit == null ? null : U.num(L.lastVisit, 0, 0, 1e9) };
+    }
+    st.locs = locs;
+    if (st.scene !== 'home' && !st.locs[st.scene]) st.scene = 'home';
     // Furniture: rebuild from layout if missing/garbled; keep containers by matching type+position.
     const fresh = buildHomeFurniture(st.worldSeed);
     const old = Array.isArray(st.home.furniture) ? st.home.furniture.filter((f) => f && FURNITURE[f.type]) : [];

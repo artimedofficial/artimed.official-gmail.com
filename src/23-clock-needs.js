@@ -152,6 +152,7 @@ const Outbreak = {
     GameClock.onMinute((m) => {
       if (!S.flags.outbreak && m >= CFG.OUTBREAK_MINUTE) {
         S.flags.outbreak = true;
+        World.clearUnpaid();
         logEvent(STR.outbreakToast, 'bad');
         Bus.emit('toast', { kind: 'bad', msg: STR.outbreakToast, dur: 9000 });
         Bus.emit('outbreak');

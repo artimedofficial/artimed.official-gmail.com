@@ -22,14 +22,14 @@ const DebugUI = {
     const qty = U.el('input.txt.sm', { type: 'number', min: 1, value: 1 });
     const addItem = () => {
       const ch = activeChar(); let n = Math.max(1, +qty.value | 0);
-      const pile = HomeScene.pileNear(ch.d.pos.floor, ch.d.pos.x, ch.d.pos.z, true);
+      const pile = Scene.pileNear(ch.d.pos.floor, ch.d.pos.x, ch.d.pos.z, true);
       while (n > 0) {
         const it = Inv.makeItem(itemSel.value, n); const q = it.qty;
         const left = Inv.addToAny([...ch.containers(), pile.inv], it);
         if (left >= q) break;
         n -= q - left;
       }
-      HomeScene.syncPiles(); Bus.emit('inv:changed'); Toast.show(STR.dbgAdd + ': ' + itemDef(itemSel.value).name, 'info', 1500);
+      Scene.syncPiles(); Bus.emit('inv:changed'); Toast.show(STR.dbgAdd + ': ' + itemDef(itemSel.value).name, 'info', 1500);
     };
     const speedBtns = U.el('div.row', null, ...[1, 16, 60].map((m) => U.el('button.btn.sm' + (GameClock.debugMul === m ? '.on' : ''), { on: { click: () => { GameClock.debugMul = m; Modal.close(); this.open(); } } }, '×' + m)));
     body.append(

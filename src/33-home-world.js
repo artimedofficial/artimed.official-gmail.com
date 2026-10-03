@@ -19,8 +19,8 @@ const HomeWorld = {
     if (x >= -2.6 && x <= 0.4 && z > b.z1 && z <= b.z1 + 1.3) return -0.07;
     return HomeWorld.YARD_Y;
   },
-  roomAt(floor, x, z) {
-    return HOME.rooms.find((r) => r.floor === floor && x >= r.x0 && x <= r.x1 && z >= r.z0 && z <= r.z1) || null;
+  roomAt(floor, x, z, L = HOME) {
+    return L.rooms.find((r) => r.floor === floor && x >= r.x0 && x <= r.x1 && z >= r.z0 && z <= r.z1) || null;
   },
 
   build(scene) {
@@ -34,11 +34,23 @@ const HomeWorld = {
     }
     W.root.add(W.outdoor);
     this.buildFloors(W);
-    this.buildWalls(W);
+    this.buildWalls(W, HOME, 2);
     this.buildStairs(W);
-    this.buildRoomLights(W);
+    this.buildRoomLights(W, HOME);
     this.buildYard(W);
     this.buildStreet(W);
+    // World interface used by Scene / Nav / Render / Avatar
+    const lot = HOME.lot, b = HOME.bounds;
+    Object.assign(W, {
+      kind: 'home', layout: HOME, floorsCount: 2, stairs: HOME.stairs,
+      groundY: (x, z, f) => HomeWorld.groundY(x, z, f),
+      navAreas: [{ x0: lot.x0 - 0.5, x1: lot.x1 + 0.5, z0: lot.z0 - 0.5, z1: lot.z1 + 2.2 }, { x0: b.x0 - 0.25, x1: b.x1 + 0.25, z0: b.z0 - 0.25, z1: b.z1 + 0.25 }],
+      camBounds: { x0: lot.x0 - 6, x1: lot.x1 + 6, z0: lot.z0 - 4, z1: lot.z1 + 10 },
+      pickY0: HomeWorld.YARD_Y, slab: b, dustRect: b,
+      isIndoor: (x, z, f) => f === 1 || (x > b.x0 && x < b.x1 && z > b.z0 && z < b.z1),
+      exit: { x: 2.8, z: lot.z1 + 1.4, floor: 0 },
+      spawn: { x: 2.8, z: lot.z1 - 1.2, floor: 0, rot: Math.PI },
+    });
     scene.add(W.root);
     return W;
   },
@@ -94,18 +106,18 @@ const HomeWorld = {
   },
 
   /* ---------- Walls with openings; full + cut variants ---------- */
-  wallLines(floor) {
+  wallLines(floor, L = HOME) {
     const map = new Map();
     const addSeg = (axis, at, a, b) => {
       const key = axis + ':' + at.toFixed(3);
       if (!map.has(key)) map.set(key, { axis, at, segs: [] });
       map.get(key).segs.push([Math.min(a, b), Math.max(a, b)]);
     };
-    for (const r of HOME.rooms.filter((q) => q.floor === floor)) {
+    for (const r of L.rooms.filter((q) => q.floor === floor)) {
       addSeg('z', r.z0, r.x0, r.x1); addSeg('z', r.z1, r.x0, r.x1);
       addSeg('x', r.x0, r.z0, r.z1); addSeg('x', r.x1, r.z0, r.z1);
     }
-    const b = HOME.bounds, lines = [];
+    const b = L.bounds, lines = [];
     for (const { axis, at, segs } of map.values()) {
       segs.sort((p, q) => p[0] - q[0]);
       const merged = [];
@@ -119,12 +131,12 @@ const HomeWorld = {
     }
     return lines;
   },
-  buildWalls(W) {
+  buildWalls(W, L = HOME, floors = 2) {
     const H = CFG.FLOOR_H;
-    for (let floor = 0; floor < 2; floor++) {
+    for (let floor = 0; floor < floors; floor++) {
       const y0 = floor * H;
-      for (const line of this.wallLines(floor)) {
-        const ops = HOME.openings.filter((o) => o.floor === floor && o.axis === line.axis && Math.abs(o.at - line.at) < 1e-6 && o.a >= line.a - 1e-6 && o.b <= line.b + 1e-6).sort((p, q) => p.a - q.a);
+      for (const line of this.wallLines(floor, L)) {
+        const ops = L.openings.filter((o) => o.floor === floor && o.axis === line.axis && Math.abs(o.at - line.at) < 1e-6 && o.a >= line.a - 1e-6 && o.b <= line.b + 1e-6).sort((p, q) => p.a - q.a);
         const thick = line.exterior ? this.WALL_T_EXT : this.WALL_T_INT;
         // Spans of solid wall + openings (with sill/lintel parts)
         const parts = []; // {a, b, y0, y1}
@@ -153,7 +165,7 @@ const HomeWorld = {
               const mid = (p.a + p.b) / 2;
               const px = line.axis === 'x' ? line.at + side * 0.3 : mid;
               const pz = line.axis === 'z' ? line.at + side * 0.3 : mid;
-              const room = this.roomAt(floor, px, pz);
+              const room = this.roomAt(floor, px, pz, L);
               const mat = room ? Mat.tex('plaster', room.wall, 0.92, 0, 0.3) : Mat.tex('ext_wall', '#efe3c8', 0.9, 0, 0.5);
               const t = thick / 2;
               const off = side * t / 2;
@@ -185,7 +197,7 @@ const HomeWorld = {
         W.floors[floor].group.add(wrap);
         const rec = { line, full, cut, floor };
         W.floors[floor].walls.push(rec);
-        for (const o of ops) this.buildOpening(W, o, line, thick, rec);
+        for (const o of ops) this.buildOpening(W, o, line, thick, rec, L);
       }
     }
   },
@@ -194,7 +206,7 @@ const HomeWorld = {
     return line.axis === 'z' ? { x0: a, x1: b, z0: line.at - t, z1: line.at + t } : { x0: line.at - t, x1: line.at + t, z0: a, z1: b };
   },
   /** Window frames/glass/grilles and door frames/leaves. Added to both wall variants as needed. */
-  buildOpening(W, o, line, thick, rec) {
+  buildOpening(W, o, line, thick, rec, L = HOME) {
     const y0 = o.floor * CFG.FLOOR_H;
     const along = (a, len, h, d, mat, lo, offN = 0) => {
       // helper producing a box on the wall plane
@@ -204,7 +216,7 @@ const HomeWorld = {
     const mid = (o.a + o.b) / 2, len = o.b - o.a;
     if (o.kind === 'window') {
       const sill = o.sill || 0.9, top = 2.2, h = top - sill;
-      const room = this.roomAt(o.floor, line.axis === 'x' ? line.at - (line.outward || 1) * 0.3 : mid, line.axis === 'z' ? line.at - (line.outward || 1) * 0.3 : mid);
+      const room = this.roomAt(o.floor, line.axis === 'x' ? line.at - (line.outward || 1) * 0.3 : mid, line.axis === 'z' ? line.at - (line.outward || 1) * 0.3 : mid, L);
       const glow = this.windowGlowMat(W, room ? room.id : 'none');
       const make = (cutH) => {
         const pb = new PB('win' + o.a + o.at);
@@ -304,8 +316,8 @@ const HomeWorld = {
   },
 
   /* ---------- Ceiling lights & lamps ---------- */
-  buildRoomLights(W) {
-    for (const r of HOME.rooms) {
+  buildRoomLights(W, L = HOME) {
+    for (const r of L.rooms) {
       const y = r.floor * CFG.FLOOR_H + 2.72;
       const cx = (r.x0 + r.x1) / 2, cz = (r.z0 + r.z1) / 2;
       const fixture = new PB('lamp' + r.id);

@@ -22,12 +22,12 @@ const InvUI = {
     if (!this.isOpen) GameClock.pauseLocks++;
     this.isOpen = true;
     this.furn = furn || null;
-    this.ground = HomeScene.pileNear(ch.d.pos.floor, ch.d.pos.x, ch.d.pos.z, true);
+    this.ground = Scene.pileNear(ch.d.pos.floor, ch.d.pos.x, ch.d.pos.z, true);
     this.tabs = [];
     if (furn && furn.inv) this.tabs.push({ key: 'main', label: furn.label, c: furn.inv });
     if (furn && furn.sub) this.tabs.push({ key: 'sub', label: furn.sub.label, c: furn.sub });
     // Storage within arm's reach (same floor, ≤ 2.2 m) opens as extra tabs — no extra walking.
-    for (const f of S.home.furniture) {
+    for (const f of Scene.furnList()) {
       if (f === furn || !f.inv || f.floor !== ch.d.pos.floor) continue;
       if (Math.hypot(f.x - ch.d.pos.x, f.z - ch.d.pos.z) > 2.2) continue;
       this.tabs.push({ key: 'near:' + f.uid, label: f.label, c: f.inv });
@@ -44,8 +44,8 @@ const InvUI = {
     GameClock.pauseLocks = Math.max(0, GameClock.pauseLocks - 1);
     U.$('#inv').hidden = true;
     Tooltip.hide();
-    HomeScene.syncPiles();
-    HomeScene.avatar.refreshGear();
+    Scene.syncPiles();
+    Scene.avatar.refreshGear();
     Bus.emit('inv:closed');
   },
   toggle() { if (this.isOpen) this.close(); else this.open(null); },
@@ -154,6 +154,7 @@ const InvUI = {
     if (s.it.st && s.it.st.portionsLeft != null) el.appendChild(U.el('span.portions', null, s.it.st.portionsLeft + '/' + d.portions));
     if (s.it.cond != null) el.appendChild(U.el('span.cond', null, U.el('i', { style: { width: Math.round(s.it.cond * 100) + '%', background: s.it.cond > 0.5 ? '#7fbf5f' : s.it.cond > 0.2 ? '#e0b23c' : '#d65a5a' } })));
     if (s.it.inv) el.appendChild(U.el('span.bagcount', null, s.it.inv.slots.length ? '▣' + s.it.inv.slots.length : '▢'));
+    if (s.it.unpaid) { el.classList.add('unpaid'); el.appendChild(U.el('span.pricetag', null, '฿' + d.price * s.it.qty)); }
     el._slot = s; el._c = c;
     el.dataset.name = d.name.toLowerCase();
     el.addEventListener('pointerdown', (e) => { if (e.button === 0) this.startDrag(e, { c, slot: s, side }); });
@@ -174,15 +175,15 @@ const InvUI = {
   /** Dropdown of every storage piece in the home: pick one → walk there and open it. */
   storageSelect() {
     const opts = [U.el('option', { value: '' }, STR.goToStorage)];
-    for (const f of S.home.furniture) {
+    for (const f of Scene.furnList()) {
       if (!f.inv) continue;
-      const room = HomeWorld.roomAt(f.floor, f.x, f.z);
+      const room = Scene.isHome() ? HomeWorld.roomAt(f.floor, f.x, f.z) : null;
       opts.push(U.el('option', { value: f.uid }, f.label + ' · ' + (room ? room.name : STR.floors[f.floor]) + (f.floor === 1 ? ' (' + STR.floors[1] + ')' : '')));
     }
     return U.el('select.sel.goto', { on: { change: (e) => {
-      const f = HomeScene.furn(e.target.value); if (!f) return;
+      const f = Scene.furn(e.target.value); if (!f) return;
       this.close();
-      HomeScene.doAction(f, 'open');
+      Scene.doAction(f, 'open');
     } } }, ...opts);
   },
 
@@ -194,6 +195,7 @@ const InvUI = {
     rows.push(`<div class="tt-r"><span>${STR.ttWeight}</span><b>${U.kg(Inv.itemWeight(it))}</b></div>`);
     rows.push(`<div class="tt-r"><span>${STR.ttSize}</span><b>${d.size[0]}×${d.size[1]}</b></div>`);
     if (d.price) rows.push(`<div class="tt-r"><span>${STR.ttPrice}</span><b>${U.money(d.price)}</b></div>`);
+    if (it.unpaid) rows.push(`<div class="tt-r"><span style="color:#ffb0a8">${STR.unpaidTag}</span><b>${U.money(d.price * it.qty)}</b></div>`);
     if (it.cond != null) rows.push(`<div class="tt-r"><span>${STR.ttCond}</span><b>${Math.round(it.cond * 100)}%</b></div>`);
     if (it.uses != null) rows.push(`<div class="tt-r"><span>${STR.ttUses}</span><b>${it.uses}</b></div>`);
     if (d.grid) rows.push(`<div class="tt-r"><span>${STR.ttCapacity}</span><b>${d.grid[0]}×${d.grid[1]} · ${d.limit} กก.</b></div>`);
@@ -286,7 +288,7 @@ const InvUI = {
   },
   changed() {
     Bus.emit('inv:changed');
-    HomeScene.avatar.refreshGear();
+    Scene.avatar.refreshGear();
     this.render();
   },
 

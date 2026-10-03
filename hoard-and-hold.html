@@ -180,6 +180,22 @@ button, input, select { font-family: inherit; font-size: inherit; }
 .placemark.ok { background: rgba(127,191,95,.28); border: 2px solid #7fbf5f; } .placemark.no { background: rgba(214,90,90,.28); border: 2px solid #d65a5a; }
 .storehint { font-size: 12px; color: var(--dim); margin: 0 0 6px; line-height: 1.5; }
 .sel.goto { border-color: var(--amber2); color: var(--amber); }
+.item.unpaid { outline: 1px dashed #e0b23c; outline-offset: -2px; }
+.pricetag { position: absolute; left: 2px; bottom: 1px; font-size: 9px; background: #e0b23c; color: #1a1208; padding: 0 3px; border-radius: 3px; font-weight: 700; }
+.place { font-size: 13px; color: var(--text); font-weight: 600; }
+.power.warn { color: var(--warn); } .power.bad { color: var(--bad); }
+.modal.mapmodal { max-width: 1180px; width: 92vw; }
+.mapwrap { display: grid; grid-template-columns: 1fr 300px; gap: 14px; align-items: start; }
+.mapsvg svg { border-radius: 10px; border: 1px solid var(--line); display: block; }
+.mapcard { background: #1d1812; border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 6px; }
+.mapcard h3 { margin: 0 0 4px; color: var(--amber); font-size: 16px; }
+.mapcard .row { margin-top: 8px; } .warn { color: var(--warn); } b.bad { color: var(--bad); }
+#travel { position: fixed; inset: 0; z-index: 35; background: radial-gradient(ellipse, rgba(10,8,6,.6), rgba(10,8,6,.92)); display: flex; align-items: center; justify-content: center; }
+.tbox { width: 420px; background: var(--panel2); border: 1px solid var(--line); border-radius: 12px; padding: 18px; text-align: center; }
+.tbox h3 { color: var(--amber); margin: 0 0 12px; } .tbar { height: 10px; background: #0f0c09; border-radius: 5px; overflow: hidden; margin-bottom: 8px; } .tbar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #c7852c, #ffb347); }
+.ttime { font-size: 22px; color: var(--amber); font-weight: 700; }
+.bill { width: 100%; border-collapse: collapse; font-size: 13px; } .bill td { padding: 3px 6px; border-bottom: 1px solid #2c241a; } .bill td.n { text-align: right; white-space: nowrap; }
+.checkout .total { font-size: 16px; margin-top: 8px; }
 .invhint { grid-column: 1 / 3; color: var(--dim); font-size: 12px; text-align: center; }
 @media (max-width: 1100px) { .needs { left: 10px; top: 128px; } .bgcards { grid-template-columns: repeat(2, 1fr); } }
 </style>
@@ -192,6 +208,7 @@ button, input, select { font-family: inherit; font-size: inherit; }
 <div id="modals"></div>
 <div id="toasts"></div>
 <div id="tooltip"></div>
+<div id="travel" hidden></div>
 <div id="loading">กำลังสร้างโลก…</div>
 <div id="fatal" hidden></div>
 <script>var THREE=(()=>{var fl=Object.defineProperty;var Im=Object.getOwnPropertyDescriptor;var Pm=Object.getOwnPropertyNames;var Lm=Object.prototype.hasOwnProperty;var Pd=(r,e)=>{for(var t in e)fl(r,t,{get:e[t],enumerable:!0})},Dm=(r,e,t,n)=>{if(e&&typeof e=="object"||typeof e=="function")for(let i of Pm(e))!Lm.call(r,i)&&i!==t&&fl(r,i,{get:()=>e[i],enumerable:!(n=Im(e,i))||n.enumerable});return r};var Um=r=>Dm(fl({},"__esModule",{value:!0}),r);var jM={};Pd(jM,{ACESFilmicToneMapping:()=>zp,AddEquation:()=>vi,AddOperation:()=>Np,AdditiveAnimationBlendMode:()=>Ou,AdditiveBlending:()=>nh,AgXToneMapping:()=>Vp,AlphaFormat:()=>Iu,AlwaysCompare:()=>nm,AlwaysDepth:()=>ga,AlwaysStencilFunc:()=>oh,AmbientLight:()=>Bc,AnimationAction:()=>Zc,AnimationClip:()=>li,AnimationLoader:()=>Fh,AnimationMixer:()=>jh,AnimationObjectGroup:()=>$h,AnimationUtils:()=>mM,ArcCurve:()=>oc,ArrayCamera:()=>ja,ArrowHelper:()=>Mu,AttachedBindMode:()=>rh,Audio:()=>qc,AudioAnalyser:()=>Kh,AudioContext:()=>ho,AudioListener:()=>Yh,AudioLoader:()=>Xh,AxesHelper:()=>Su,BackSide:()=>Dt,BasicDepthPacking:()=>Yp,BasicShadowMap:()=>Bm,BatchedMesh:()=>ic,Bone:()=>as,BooleanKeyframeTrack:()=>ai,Box2:()=>cu,Box3:()=>Et,Box3Helper:()=>yu,BoxGeometry:()=>Tn,BoxHelper:()=>xu,BufferAttribute:()=>qe,BufferGeometry:()=>Fe,BufferGeometryLoader:()=>Wc,BufferGeometryUtils:()=>Yu,ByteType:()=>wu,Cache:()=>jn,Camera:()=>Hs,CameraHelper:()=>_u,CanvasTexture:()=>Lh,CapsuleGeometry:()=>dc,CatmullRomCurve3:()=>ac,CineonToneMapping:()=>Bp,CircleGeometry:()=>fc,ClampToEdgeWrapping:()=>Yt,Clock:()=>Xc,Color:()=>ce,ColorKeyframeTrack:()=>ro,ColorManagement:()=>Ye,CompressedArrayTexture:()=>Ih,CompressedCubeTexture:()=>Ph,CompressedTexture:()=>Js,CompressedTextureLoader:()=>Bh,ConeGeometry:()=>pc,ConstantAlphaFactor:()=>Lp,ConstantColorFactor:()=>Ip,Controls:()=>Au,CubeCamera:()=>Ja,CubeReflectionMapping:()=>ii,CubeRefractionMapping:()=>Si,CubeTexture:()=>rs,CubeTextureLoader:()=>zh,CubeUVReflectionMapping:()=>tr,CubicBezierCurve:()=>Yr,CubicBezierCurve3:()=>cc,CubicInterpolant:()=>Uc,CullFaceBack:()=>th,CullFaceFront:()=>pp,CullFaceFrontBack:()=>Fm,CullFaceNone:()=>fp,Curve:()=>an,CurvePath:()=>uc,CustomBlending:()=>gp,CustomToneMapping:()=>kp,CylinderGeometry:()=>js,Cylindrical:()=>ou,Data3DTexture:()=>zr,DataArrayTexture:()=>zs,DataTexture:()=>fn,DataTextureLoader:()=>kh,DataUtils:()=>qg,DecrementStencilOp:()=>Km,DecrementWrapStencilOp:()=>$m,DefaultLoadingManager:()=>vm,DepthFormat:()=>$i,DepthStencilFormat:()=>ns,DepthTexture:()=>Gr,DetachedBindMode:()=>Gp,DirectionalLight:()=>er,DirectionalLightHelper:()=>gu,DiscreteInterpolant:()=>Nc,DodecahedronGeometry:()=>mc,DoubleSide:()=>un,DstAlphaFactor:()=>Tp,DstColorFactor:()=>wp,DynamicCopyUsage:()=>dg,DynamicDrawUsage:()=>og,DynamicReadUsage:()=>lg,EdgesGeometry:()=>gc,EllipseCurve:()=>$s,EqualCompare:()=>jp,EqualDepth:()=>xa,EqualStencilFunc:()=>tg,EquirectangularReflectionMapping:()=>Dr,EquirectangularRefractionMapping:()=>Ur,Euler:()=>sn,EventDispatcher:()=>pn,ExtrudeGeometry:()=>_c,FileLoader:()=>Jt,Float16BufferAttribute:()=>mh,Float32BufferAttribute:()=>ve,FloatType:()=>Zt,Fog:()=>ec,FogExp2:()=>Qa,FramebufferTexture:()=>Ch,FrontSide:()=>An,Frustum:()=>os,GLBufferAttribute:()=>nu,GLSL1:()=>pg,GLSL3:()=>ah,GLTFLoader:()=>cl,GreaterCompare:()=>Qp,GreaterDepth:()=>va,GreaterEqualCompare:()=>tm,GreaterEqualDepth:()=>ya,GreaterEqualStencilFunc:()=>rg,GreaterStencilFunc:()=>ig,GridHelper:()=>pu,Group:()=>dn,HalfFloatType:()=>nr,HemisphereLight:()=>Fc,HemisphereLightHelper:()=>fu,IcosahedronGeometry:()=>xc,ImageBitmapLoader:()=>lo,ImageLoader:()=>us,ImageUtils:()=>Za,IncrementStencilOp:()=>Zm,IncrementWrapStencilOp:()=>Jm,InstancedBufferAttribute:()=>on,InstancedBufferGeometry:()=>Gc,InstancedInterleavedBuffer:()=>tu,InstancedMesh:()=>Ys,Int16BufferAttribute:()=>fh,Int32BufferAttribute:()=>ph,Int8BufferAttribute:()=>hh,IntType:()=>$c,InterleavedBuffer:()=>On,InterleavedBufferAttribute:()=>En,Interpolant:()=>oi,InterpolateDiscrete:()=>is,InterpolateLinear:()=>ss,InterpolateSmooth:()=>da,InvertStencilOp:()=>jm,KeepStencilOp:()=>Gi,KeyframeTrack:()=>cn,LOD:()=>nc,LatheGeometry:()=>jr,Layers:()=>ks,LessCompare:()=>$p,LessDepth:()=>_a,LessEqualCompare:()=>Bu,LessEqualDepth:()=>Qi,LessEqualStencilFunc:()=>ng,LessStencilFunc:()=>eg,Light:()=>kn,LightProbe:()=>Vc,Line:()=>mn,Line3:()=>lu,LineBasicMaterial:()=>Ct,LineCurve:()=>Zr,LineCurve3:()=>lc,LineDashedMaterial:()=>Dc,LineLoop:()=>Zs,LineSegments:()=>Kt,LinearFilter:()=>ft,LinearInterpolant:()=>so,LinearMipMapLinearFilter:()=>Hm,LinearMipMapNearestFilter:()=>Vm,LinearMipmapLinearFilter:()=>en,LinearMipmapNearestFilter:()=>Ji,LinearSRGBColorSpace:()=>Ut,LinearToneMapping:()=>Op,LinearTransfer:()=>go,Loader:()=>Lt,LoaderUtils:()=>Rn,LoadingManager:()=>oo,LoopOnce:()=>Wp,LoopPingPong:()=>qp,LoopRepeat:()=>Xp,LuminanceAlphaFormat:()=>Du,LuminanceFormat:()=>Lu,MOUSE:()=>Nm,Material:()=>xt,MaterialLoader:()=>Hc,MathUtils:()=>ku,Matrix2:()=>au,Matrix3:()=>ke,Matrix4:()=>Le,MaxEquation:()=>vp,Mesh:()=>Ze,MeshBasicMaterial:()=>Pt,MeshDepthMaterial:()=>Wr,MeshDistanceMaterial:()=>Xr,MeshLambertMaterial:()=>Pc,MeshMatcapMaterial:()=>Lc,MeshNormalMaterial:()=>Ic,MeshPhongMaterial:()=>Rc,MeshPhysicalMaterial:()=>Gt,MeshStandardMaterial:()=>wn,MeshToonMaterial:()=>Cc,MinEquation:()=>yp,MirroredRepeatWrapping:()=>es,MixOperation:()=>Up,MultiplyBlending:()=>sh,MultiplyOperation:()=>uo,NearestFilter:()=>bt,NearestMipMapLinearFilter:()=>km,NearestMipMapNearestFilter:()=>zm,NearestMipmapLinearFilter:()=>Mi,NearestMipmapNearestFilter:()=>fo,NeutralToneMapping:()=>Hp,NeverCompare:()=>Jp,NeverDepth:()=>ma,NeverStencilFunc:()=>Qm,NoBlending:()=>Qn,NoColorSpace:()=>Kn,NoToneMapping:()=>ei,NormalAnimationBlendMode:()=>il,NormalBlending:()=>Ki,NotEqualCompare:()=>em,NotEqualDepth:()=>Ma,NotEqualStencilFunc:()=>sg,NumberKeyframeTrack:()=>Fn,Object3D:()=>et,ObjectLoader:()=>Wh,ObjectSpaceNormalMap:()=>Kp,OctahedronGeometry:()=>no,OneFactor:()=>Sp,OneMinusConstantAlphaFactor:()=>Dp,OneMinusConstantColorFactor:()=>Pp,OneMinusDstAlphaFactor:()=>Ep,OneMinusDstColorFactor:()=>Rp,OneMinusSrcAlphaFactor:()=>pa,OneMinusSrcColorFactor:()=>Ap,OrthographicCamera:()=>Ai,PCFShadowMap:()=>Eu,PCFSoftShadowMap:()=>mp,PMREMGenerator:()=>Hr,Path:()=>ls,PerspectiveCamera:()=>vt,Plane:()=>Pn,PlaneGeometry:()=>Gs,PlaneHelper:()=>vu,PointLight:()=>Ei,PointLightHelper:()=>du,Points:()=>Ks,PointsMaterial:()=>cs,PolarGridHelper:()=>mu,PolyhedronGeometry:()=>Ti,PositionalAudio:()=>Zh,PropertyBinding:()=>it,PropertyMixer:()=>Yc,QuadraticBezierCurve:()=>Kr,QuadraticBezierCurve3:()=>Jr,Quaternion:()=>Tt,QuaternionKeyframeTrack:()=>Bn,QuaternionLinearInterpolant:()=>Oc,RED_GREEN_RGTC2_Format:()=>qa,RED_RGTC1_Format:()=>Nu,REVISION:()=>Kc,RGBADepthPacking:()=>Zp,RGBAFormat:()=>Ht,RGBAIntegerFormat:()=>nl,RGBA_ASTC_10x10_Format:()=>ka,RGBA_ASTC_10x5_Format:()=>Fa,RGBA_ASTC_10x6_Format:()=>Ba,RGBA_ASTC_10x8_Format:()=>za,RGBA_ASTC_12x10_Format:()=>Va,RGBA_ASTC_12x12_Format:()=>Ha,RGBA_ASTC_4x4_Format:()=>Ca,RGBA_ASTC_5x4_Format:()=>Ia,RGBA_ASTC_5x5_Format:()=>Pa,RGBA_ASTC_6x5_Format:()=>La,RGBA_ASTC_6x6_Format:()=>Da,RGBA_ASTC_8x5_Format:()=>Ua,RGBA_ASTC_8x6_Format:()=>Na,RGBA_ASTC_8x8_Format:()=>Oa,RGBA_BPTC_Format:()=>Rr,RGBA_ETC2_EAC_Format:()=>Ra,RGBA_PVRTC_2BPPV1_Format:()=>Ta,RGBA_PVRTC_4BPPV1_Format:()=>Aa,RGBA_S3TC_DXT1_Format:()=>Tr,RGBA_S3TC_DXT3_Format:()=>Er,RGBA_S3TC_DXT5_Format:()=>wr,RGBDepthPacking:()=>Wm,RGBFormat:()=>Pu,RGBIntegerFormat:()=>Gm,RGB_BPTC_SIGNED_Format:()=>Ga,RGB_BPTC_UNSIGNED_Format:()=>Wa,RGB_ETC1_Format:()=>Ea,RGB_ETC2_Format:()=>wa,RGB_PVRTC_2BPPV1_Format:()=>ba,RGB_PVRTC_4BPPV1_Format:()=>Sa,RGB_S3TC_DXT1_Format:()=>Ar,RGDepthPacking:()=>Xm,RGFormat:()=>Uu,RGIntegerFormat:()=>tl,RawShaderMaterial:()=>wc,Ray:()=>bi,Raycaster:()=>iu,RectAreaLight:()=>zc,RedFormat:()=>el,RedIntegerFormat:()=>po,ReinhardToneMapping:()=>Fp,RenderTarget:()=>Ka,RepeatWrapping:()=>si,ReplaceStencilOp:()=>Ym,ReverseSubtractEquation:()=>xp,RingGeometry:()=>yc,RoomEnvironment:()=>hl,RoundedBoxGeometry:()=>ul,SIGNED_RED_GREEN_RGTC2_Format:()=>Ya,SIGNED_RED_RGTC1_Format:()=>Xa,SRGBColorSpace:()=>St,SRGBTransfer:()=>at,Scene:()=>Ws,ShaderChunk:()=>We,ShaderLib:()=>bn,ShaderMaterial:()=>rn,ShadowMaterial:()=>Ec,Shape:()=>ni,ShapeGeometry:()=>vc,ShapePath:()=>bu,ShapeUtils:()=>Un,ShortType:()=>Ru,Skeleton:()=>qs,SkeletonHelper:()=>uu,SkinnedMesh:()=>Xs,Source:()=>$n,Sphere:()=>At,SphereGeometry:()=>io,Spherical:()=>ru,SphericalHarmonics3:()=>kc,SplineCurve:()=>$r,SpotLight:()=>Qs,SpotLightHelper:()=>hu,Sprite:()=>tc,SpriteMaterial:()=>qr,SrcAlphaFactor:()=>fa,SrcAlphaSaturateFactor:()=>Cp,SrcColorFactor:()=>bp,StaticCopyUsage:()=>ug,StaticDrawUsage:()=>Or,StaticReadUsage:()=>cg,StereoCamera:()=>qh,StreamCopyUsage:()=>fg,StreamDrawUsage:()=>ag,StreamReadUsage:()=>hg,StringKeyframeTrack:()=>ci,SubtractEquation:()=>_p,SubtractiveBlending:()=>ih,TOUCH:()=>Om,TangentSpaceNormalMap:()=>wi,TetrahedronGeometry:()=>Mc,Texture:()=>pt,TextureLoader:()=>ao,TextureUtils:()=>Av,TorusGeometry:()=>Sc,TorusKnotGeometry:()=>bc,Triangle:()=>Ln,TriangleFanDrawMode:()=>ir,TriangleStripDrawMode:()=>mo,TrianglesDrawMode:()=>Fu,TubeGeometry:()=>Ac,UVMapping:()=>Jc,Uint16BufferAttribute:()=>kr,Uint32BufferAttribute:()=>Vr,Uint8BufferAttribute:()=>uh,Uint8ClampedBufferAttribute:()=>dh,Uniform:()=>Qh,UniformsGroup:()=>eu,UniformsLib:()=>le,UniformsUtils:()=>am,UnsignedByteType:()=>Nn,UnsignedInt248Type:()=>ts,UnsignedInt5999Type:()=>Cu,UnsignedIntType:()=>ri,UnsignedShort4444Type:()=>jc,UnsignedShort5551Type:()=>Qc,UnsignedShortType:()=>Fs,VSMShadowMap:()=>In,Vector2:()=>K,Vector3:()=>w,Vector4:()=>tt,VectorKeyframeTrack:()=>zn,VideoTexture:()=>Rh,WebGL3DRenderTarget:()=>lh,WebGLArrayRenderTarget:()=>ch,WebGLCoordinateSystem:()=>Dn,WebGLCubeRenderTarget:()=>$a,WebGLMultipleRenderTargets:()=>Tu,WebGLRenderTarget:()=>nn,WebGLRenderer:()=>Th,WebGLUtils:()=>fm,WebGPUCoordinateSystem:()=>Fr,WireframeGeometry:()=>Tc,WrapAroundEnding:()=>Nr,ZeroCurvatureEnding:()=>qi,ZeroFactor:()=>Mp,ZeroSlopeEnding:()=>Yi,ZeroStencilOp:()=>qm,createCanvasElement:()=>sm});/**
@@ -4032,7 +4049,7 @@ void main() {
    Everything here is plain data so the owner can tweak without touching logic.
    ========================================================================== */
 
-const BUILD = '1A.0.1';
+const BUILD = '1B.0.1';
 
 /**
  * ASSET_OVERRIDES — swap any procedural asset for an external file.
@@ -4163,6 +4180,50 @@ const STR = {
   inspect: 'ตรวจดู',
   cannotReach: 'ไปที่นั่นไม่ได้',
   goUp: 'ขึ้นบันไดไปชั้นบน',
+  // Map & travel (1B)
+  mapTitle: 'แผนที่เมือง (M)',
+  youAreHere: 'คุณอยู่ที่นี่',
+  distance: 'ระยะทาง',
+  travelWalk: 'เวลาเดิน',
+  travelRun: 'เวลาวิ่ง',
+  hours: 'เวลาเปิด',
+  open24: 'เปิด 24 ชม.',
+  closedAtArrival: 'ปิดตอนไปถึง',
+  danger: 'ความอันตราย',
+  dangerNone: 'ปลอดภัย (ยังไม่ระบาด)', dangerLow: 'ต่ำ', dangerMid: 'ปานกลาง', dangerHigh: 'สูง', dangerExtreme: 'อันตรายมาก',
+  looted: 'ถูกค้นไปแล้ว',
+  notVisited: 'ยังไม่เคยไป',
+  lastVisit: 'ไปล่าสุด',
+  goWalk: 'เดินไป',
+  goRun: 'วิ่งไป (เร็วแต่เหนื่อย)',
+  travelHeavy: 'คุณแบกของหนักเกิน การเดินทางจะช้าลงมาก',
+  travelling: (d) => 'กำลังเดินทางไป ' + d,
+  travelEta: (t) => 'ใช้เวลาประมาณ ' + t,
+  arrived: (n) => 'มาถึง ' + n,
+  leaveAct: 'ออกไปข้างนอก (เปิดแผนที่)',
+  btnMap: 'แผนที่ (M)',
+  shopClosedNow: 'ร้านปิดอยู่ตอนนี้',
+  // Shop / checkout
+  checkoutAct: 'ชำระเงิน',
+  checkoutTitle: 'เคาน์เตอร์คิดเงิน',
+  nothingToPay: 'ไม่มีสินค้าที่ต้องชำระ',
+  total: 'รวมทั้งสิ้น',
+  payBtn: (t) => 'จ่าย ' + t,
+  returnItems: 'คืนสินค้าทั้งหมด',
+  itemsReturned: 'คืนสินค้าเข้าร้านแล้ว',
+  paid: 'ชำระเงินเรียบร้อย',
+  paidLog: (t) => 'ชำระเงินค่าสินค้า ' + t,
+  notEnoughCash: 'เงินสดไม่พอ คืนสินค้าบางชิ้นก่อน',
+  mustPay: 'คุณยังไม่ได้ชำระเงิน ต้องจ่ายหรือคืนสินค้าก่อนออกจากร้าน',
+  noPayNeeded: 'หลังการระบาด ไม่มีใครเก็บเงินแล้ว',
+  unpaidTag: 'ยังไม่ชำระ',
+  // Utilities (1C timeline)
+  brownoutNews: (d, list) => 'ประกาศการไฟฟ้า: ดับไฟหมุนเวียนวันนี้ ' + list + ' · คาดว่าระบบจะล่มถาวรในอีก ' + d + ' วัน',
+  gridWarning: 'ข่าววิทยุ: การไฟฟ้าและประปาเตือนว่าอีกไม่กี่วันจะเริ่มดับไฟหมุนเวียน เตรียมเครื่องปั่นไฟและน้ำมันไว้',
+  gridFailed: 'ไฟฟ้าและน้ำประปาล่มถาวรแล้ว! ตู้เย็นและตู้แช่แข็งจะค่อย ๆ ละลายถ้าไม่มีเครื่องปั่นไฟ',
+  powerBrownout: 'ไฟตก/ดับเป็นช่วง',
+  powerOff: 'ไฟดับ',
+  powerFailed: 'ไฟฟ้าล่มถาวร',
   goDown: 'ลงบันไดไปชั้นล่าง',
   clickToOpen: 'คลิกเพื่อเปิด',
   goToStorage: 'ไปที่ที่เก็บของ…',
@@ -4902,6 +4963,415 @@ const HOME_START_STOCK = [
   ['bookshelf', 'pouch', 1], ['big_rack', 'toilet_paper', 2], ['big_rack', 'soap', 3],
 ];
 
+/* ===== 13-data-items-more.js ===== */
+/* ==========================================================================
+   13 · ITEM DATABASE (continued) — Phase 1B catalogue expansion.
+   Prices follow Appendix A anchors (THB, ~2026). All values are tunable.
+   per = [kcal, protein g, carb g, fat g, micro (vitamin/mineral units), satiety, water]
+   ========================================================================== */
+
+/* Compact row helpers: F = food, D = drink */
+const F = (id, name, w, h, kg, stack, price, portions, per, life, tags, icon, extra) => defFood(id, name, w, h, kg, stack, price, portions, per, life, Object.assign({ tags, icon }, extra || {}));
+const D = (id, name, w, h, kg, stack, price, portions, per, life, tags, icon, extra) => defDrink(id, name, w, h, kg, stack, price, portions, per, life, Object.assign({ tags, icon }, extra || {}));
+const ic = (k, c, c2, b) => ({ k, c, c2, b });
+
+/* ---------- Dry staples ---------- */
+F('rice_brown_1kg', 'ข้าวกล้อง 1 กก.', 1, 2, 1.0, 4, 75, 10, [350, 8, 72, 3, 3, 24], L.dry, ['staple', 'rice'], ic('sack', '#c9a46a', '#6b4a2a', '#3a7a3a'));
+F('flour_1kg', 'แป้งสาลีอเนกประสงค์ 1 กก.', 1, 2, 1.0, 4, 42, 10, [364, 10, 76, 1, 1, 14], L.dry, ['staple', 'flour'], ic('sack', '#f6f3ea', '#c43c2c', '#2f63a8'));
+F('pasta_500', 'พาสต้าเส้นสปาเกตตี 500 ก.', 2, 1, 0.5, 6, 59, 5, [355, 12, 72, 1.5, 1, 18], L.dry, ['staple', 'noodle', 'pasta'], ic('box', '#2f63a8', '#f2c230', '#ffffff'));
+F('rice_noodle_dry', 'เส้นเล็กอบแห้ง 400 ก.', 2, 1, 0.4, 6, 32, 4, [360, 6, 82, 0.5, 0.5, 18], L.dry, ['staple', 'noodle', 'rice_noodle'], ic('pack', '#f2efe6', '#c43c2c', '#ffffff'));
+F('glass_noodle', 'วุ้นเส้น 250 ก.', 1, 1, 0.25, 8, 28, 5, [175, 0.1, 43, 0, 0.5, 8], L.dry, ['staple', 'noodle'], ic('pack', '#e9eef2', '#2f63a8', '#ffffff'));
+F('oats_800', 'ข้าวโอ๊ตบด 800 ก.', 1, 2, 0.8, 4, 129, 16, [190, 7, 32, 3.5, 3, 16], L.dry, ['staple', 'breakfast'], ic('box', '#d8b97a', '#3a7a3a', '#ffffff'));
+F('mung_beans', 'ถั่วเขียว 500 ก.', 1, 1, 0.5, 6, 35, 10, [170, 12, 30, 0.6, 3, 12], L.dry, ['staple', 'beans', 'protein'], ic('pack', '#5f8a3a', '#f2efe6', '#3a7a3a'));
+F('red_beans', 'ถั่วแดง 500 ก.', 1, 1, 0.5, 6, 45, 10, [165, 11, 30, 0.5, 3, 12], L.dry, ['staple', 'beans', 'protein'], ic('pack', '#8a2f2a', '#f2efe6', '#c43c2c'));
+F('lentils', 'ถั่วเลนทิล 500 ก.', 1, 1, 0.5, 6, 79, 10, [175, 13, 30, 0.5, 3, 13], L.dry, ['staple', 'beans', 'protein'], ic('pack', '#c9733a', '#f2efe6', '#2f63a8'));
+F('dried_chili', 'พริกแห้ง 100 ก.', 1, 1, 0.1, 10, 35, 20, [15, 0.6, 2.5, 0.3, 1, 0], L.dry, ['spice', 'chili'], ic('pack', '#c4202a', '#7a1a12', '#ffffff'));
+F('dried_shiitake', 'เห็ดหอมแห้ง 100 ก.', 1, 1, 0.1, 10, 89, 10, [30, 1, 7, 0.1, 2, 2], L.dry, ['veg', 'mushroom'], ic('pack', '#7a5a3a', '#3a2a1a', '#ffffff'));
+F('dried_fish', 'ปลาเค็มตากแห้ง 250 ก.', 2, 1, 0.25, 6, 85, 5, [95, 18, 0, 2, 2, 7], { shelf: 120, opened: { ambientH: 24 * 14, fridgeD: 60 } }, ['protein', 'fish', 'salty'], ic('tray', '#c9a46a', '#8a6a3a', '#3a7a3a'));
+F('dried_shrimp', 'กุ้งแห้ง 100 ก.', 1, 1, 0.1, 10, 79, 10, [30, 6, 0, 0.3, 1.5, 2], { shelf: 120, opened: { ambientH: 24 * 30, fridgeD: 90 } }, ['protein', 'seafood', 'salty'], ic('pack', '#e88a5a', '#c43c2c', '#ffffff'));
+F('sesame', 'งาขาว 100 ก.', 1, 1, 0.1, 10, 25, 10, [57, 1.8, 2.3, 5, 2, 2], L.dry, ['spice'], ic('pack', '#f2e6c8', '#3a7a3a', '#ffffff'));
+F('peanuts', 'ถั่วลิสงคั่ว 200 ก.', 1, 1, 0.2, 10, 39, 8, [145, 6.5, 4, 12, 2, 6], L.snack, ['snack', 'protein', 'nuts'], ic('pack', '#c9a46a', '#c43c2c', '#ffffff'));
+F('cashews', 'เม็ดมะม่วงหิมพานต์ 200 ก.', 1, 1, 0.2, 10, 159, 8, [140, 4.5, 8, 11, 2, 6], L.snack, ['snack', 'protein', 'nuts'], ic('jar', '#e9d8b0', '#7a4a2a', '#f2c230'));
+
+/* ---------- Canned & jarred ---------- */
+F('canned_bamboo', 'หน่อไม้กระป๋อง', 1, 1, 0.54, 12, 35, 3, [25, 2, 4, 0.3, 1.5, 6, 25], L.canned, ['canned', 'veg'], ic('can', '#c9b23a', '#c8ccd0', '#3a7a3a'));
+F('canned_mushroom', 'เห็ดฟางกระป๋อง', 1, 1, 0.42, 12, 39, 3, [25, 2.5, 3, 0.3, 1.5, 5, 20], L.canned, ['canned', 'veg', 'mushroom'], ic('can', '#5f4a3a', '#c8ccd0', '#f2efe6'));
+F('canned_soup', 'ซุปข้นกระป๋อง', 1, 1, 0.42, 12, 55, 2, [110, 3, 14, 4.5, 1.5, 12, 35], L.canned, ['canned', 'soup'], ic('can', '#c43c2c', '#c8ccd0', '#f2efe6'));
+F('canned_chicken_curry', 'แกงเขียวหวานไก่กระป๋อง', 1, 1, 0.4, 12, 49, 2, [190, 10, 6, 14, 1.5, 12, 20], L.canned, ['canned', 'ready', 'protein', 'curry'], ic('can', '#3a7a3a', '#c8ccd0', '#f2efe6'));
+F('canned_massaman', 'แกงมัสมั่นกระป๋อง', 1, 1, 0.4, 12, 55, 2, [210, 9, 12, 14, 1.5, 12, 18], L.canned, ['canned', 'ready', 'protein', 'curry'], ic('can', '#a8582a', '#c8ccd0', '#f2c230'));
+F('canned_pineapple', 'สับปะรดกระป๋อง', 1, 1, 0.56, 12, 45, 4, [60, 0.4, 15, 0.1, 2, 4, 30], L.canned, ['canned', 'fruit', 'sweet'], ic('can', '#f2c230', '#c8ccd0', '#3a7a3a'));
+F('canned_longan', 'ลำไยในน้ำเชื่อมกระป๋อง', 1, 1, 0.56, 12, 49, 4, [75, 0.5, 19, 0.1, 1.5, 4, 30], L.canned, ['canned', 'fruit', 'sweet'], ic('can', '#e8d6a8', '#c8ccd0', '#8a5a2a'));
+F('canned_fruit_cocktail', 'ผลไม้รวมกระป๋อง', 1, 1, 0.56, 12, 59, 4, [70, 0.4, 18, 0.1, 2, 4, 30], L.canned, ['canned', 'fruit', 'sweet'], ic('can', '#e05a8a', '#c8ccd0', '#f2c230'));
+F('evaporated_milk', 'นมข้นจืด', 1, 1, 0.39, 12, 25, 6, [55, 3, 4, 3, 1, 2, 15], L.canned, ['canned', 'dairy'], ic('can', '#f2f2ec', '#c8ccd0', '#3a7a3a'));
+F('jam', 'แยมสตรอว์เบอร์รี', 1, 1, 0.34, 6, 69, 15, [50, 0, 13, 0, 0.2, 1], L.condiment, ['spread', 'sweet'], ic('jar', '#c4202a', '#f2efe6', '#f2efe6'));
+F('canned_sausage', 'ไส้กรอกเวียนนากระป๋อง', 1, 1, 0.2, 12, 45, 3, [120, 5, 1.5, 10, 0.5, 6], L.canned, ['canned', 'protein', 'meat'], ic('can', '#e05a3a', '#c8ccd0', '#f2c230'));
+F('canned_tomato', 'มะเขือเทศบดกระป๋อง', 1, 1, 0.4, 12, 49, 4, [20, 1, 4, 0.1, 2, 2, 25], L.canned, ['canned', 'veg'], ic('can', '#c4202a', '#c8ccd0', '#3a7a3a'));
+F('pickled_mustard', 'ผักกาดดองกระป๋อง', 1, 1, 0.14, 12, 16, 3, [15, 0.5, 3, 0.1, 1, 2, 10], L.canned, ['canned', 'veg', 'salty'], ic('can', '#3a8a3a', '#c8ccd0', '#f2c230'));
+
+/* ---------- Instant & ready ---------- */
+F('noodle_tomyum', 'บะหมี่กึ่งฯ รสต้มยำ (ซอง)', 1, 1, 0.06, 10, 7, 4, [85, 2, 11, 3.5, 0.5, 6], L.instant, ['instant', 'noodle'], ic('pack', '#c4202a', '#f2c230', '#ffffff'), { parts: ['noodle_block', 'seasoning_sachet'] });
+F('noodle_pork', 'บะหมี่กึ่งฯ รสหมูสับ (ซอง)', 1, 1, 0.06, 10, 7, 4, [85, 2, 11, 3.5, 0.5, 6], L.instant, ['instant', 'noodle'], ic('pack', '#f2c230', '#c4202a', '#ffffff'), { parts: ['noodle_block', 'seasoning_sachet'] });
+F('rice_vermicelli_cup', 'เส้นหมี่กึ่งสำเร็จรูป (ถ้วย)', 1, 1, 0.06, 6, 20, 3, [80, 1.5, 15, 1.5, 0.5, 6], L.instant, ['instant', 'noodle'], ic('cup', '#f0efe8', '#3a7a3a', '#f2c230'));
+F('instant_soup', 'ซุปกึ่งสำเร็จรูป (ซอง)', 1, 1, 0.02, 20, 15, 1, [60, 1, 10, 1.5, 0.5, 5], L.instant, ['instant', 'soup'], ic('pack', '#e0b23c', '#7a4a2a', '#ffffff'));
+F('instant_rice_cup', 'ข้าวกึ่งสำเร็จรูป (ถ้วย)', 1, 1, 0.1, 6, 45, 2, [180, 3.5, 36, 2.5, 0.5, 12], L.instant, ['instant', 'rice', 'ready'], ic('cup', '#f6f1e2', '#c4202a', '#3a7a3a'));
+F('ready_meal_basil', 'ข้าวกะเพราไก่แช่แข็ง (กล่อง)', 1, 1, 0.25, 6, 49, 2, [210, 10, 28, 6, 1, 12, 8], L.frozen, ['frozen', 'ready', 'rice', 'protein'], ic('frozen', '#e9eef5', '#3a7a3a', '#c4202a'));
+F('ready_meal_green_curry', 'ข้าวแกงเขียวหวานแช่แข็ง', 1, 1, 0.25, 6, 49, 2, [230, 9, 28, 9, 1, 12, 8], L.frozen, ['frozen', 'ready', 'rice', 'curry'], ic('frozen', '#e9eef5', '#5f8a3a', '#f2efe6'));
+F('protein_bar', 'โปรตีนบาร์', 1, 1, 0.06, 20, 69, 1, [210, 20, 22, 7, 3, 9], L.snack, ['snack', 'protein'], ic('bar', '#2b2b2b', '#c43c2c', '#f2c230'));
+F('cereal', 'ซีเรียลอาหารเช้า 300 ก.', 1, 2, 0.3, 4, 99, 10, [115, 2, 25, 1, 3, 6], L.snack, ['breakfast', 'carb'], ic('box', '#e0b23c', '#c4202a', '#ffffff'));
+F('crackers_rice', 'ข้าวเกรียบกุ้ง', 1, 2, 0.08, 8, 20, 3, [120, 1, 16, 6, 0.5, 4], L.snack, ['snack'], ic('pillow', '#f2c230', '#e05a3a', '#ffffff'));
+
+/* ---------- Fresh meat & seafood ---------- */
+F('pork_belly', 'หมูสามชั้น 500 ก.', 2, 1, 0.5, 4, 110, 4, [260, 11, 0, 24, 0.5, 9, 4], L.freshMeat, ['meat', 'pork', 'protein', 'raw'], ic('tray', '#e8a0a0', '#ffffff', '#c94b4b'));
+F('pork_minced', 'หมูสับ 500 ก.', 1, 1, 0.5, 4, 90, 4, [160, 15, 0, 11, 0.5, 9, 4], L.freshMeat, ['meat', 'pork', 'minced', 'protein', 'raw'], ic('tray', '#e88a8a', '#ffffff', '#c94b4b'));
+F('chicken_thigh', 'สะโพกไก่ 1 กก.', 2, 1, 1.0, 4, 95, 8, [180, 18, 0, 12, 0.5, 9, 6], L.freshMeat, ['meat', 'poultry', 'protein', 'raw'], ic('tray', '#f2c2b0', '#ffffff', '#e0b23c'));
+F('chicken_whole', 'ไก่ทั้งตัว (~1.5 กก.)', 2, 2, 1.5, 2, 150, 10, [210, 20, 0, 14, 0.5, 10, 6], L.freshMeat, ['meat', 'poultry', 'protein', 'raw', 'large'], ic('round', '#f2d0b8', '#e8b08a', '#e0b23c'));
+F('chicken_wings', 'ปีกไก่ 500 ก.', 1, 1, 0.5, 4, 75, 4, [200, 17, 0, 14, 0.5, 8, 4], L.freshMeat, ['meat', 'poultry', 'protein', 'raw'], ic('tray', '#f2c2b0', '#ffffff', '#c43c2c'));
+F('beef_minced', 'เนื้อวัวบด 500 ก.', 1, 1, 0.5, 4, 180, 4, [250, 22, 0, 18, 1, 10, 4], L.freshMeat, ['meat', 'beef', 'minced', 'protein', 'raw'], ic('tray', '#a8343a', '#ffffff', '#2b2b2b'));
+F('beef_ribeye', 'สเต๊กริบอาย (~300 ก.)', 1, 1, 0.3, 4, 390, 2, [380, 30, 0, 29, 1, 13, 5], L.freshMeat, ['meat', 'beef', 'protein', 'raw', 'steak'], ic('tray', '#9a2a32', '#ffffff', '#f2c230'), { rarity: 'uncommon' });
+F('pork_chop', 'หมูสันนอกหั่นชิ้น 500 ก.', 2, 1, 0.5, 4, 100, 4, [170, 22, 0, 9, 0.5, 10, 4], L.freshMeat, ['meat', 'pork', 'protein', 'raw', 'steak'], ic('tray', '#efa8a0', '#ffffff', '#c94b4b'));
+F('sausage_fresh', 'ไส้กรอกหมูรมควัน (แพ็ก)', 1, 1, 0.5, 4, 89, 5, [170, 7, 2, 15, 0.5, 8], { shelf: 21, store: 'fridge', opened: { ambientH: 8, fridgeD: 5 }, freeze: 'good' }, ['meat', 'pork', 'protein', 'processed'], ic('tray', '#c9643a', '#ffffff', '#f2c230'));
+F('ham', 'แฮมสไลซ์ 200 ก.', 1, 1, 0.2, 6, 75, 4, [60, 8, 1, 2.5, 0.5, 4], { shelf: 20, store: 'fridge', opened: { ambientH: 6, fridgeD: 4 }, freeze: 'good' }, ['meat', 'pork', 'protein', 'processed'], ic('tray', '#f2a8b0', '#ffffff', '#2f63a8'));
+F('bacon', 'เบคอน 200 ก.', 1, 1, 0.2, 6, 99, 4, [200, 7, 0.5, 19, 0.5, 5], { shelf: 21, store: 'fridge', opened: { ambientH: 6, fridgeD: 5 }, freeze: 'good' }, ['meat', 'pork', 'protein', 'processed'], ic('tray', '#c9643a', '#ffffff', '#c43c2c'));
+F('meatballs', 'ลูกชิ้นหมู 500 ก.', 1, 1, 0.5, 4, 69, 5, [110, 9, 6, 6, 0.5, 6], { shelf: 7, store: 'fridge', opened: { ambientH: 6, fridgeD: 3 }, freeze: 'good' }, ['meat', 'pork', 'protein', 'processed'], ic('tray', '#d8c0a8', '#ffffff', '#3a7a3a'));
+F('fish_tilapia', 'ปลานิลสด (ตัว ~700 ก.)', 2, 1, 0.7, 4, 75, 4, [110, 20, 0, 3, 1, 9, 5], L.freshMeat, ['fish', 'protein', 'raw', 'seafood'], ic('tray', '#8a9aa8', '#ffffff', '#2f63a8'));
+F('fish_mackerel_fresh', 'ปลาทูสด (เข่ง)', 1, 1, 0.4, 6, 60, 4, [110, 12, 0, 7, 1.5, 7, 4], { shelf: 2, store: 'fridge', opened: { ambientH: 5, fridgeD: 2 }, freeze: 'good' }, ['fish', 'protein', 'raw', 'seafood'], ic('tray', '#7a8a98', '#c9a46a', '#3a7a3a'));
+F('shrimp_500', 'กุ้งขาว 500 ก.', 1, 1, 0.5, 4, 260, 4, [60, 12, 0, 1, 1.5, 6, 6], { shelf: 2, store: 'fridge', opened: { ambientH: 4, fridgeD: 2 }, freeze: 'good' }, ['seafood', 'protein', 'raw'], ic('tray', '#e8a088', '#ffffff', '#2f63a8'));
+F('squid', 'ปลาหมึกกล้วย 500 ก.', 1, 1, 0.5, 4, 180, 4, [70, 13, 2, 1, 1, 6, 6], { shelf: 2, store: 'fridge', opened: { ambientH: 4, fridgeD: 2 }, freeze: 'good' }, ['seafood', 'protein', 'raw'], ic('tray', '#f2e6dc', '#ffffff', '#c43c2c'));
+F('eggs_tray30', 'ไข่ไก่ (แผง 30 ฟอง)', 2, 2, 1.9, 2, 135, 30, [72, 6, 0.4, 5, 1, 5], L.egg, ['protein', 'egg', 'fresh', 'tray'], ic('crate', '#e9d8b8', '#f2dcb8'));
+F('duck_egg', 'ไข่เป็ด (ฟอง)', 1, 1, 0.07, 20, 6, 1, [130, 9, 1, 10, 1, 6], L.egg, ['protein', 'egg', 'fresh'], ic('egg', '#e9e6dc', '#d8d2c4'));
+F('salted_egg', 'ไข่เค็ม (ฟอง)', 1, 1, 0.07, 20, 10, 1, [140, 10, 1, 10, 1, 6], { shelf: 30, opened: { ambientH: 12, fridgeD: 3 }, freeze: 'no' }, ['protein', 'egg', 'salty'], ic('egg', '#e8e2d8', '#c9733a'));
+
+/* ---------- Frozen ---------- */
+F('frozen_fish_fillet', 'ปลาแพนกาเซียสแล่แช่แข็ง (~250 ก.)', 1, 1, 0.25, 6, 99, 2, [90, 15, 0, 3, 1, 8, 4], L.frozen, ['frozen', 'fish', 'protein', 'raw'], ic('frozen', '#e9eef5', '#f2efe6', '#2f63a8'));
+F('frozen_shrimp', 'กุ้งแช่แข็ง 500 ก.', 1, 1, 0.5, 6, 229, 4, [60, 12, 0, 1, 1.5, 6, 5], L.frozen, ['frozen', 'seafood', 'protein', 'raw'], ic('frozen', '#e9eef5', '#e8a088', '#c43c2c'));
+F('frozen_fries', 'เฟรนช์ฟรายส์แช่แข็ง 1 กก.', 2, 1, 1.0, 4, 129, 8, [150, 2, 22, 6, 1, 7], L.frozen, ['frozen', 'carb'], ic('frozen', '#e9eef5', '#f2c230', '#c43c2c'));
+F('frozen_veg_mix', 'ผักรวมแช่แข็ง 500 ก.', 1, 1, 0.5, 6, 59, 5, [40, 2, 7, 0.3, 4, 5, 15], L.frozen, ['frozen', 'veg'], ic('frozen', '#e9eef5', '#5f8a3a', '#f2c230'));
+F('frozen_dimsum', 'ขนมจีบแช่แข็ง (กล่อง)', 1, 1, 0.3, 6, 79, 3, [140, 7, 12, 7, 0.5, 8], L.frozen, ['frozen', 'ready', 'protein'], ic('frozen', '#e9eef5', '#f2c230', '#c43c2c'));
+F('frozen_pork_bun', 'ซาลาเปาไส้หมูแช่แข็ง (6 ลูก)', 1, 1, 0.5, 6, 89, 6, [180, 6, 28, 5, 0.5, 10], L.frozen, ['frozen', 'bakery', 'ready'], ic('frozen', '#e9eef5', '#f6f1e2', '#c43c2c'));
+F('frozen_chicken_nuggets', 'นักเก็ตไก่แช่แข็ง 500 ก.', 1, 1, 0.5, 6, 119, 5, [200, 11, 12, 12, 0.5, 8], L.frozen, ['frozen', 'protein', 'processed'], ic('frozen', '#e9eef5', '#e0b23c', '#c43c2c'));
+F('ice_pop', 'ไอติมแท่ง', 1, 1, 0.07, 10, 15, 1, [80, 0.5, 18, 1, 0.2, 2, 10], L.frozen, ['frozen', 'sweet'], ic('bar', '#e05a8a', '#f2efe6', '#f2efe6'));
+
+/* ---------- Fresh vegetables, herbs & fruit ---------- */
+F('chinese_kale', 'ผักคะน้า (กำ)', 1, 2, 0.3, 6, 20, 2, [25, 2.5, 4, 0.3, 5, 5, 30], L.veg, ['veg', 'leafy', 'fresh'], ic('greens', '#2f6a2a', '#7fb35a', '#c43c2c'));
+F('cucumber', 'แตงกวา (ถุง)', 1, 1, 0.5, 6, 20, 4, [8, 0.3, 2, 0, 1, 3, 45], L.veg, ['veg', 'fresh'], ic('round', '#3a7a3a', '#9ccf6a', '#3a7a3a'));
+F('chili_fresh', 'พริกขี้หนูสด 100 ก.', 1, 1, 0.1, 10, 15, 10, [4, 0.2, 0.9, 0, 1, 0, 3], L.veg, ['veg', 'herb', 'chili', 'fresh'], ic('pack', '#c4202a', '#3a7a3a', '#ffffff'));
+F('thai_basil', 'ใบกะเพรา (กำ)', 1, 1, 0.08, 10, 10, 4, [3, 0.3, 0.3, 0, 1.5, 0, 3], L.veg, ['veg', 'herb', 'fresh'], ic('greens', '#2f5a2a', '#5f8a3a', '#c43c2c'));
+F('lemongrass', 'ตะไคร้ (มัด)', 1, 2, 0.2, 10, 10, 6, [10, 0.2, 2, 0, 0.5, 1, 2], L.hardVeg, ['veg', 'herb', 'fresh'], ic('greens', '#9ccf6a', '#e9e6c8', '#c43c2c'));
+F('galangal', 'ข่า 200 ก.', 1, 1, 0.2, 10, 15, 8, [8, 0.2, 1.5, 0, 0.5, 1, 2], L.hardVeg, ['veg', 'herb', 'fresh'], ic('round', '#e9d8b8', '#c9a46a', '#e05a8a'));
+F('garlic', 'กระเทียมไทย 500 ก.', 1, 1, 0.5, 6, 60, 25, [15, 0.6, 3.3, 0, 1, 0, 1], { shelf: 60, opened: { ambientH: 24 * 30, fridgeD: 60 }, freeze: 'texture' }, ['veg', 'herb', 'spice'], ic('round', '#f2efe6', '#c9a46a', '#e05a8a'));
+F('shallot', 'หอมแดง 500 ก.', 1, 1, 0.5, 6, 45, 20, [18, 0.6, 4, 0, 1, 1, 3], { shelf: 45, opened: { ambientH: 24 * 20, fridgeD: 40 }, freeze: 'texture' }, ['veg', 'herb'], ic('round', '#a84a5a', '#e8a0a8', '#3a7a3a'));
+F('onion', 'หัวหอมใหญ่ 1 กก.', 1, 1, 1.0, 4, 45, 8, [40, 1, 9, 0.1, 1, 3, 10], { shelf: 30, opened: { ambientH: 48, fridgeD: 7 }, freeze: 'texture' }, ['veg', 'fresh'], ic('round', '#e0b07a', '#f2e6c8', '#c9a46a'));
+F('potato', 'มันฝรั่ง 1 กก.', 2, 1, 1.0, 4, 55, 6, [130, 3.5, 30, 0.2, 3, 10, 15], L.hardVeg, ['veg', 'carb', 'fresh'], ic('round', '#c9a46a', '#e9d8b0', '#7a5a3a'));
+F('carrot', 'แครอท 500 ก.', 1, 1, 0.5, 6, 30, 5, [40, 1, 9, 0.2, 5, 4, 20], L.hardVeg, ['veg', 'fresh'], ic('greens', '#e57a2e', '#5f8a3a', '#c43c2c'));
+F('pumpkin', 'ฟักทอง (ลูก ~2 กก.)', 2, 2, 2.0, 2, 50, 10, [50, 1.5, 12, 0.2, 5, 5, 25], { shelf: 45, opened: { ambientH: 48, fridgeD: 6 }, freeze: 'texture' }, ['veg', 'carb', 'fresh'], ic('round', '#5f7a3a', '#e5a03a', '#3a5a2a'));
+F('long_beans', 'ถั่วฝักยาว (กำ)', 1, 2, 0.25, 6, 20, 3, [25, 2, 4, 0.1, 3, 4, 20], L.veg, ['veg', 'fresh'], ic('greens', '#4f8a3a', '#7fb35a', '#c43c2c'));
+F('eggplant', 'มะเขือเปราะ (ถุง)', 1, 1, 0.4, 6, 25, 4, [15, 0.8, 3, 0.1, 2, 3, 25], L.veg, ['veg', 'fresh'], ic('round', '#7fb35a', '#f2f2e6', '#3a7a3a'));
+F('mushroom_oyster', 'เห็ดนางฟ้า 250 ก.', 1, 1, 0.25, 6, 30, 3, [20, 2.5, 3, 0.3, 2, 3, 20], L.veg, ['veg', 'mushroom', 'fresh'], ic('round', '#d8cfc0', '#a8988a', '#5f4a3a'));
+F('corn_cob', 'ข้าวโพดหวาน (ฝัก)', 1, 2, 0.35, 6, 15, 2, [90, 3, 19, 1.2, 2, 6, 20], L.veg, ['veg', 'carb', 'fresh'], ic('greens', '#f2cf3a', '#7fb35a', '#3a7a3a'));
+F('lime', 'มะนาว (ถุง 10 ลูก)', 1, 1, 0.4, 6, 40, 10, [6, 0.1, 2, 0, 1.5, 0, 5], L.hardVeg, ['fruit', 'herb', 'sour'], ic('round', '#5f9a3a', '#9ccf6a', '#3a7a3a'));
+F('kaffir_lime_leaf', 'ใบมะกรูด (ถุง)', 1, 1, 0.03, 10, 10, 10, [1, 0, 0.2, 0, 0.5, 0, 0], L.veg, ['herb', 'fresh'], ic('greens', '#2f5a2a', '#5f8a3a', '#3a7a3a'));
+F('papaya', 'มะละกอสุก (ลูก)', 2, 1, 1.2, 4, 40, 6, [55, 0.6, 14, 0.2, 5, 5, 40], L.fruit, ['fruit', 'fresh'], ic('round', '#e5913a', '#7fb35a', '#3a7a3a'));
+F('green_papaya', 'มะละกอดิบ (ส้มตำ)', 2, 1, 1.0, 4, 25, 6, [35, 0.5, 9, 0.1, 4, 4, 40], L.hardVeg, ['veg', 'fresh'], ic('round', '#5f9a3a', '#9ccf6a', '#3a7a3a'));
+F('watermelon', 'แตงโม (ลูก ~3 กก.)', 2, 2, 3.0, 2, 60, 12, [45, 0.9, 11, 0.2, 2, 4, 60], { shelf: 10, opened: { ambientH: 12, fridgeD: 3 }, freeze: 'texture' }, ['fruit', 'fresh'], ic('round', '#3a7a3a', '#5f9a3a', '#c4202a'));
+F('pineapple', 'สับปะรด (ลูก)', 1, 2, 1.3, 4, 35, 6, [50, 0.5, 13, 0.1, 4, 4, 40], { shelf: 7, opened: { ambientH: 12, fridgeD: 4 }, freeze: 'good' }, ['fruit', 'fresh'], ic('greens', '#d8a23a', '#3a7a3a', '#3a7a3a'));
+F('rambutan', 'เงาะ (กิโล)', 1, 1, 1.0, 4, 50, 6, [75, 0.6, 19, 0.2, 3, 4, 30], L.fruit, ['fruit', 'fresh'], ic('round', '#c4202a', '#3a7a3a', '#c4202a'));
+F('apple', 'แอปเปิล (ถุง 4 ลูก)', 1, 1, 0.8, 6, 79, 4, [95, 0.5, 25, 0.3, 3, 6, 40], { shelf: 21, opened: { ambientH: 8, fridgeD: 2 }, freeze: 'texture' }, ['fruit', 'fresh'], ic('round', '#c4202a', '#e05a3a', '#5f4a3a'));
+F('orange', 'ส้มสายน้ำผึ้ง (กิโล)', 1, 1, 1.0, 4, 70, 6, [60, 1, 15, 0.2, 5, 5, 40], { shelf: 14, opened: { ambientH: 8, fridgeD: 2 }, freeze: 'texture' }, ['fruit', 'fresh'], ic('round', '#f2a52a', '#f2c23a', '#3a7a3a'));
+F('guava', 'ฝรั่ง (กิโล)', 1, 1, 1.0, 4, 45, 5, [70, 2.5, 14, 1, 6, 6, 35], L.fruit, ['fruit', 'fresh'], ic('round', '#7fb35a', '#c9e5a0', '#3a7a3a'));
+
+/* ---------- Dairy & bakery ---------- */
+F('fresh_milk', 'นมสดพาสเจอร์ไรส์ 2 ลิตร', 1, 2, 2.05, 4, 89, 8, [125, 6.5, 10, 7, 2, 5, 20], L.dairy, ['dairy', 'milk'], ic('jug', '#f6f6f2', '#2b7fc4', '#2b7fc4'));
+F('yogurt', 'โยเกิร์ต (ถ้วย)', 1, 1, 0.14, 12, 18, 1, [100, 5, 15, 2.5, 1.5, 5, 8], L.dairy, ['dairy'], ic('cup', '#f6f6f2', '#e05a8a', '#f2c230'));
+F('cheese_slices', 'ชีสแผ่น 200 ก.', 1, 1, 0.2, 6, 89, 10, [60, 3.5, 1, 4.5, 1, 3], { shelf: 120, store: 'fridge', opened: { ambientH: 8, fridgeD: 21 }, freeze: 'good' }, ['dairy', 'protein'], ic('box', '#f2c230', '#e0b23c', '#c43c2c'));
+F('butter', 'เนยจืด 227 ก.', 1, 1, 0.23, 6, 119, 20, [80, 0.1, 0, 9, 0.2, 1], { shelf: 90, store: 'fridge', opened: { ambientH: 24 * 3, fridgeD: 30 }, freeze: 'good' }, ['dairy', 'fat'], ic('box', '#f6efc8', '#2f63a8', '#e0b23c'));
+F('buns', 'ขนมปังบัน (แพ็ก 6)', 2, 1, 0.3, 4, 35, 6, [120, 4, 22, 2, 0.5, 6], L.bread, ['bakery', 'carb'], ic('loaf', '#d9a35a', '#f2e1bd', '#ffffff'));
+F('cake_slice', 'เค้กช็อกโกแลต (ชิ้น)', 1, 1, 0.12, 4, 65, 1, [380, 5, 48, 19, 1, 6], { shelf: 3, store: 'fridge', opened: { ambientH: 10, fridgeD: 3 }, freeze: 'good' }, ['bakery', 'sweet', 'dessert'], ic('box', '#5a3220', '#f2e1bd', '#e05a8a'));
+F('croissant', 'ครัวซองต์ (แพ็ก 2)', 1, 1, 0.12, 6, 49, 2, [230, 4.5, 26, 12, 0.5, 6], L.bread, ['bakery', 'carb'], ic('loaf', '#e0a050', '#f2d08a', '#ffffff'));
+F('roti_frozen', 'โรตีแช่แข็ง (แพ็ก 5)', 1, 1, 0.4, 6, 79, 5, [200, 4, 28, 8, 0.5, 8], L.frozen, ['frozen', 'bakery', 'carb'], ic('frozen', '#e9eef5', '#e0c08a', '#c43c2c'));
+
+/* ---------- Snacks, sweets & Thai desserts ---------- */
+F('cookies', 'คุกกี้ช็อกโกแลตชิพ', 1, 1, 0.15, 10, 45, 5, [140, 1.5, 19, 7, 0.5, 4], L.snack, ['snack', 'sweet'], ic('box', '#7a4a2a', '#e0b23c', '#ffffff'));
+F('wafer', 'เวเฟอร์', 1, 1, 0.1, 10, 20, 4, [130, 1.5, 17, 6, 0.3, 3], L.snack, ['snack', 'sweet'], ic('bar', '#e0b23c', '#c43c2c', '#ffffff'));
+F('candy', 'ลูกอม (ถุง)', 1, 1, 0.1, 10, 25, 10, [40, 0, 10, 0, 0, 1], L.sweets, ['snack', 'sweet'], ic('pack', '#e05a8a', '#f2c230', '#ffffff'));
+F('dried_mango', 'มะม่วงอบแห้ง 200 ก.', 1, 1, 0.2, 10, 89, 5, [130, 1, 31, 0.5, 3, 5], { shelf: 240, opened: { ambientH: 24 * 30, fridgeD: 90 }, freeze: 'good' }, ['snack', 'fruit', 'sweet'], ic('pack', '#f2b33a', '#e57a2e', '#ffffff'));
+F('seaweed_snack', 'สาหร่ายทอดกรอบ', 1, 1, 0.04, 10, 35, 2, [80, 2, 6, 5, 2, 2], L.snack, ['snack'], ic('pack', '#2b4a2a', '#f2c230', '#ffffff'));
+F('khanom_chan', 'ขนมชั้น (กล่อง)', 1, 1, 0.25, 4, 40, 4, [110, 0.5, 22, 2.5, 0.2, 5], { shelf: 1.5, opened: { ambientH: 18, fridgeD: 3 }, freeze: 'no' }, ['dessert', 'sweet', 'thai'], ic('box', '#5fa06a', '#f2efe6', '#e05a8a'));
+F('mango_sticky_rice', 'ข้าวเหนียวมะม่วง (กล่อง)', 1, 1, 0.3, 4, 80, 2, [270, 3, 50, 7, 2, 10, 5], { shelf: 0.6, opened: { ambientH: 8, fridgeD: 2 }, freeze: 'texture' }, ['dessert', 'sweet', 'thai', 'rice'], ic('box', '#f2b33a', '#f6f1e2', '#3a7a3a'));
+F('thong_yod', 'ทองหยอด (กล่อง)', 1, 1, 0.2, 4, 60, 4, [90, 2, 16, 2.5, 0.5, 3], { shelf: 3, opened: { ambientH: 24, fridgeD: 5 }, freeze: 'good' }, ['dessert', 'sweet', 'thai'], ic('box', '#f2c230', '#e0a020', '#c43c2c'));
+F('khanom_krok', 'ขนมครก (กล่อง)', 1, 1, 0.2, 4, 30, 3, [120, 1.5, 15, 6, 0.3, 4], { shelf: 0.5, opened: { ambientH: 8, fridgeD: 2 }, freeze: 'no' }, ['dessert', 'sweet', 'thai'], ic('box', '#f2efe6', '#c9a46a', '#3a7a3a'));
+F('bua_loy_cup', 'บัวลอยน้ำกะทิ (ถ้วย)', 1, 1, 0.25, 4, 25, 2, [140, 1.5, 18, 7, 0.3, 6, 10], { shelf: 0.5, opened: { ambientH: 6, fridgeD: 2 }, freeze: 'no' }, ['dessert', 'sweet', 'thai'], ic('cup', '#f6f1e2', '#e05a8a', '#3a7a3a'));
+
+/* ---------- Condiments & cooking basics ---------- */
+F('soy_sauce', 'ซีอิ๊วขาว', 1, 2, 0.7, 4, 32, 50, [5, 0.6, 0.6, 0, 0.2, 0], L.condiment, ['condiment', 'sauce'], ic('bottle', '#3a2014', '#3a7a3a', '#f2efe6'));
+F('oyster_sauce', 'ซอสหอยนางรม', 1, 2, 0.8, 4, 45, 40, [9, 0.2, 2, 0, 0.2, 0], L.condiment, ['condiment', 'sauce'], ic('bottle', '#2b1a12', '#c43c2c', '#f2c230'));
+F('chili_sauce', 'ซอสพริก', 1, 2, 0.7, 4, 35, 40, [12, 0.1, 3, 0, 0.2, 0], L.condiment, ['condiment', 'sauce'], ic('bottle', '#c4202a', '#3a7a3a', '#f2efe6'));
+F('vinegar', 'น้ำส้มสายชู', 1, 2, 0.75, 4, 18, 50, [1, 0, 0, 0, 0, 0], L.condiment, ['condiment'], ic('bottle', '#f2f2e6', '#3a7a3a', '#c43c2c'));
+F('seasoning_powder', 'ผงปรุงรส 400 ก.', 1, 1, 0.4, 6, 49, 80, [5, 0.3, 0.5, 0.1, 0.1, 0], L.condiment, ['condiment', 'spice'], ic('pack', '#c4202a', '#f2c230', '#ffffff'));
+F('curry_paste_green', 'พริกแกงเขียวหวาน 100 ก.', 1, 1, 0.1, 10, 25, 4, [25, 0.8, 3, 1, 1, 0], { shelf: 120, opened: { ambientH: 24 * 3, fridgeD: 30 }, freeze: 'good' }, ['condiment', 'curry_paste'], ic('pack', '#3a7a3a', '#f2efe6', '#c43c2c'));
+F('curry_paste_red', 'พริกแกงเผ็ด 100 ก.', 1, 1, 0.1, 10, 25, 4, [25, 0.8, 3, 1, 1, 0], { shelf: 120, opened: { ambientH: 24 * 3, fridgeD: 30 }, freeze: 'good' }, ['condiment', 'curry_paste'], ic('pack', '#c4202a', '#f2efe6', '#3a7a3a'));
+F('tomyum_paste', 'น้ำพริกเผาต้มยำ', 1, 1, 0.23, 6, 45, 10, [45, 0.5, 4, 3, 0.5, 0], L.condiment, ['condiment', 'curry_paste'], ic('jar', '#a8342a', '#f2c230', '#f2efe6'));
+F('palm_sugar', 'น้ำตาลปี๊บ 500 ก.', 1, 1, 0.5, 6, 45, 25, [75, 0, 19, 0, 0.2, 1], L.dry, ['condiment', 'sweet'], ic('jar', '#c9a46a', '#7a4a2a', '#f2efe6'));
+F('pepper_ground', 'พริกไทยป่น 50 ก.', 1, 1, 0.05, 10, 39, 25, [5, 0.2, 1, 0, 0.3, 0], L.dry, ['spice'], ic('smallbottle', '#3a3a3a', '#c43c2c', '#f2efe6'));
+F('honey', 'น้ำผึ้ง 500 ก.', 1, 1, 0.5, 6, 159, 25, [64, 0, 17, 0, 0.2, 1], { shelf: 1500, opened: { ambientH: 24 * 365, fridgeD: 999 }, freeze: 'no' }, ['condiment', 'sweet'], ic('jar', '#e5a02a', '#7a4a2a', '#f2efe6'));
+F('instant_coffee', 'กาแฟสำเร็จรูป 3in1 (แพ็ก 27)', 1, 1, 0.5, 6, 119, 27, [70, 0.5, 13, 2, 0.2, 1], L.instant, ['drink_mix', 'coffee'], ic('pack', '#5a3220', '#c43c2c', '#f2efe6'));
+F('tea_bags', 'ชาซอง (กล่อง 50)', 1, 1, 0.1, 10, 69, 50, [2, 0, 0.3, 0, 0.3, 0], L.dry, ['drink_mix', 'tea'], ic('box', '#3a7a3a', '#c9a46a', '#ffffff'));
+F('cocoa_powder', 'โกโก้ผง 400 ก.', 1, 1, 0.4, 6, 129, 20, [80, 2, 13, 2.5, 1, 2], L.dry, ['drink_mix', 'sweet'], ic('jar', '#5a3220', '#e0b23c', '#f2efe6'));
+
+/* ---------- Drinks ---------- */
+D('water_350_pack', 'น้ำดื่ม 350 มล. (แพ็ก 12)', 2, 2, 4.4, 2, 55, 12, [0, 0, 0, 0, 0, 1, 18], L.water, ['water', 'clean'], ic('crate', '#bfe3f5', '#2b8ac4'));
+D('mineral_water', 'น้ำแร่ 1.5 ลิตร', 1, 2, 1.55, 6, 22, 5, [0, 0, 0, 0, 0.5, 1, 30], L.water, ['water', 'clean'], ic('bottle', '#d0eef8', '#3a8a5a', '#ffffff'));
+D('soda_can', 'น้ำอัดลม (กระป๋อง)', 1, 1, 0.34, 12, 15, 1, [140, 0, 35, 0, 0, 2, 30], L.soda, ['soda', 'sweet'], ic('can', '#c4202a', '#c8ccd0', '#ffffff'));
+D('lemon_soda', 'น้ำอัดลมรสมะนาว 1.25 ลิตร', 1, 2, 1.3, 6, 32, 5, [100, 0, 25, 0, 0, 2, 22], L.soda, ['soda', 'sweet'], ic('bottle', '#9ccf6a', '#2f7a3a', '#ffffff'));
+D('energy_drink', 'เครื่องดื่มชูกำลัง (ขวด)', 1, 1, 0.17, 12, 12, 1, [70, 0, 17, 0, 1, 1, 12], L.soda, ['energy', 'sweet'], ic('smallbottle', '#c9a24a', '#c4202a', '#2b2b2b'));
+D('sports_drink', 'เครื่องดื่มเกลือแร่', 1, 2, 0.5, 6, 20, 2, [60, 0, 15, 0, 2, 1, 30], L.soda, ['electrolyte'], ic('bottle', '#4fa3d1', '#2f63a8', '#ffffff'));
+D('green_tea_bottle', 'ชาเขียวพร้อมดื่ม', 1, 2, 0.5, 6, 20, 2, [70, 0, 17, 0, 0.5, 1, 30], L.soda, ['tea', 'sweet'], ic('bottle', '#9ccf6a', '#3a7a3a', '#f2efe6'));
+D('canned_coffee', 'กาแฟกระป๋อง', 1, 1, 0.19, 12, 18, 1, [90, 1.5, 15, 2.5, 0.2, 2, 15], L.soda, ['coffee'], ic('can', '#5a3220', '#c8ccd0', '#e0b23c'));
+D('soy_milk', 'นมถั่วเหลือง UHT (แพ็ก 4)', 1, 1, 1.0, 6, 48, 4, [110, 7, 12, 4, 2, 5, 20], L.uht, ['dairy_alt', 'protein'], ic('carton', '#f2e6c8', '#c9a46a', '#3a7a3a'));
+D('chocolate_milk', 'นมรสช็อกโกแลต UHT (แพ็ก 4)', 1, 1, 0.9, 6, 52, 4, [130, 5, 20, 3.5, 1.5, 5, 18], L.uht, ['dairy', 'milk', 'sweet'], ic('carton', '#5a3220', '#f2efe6', '#2b7fc4'));
+D('coconut_water', 'น้ำมะพร้าว 1 ลิตร', 1, 2, 1.05, 6, 65, 4, [45, 0.5, 11, 0, 2, 3, 35], L.uht, ['electrolyte', 'juice'], ic('carton', '#f6f6f2', '#5f9a3a', '#c9a46a'));
+D('guava_juice', 'น้ำฝรั่ง 1 ลิตร', 1, 2, 1.05, 6, 49, 4, [100, 0.5, 25, 0, 4, 4, 24], L.uht, ['juice', 'sweet'], ic('carton', '#e8a0a8', '#5f9a3a', '#ffffff'));
+D('beer_can', 'เบียร์ (กระป๋อง)', 1, 1, 0.35, 12, 45, 1, [145, 1, 11, 0, 0.2, 2, 5], L.soda, ['alcohol'], ic('can', '#e0b23c', '#c8ccd0', '#2f63a8'));
+D('rice_whisky', 'เหล้าขาว (ขวด)', 1, 2, 0.7, 4, 120, 10, [100, 0, 0, 0, 0, 0, -10], { shelf: 3650, opened: { ambientH: 24 * 365, fridgeD: 999 }, freeze: 'no' }, ['alcohol', 'disinfect_weak'], ic('bottle', '#e9eef2', '#c4202a', '#f2efe6'));
+
+/* ---------- Medical ---------- */
+defItem('ibuprofen', 'ไอบูโพรเฟน (10 เม็ด)', 'medical', 1, 1, 0.02, 10, 35, { uses: 10, tags: ['painkiller', 'fever', 'antiinflam'], icon: ic('blister', '#f2f2f2', '#e57a2e') });
+defItem('antibiotic', 'ยาปฏิชีวนะอะม็อกซีซิลลิน (แผง)', 'medical', 1, 1, 0.03, 6, 250, { uses: 10, rarity: 'rare', rx: true, tags: ['antibiotic'], icon: ic('blister', '#f2f2f2', '#c4202a') });
+defItem('alcohol_70', 'แอลกอฮอล์ 70% 450 มล.', 'medical', 1, 2, 0.45, 4, 59, { uses: 30, tags: ['antiseptic', 'clean'], icon: ic('bottle', '#e9eef2', '#2f63a8', '#ffffff') });
+defItem('saline', 'น้ำเกลือล้างแผล 1 ลิตร', 'medical', 1, 2, 1.05, 4, 45, { uses: 10, tags: ['clean', 'wash'], icon: ic('bottle', '#e9f4f8', '#2b8ac4', '#ffffff') });
+defItem('sterile_gauze', 'ผ้าก๊อซปลอดเชื้อ (กล่อง)', 'medical', 1, 1, 0.08, 10, 45, { uses: 6, tags: ['dressing', 'sterile'], icon: ic('box', '#f6f6f6', '#2b8ac4', '#2b8ac4') });
+defItem('elastic_bandage', 'ผ้ายืดพันแผล', 'medical', 1, 1, 0.1, 10, 40, { uses: 2, tags: ['bandage', 'splint_wrap'], icon: ic('roll', '#e9d8b8', '#c9a46a') });
+defItem('medical_tape', 'เทปปิดแผล', 'medical', 1, 1, 0.03, 10, 25, { uses: 15, tags: ['tape_med'], icon: ic('roll', '#f2f2f2', '#c8ccd0') });
+defItem('suture_kit', 'ชุดเย็บแผล', 'medical', 1, 1, 0.1, 4, 350, { uses: 3, rarity: 'uncommon', tags: ['suture'], icon: ic('case', '#2f63a8', '#f2f2f2') });
+defItem('tourniquet', 'สายรัดห้ามเลือด', 'medical', 1, 1, 0.08, 4, 290, { rarity: 'uncommon', tags: ['tourniquet'], icon: ic('pouch', '#2b2b2b', '#c4202a') });
+defItem('splint', 'เฝือกอ่อนชั่วคราว', 'medical', 1, 2, 0.2, 4, 180, { tags: ['splint'], icon: ic('plank', '#e57a2e', '#c4202a') });
+defItem('ors', 'ผงเกลือแร่ ORS (ซอง)', 'medical', 1, 1, 0.02, 20, 8, { uses: 1, tags: ['electrolyte', 'diarrhea'], icon: ic('pack', '#f2f2f2', '#2b8ac4', '#2b8ac4') });
+defItem('antidiarrheal', 'ยาแก้ท้องเสีย (ผงถ่าน)', 'medical', 1, 1, 0.02, 10, 30, { uses: 10, tags: ['diarrhea'], icon: ic('blister', '#2b2b2b', '#f2f2f2') });
+defItem('thermometer', 'ปรอทวัดไข้ดิจิทัล', 'medical', 1, 1, 0.03, 1, 159, { tags: ['diagnose'], icon: ic('screwdriver', '#f2f2f2', '#2b8ac4') });
+defItem('vitamin_c', 'วิตามินซี 1000 มก. (ขวด)', 'medical', 1, 1, 0.1, 6, 290, { uses: 30, tags: ['vitamin'], icon: ic('smallbottle', '#f2a52a', '#f2efe6', '#ffffff') });
+defItem('multivitamin', 'วิตามินรวม (ขวด)', 'medical', 1, 1, 0.12, 6, 390, { uses: 30, tags: ['vitamin'], icon: ic('smallbottle', '#c4202a', '#f2efe6', '#ffffff') });
+defItem('burn_gel', 'เจลทาแผลไฟไหม้', 'medical', 1, 1, 0.05, 6, 89, { uses: 8, tags: ['burn'], icon: ic('smallbottle', '#9ccf6a', '#f2efe6', '#2b8ac4') });
+
+/* ---------- Tools & hardware ---------- */
+defItem('crowbar', 'ชะแลง', 'weapon', 1, 3, 1.6, 1, 290, { tags: ['blunt', 'pry', 'tool'], dura: 300, icon: ic('bat', '#c4202a', '#2b2b2b') });
+defItem('machete', 'มีดพร้า', 'weapon', 1, 3, 0.6, 1, 350, { tags: ['blade', 'tool'], dura: 150, icon: ic('knife', '#c9cdd1', '#3a2a1a') });
+defItem('axe', 'ขวาน', 'weapon', 2, 3, 1.4, 1, 450, { tags: ['blade', 'chop', 'tool'], dura: 220, icon: ic('hammer', '#9aa4ad', '#a87a42') });
+defItem('pipe_wrench', 'ประแจคอม้า', 'weapon', 1, 3, 1.2, 1, 380, { tags: ['blunt', 'tool'], dura: 350, icon: ic('hammer', '#c4202a', '#c9cdd1') });
+defItem('shovel', 'พลั่ว', 'weapon', 1, 4, 1.8, 1, 320, { tags: ['blunt', 'dig', 'tool'], dura: 200, icon: ic('bat', '#3a3a3a', '#c9cdd1') });
+defItem('steel_pipe', 'ท่อเหล็ก 1 ม.', 'weapon', 1, 4, 2.0, 1, 150, { tags: ['blunt', 'material'], dura: 400, icon: ic('bat', '#8a9096', '#5f656b') });
+defItem('golf_club', 'ไม้กอล์ฟ', 'weapon', 1, 4, 0.4, 1, 900, { tags: ['blunt'], dura: 90, icon: ic('bat', '#c9cdd1', '#2b2b2b') });
+defItem('cordless_drill', 'สว่านไร้สาย', 'tool', 2, 2, 1.5, 1, 1490, { tags: ['drill', 'build', 'electric'], dura: 100, icon: ic('flashlight', '#e0b23c', '#2b2b2b') });
+defItem('pliers', 'คีมปากจิ้งจก', 'tool', 1, 1, 0.25, 1, 120, { tags: ['repair'], dura: 200, icon: ic('opener', '#c9cdd1', '#c4202a') });
+defItem('sharpening_stone', 'หินลับมีด', 'tool', 1, 1, 0.4, 4, 150, { uses: 20, tags: ['sharpen', 'repair_blade'], icon: ic('bar', '#5f656b', '#8a9096', '#8a9096') });
+defItem('wood_glue', 'กาวลาเท็กซ์ (ขวด)', 'material', 1, 1, 0.3, 6, 65, { uses: 8, tags: ['glue', 'repair_wood'], icon: ic('smallbottle', '#f2f2f2', '#2f63a8', '#e0b23c') });
+defItem('sewing_kit', 'ชุดเข็มด้าย', 'tool', 1, 1, 0.1, 4, 59, { uses: 20, tags: ['sew', 'repair_cloth'], icon: ic('case', '#e05a8a', '#f2f2f2') });
+defItem('rope', 'เชือกไนลอน 10 ม.', 'material', 1, 1, 0.6, 4, 89, { tags: ['rope'], icon: ic('roll', '#e0b23c', '#c43c2c') });
+defItem('zip_ties', 'เคเบิลไทร์ (ถุง 100)', 'material', 1, 1, 0.15, 6, 49, { uses: 100, tags: ['fasten'], icon: ic('pack', '#f2f2f2', '#2b2b2b', '#ffffff') });
+defItem('screws_box', 'สกรูไม้ (กล่อง 200)', 'material', 1, 1, 0.8, 5, 95, { uses: 200, tags: ['screws', 'build'], icon: ic('box', '#8a8f94', '#2f63a8', '#e0b23c') });
+defItem('padlock', 'กุญแจคล้อง', 'material', 1, 1, 0.3, 4, 159, { tags: ['lock'], icon: ic('case', '#c9a24a', '#5f656b') });
+defItem('chain', 'โซ่เหล็ก 2 ม.', 'material', 2, 1, 2.2, 2, 250, { tags: ['chain', 'barricade'], icon: ic('roll', '#8a9096', '#5f656b') });
+defItem('steel_sheet', 'แผ่นเหล็กเรียบ 60×120 ซม.', 'material', 3, 4, 12.0, 1, 650, { tags: ['metal', 'build', 'barricade'], icon: ic('board', '#c9cdd1', '#8a9096') });
+defItem('cement_bag', 'ปูนซีเมนต์ 50 กก.', 'material', 3, 3, 50.0, 1, 165, { tags: ['cement', 'build'], icon: ic('sack', '#9aa4ad', '#c4202a', '#2f63a8') });
+defItem('tarp', 'ผ้าใบกันน้ำ 3×4 ม.', 'material', 2, 2, 1.5, 2, 220, { tags: ['tarp', 'rain'], icon: ic('pouch', '#2f63a8', '#1f3f6a') });
+defItem('paint_can', 'สีน้ำอะคริลิก 3.5 ลิตร', 'material', 2, 2, 4.0, 2, 590, { tags: ['paint'], icon: ic('tub', '#f2f2f2', '#c8ccd0', '#c4202a') });
+defItem('bucket', 'ถังน้ำพลาสติก 20 ลิตร', 'bag', 2, 2, 0.8, 1, 89, { grid: [3, 3], limit: 20, equip: 'hand', tags: ['water_container'], icon: ic('tub', '#2f63a8', '#1f3f6a', '#2f63a8') });
+defItem('jerry_can', 'แกลลอนน้ำมัน 20 ลิตร (เปล่า)', 'fuel', 2, 3, 1.2, 1, 450, { tags: ['fuel_container'], icon: ic('jug', '#c4202a', '#2b2b2b', '#c4202a') });
+
+/* ---------- Electrical & light ---------- */
+defItem('batteries_d', 'ถ่าน D (2 ก้อน)', 'electric', 1, 1, 0.28, 10, 89, { tags: ['battery'], icon: ic('battery', '#c4202a', '#e0b23c') });
+defItem('powerbank', 'พาวเวอร์แบงก์ 20000 mAh', 'electric', 1, 1, 0.4, 1, 690, { tags: ['charge'], icon: ic('box', '#2b2b2b', '#4fa3d1', '#4fa3d1') });
+defItem('led_lantern', 'ตะเกียง LED', 'electric', 1, 2, 0.6, 1, 390, { tags: ['light'], dura: 100, icon: ic('jug', '#e0b23c', '#2b2b2b', '#f2efe6') });
+defItem('headlamp', 'ไฟฉายคาดหัว', 'electric', 1, 1, 0.15, 1, 290, { tags: ['light'], dura: 100, icon: ic('flashlight', '#c4202a', '#f2efe6') });
+defItem('extension_cord', 'ปลั๊กพ่วง 5 ม.', 'electric', 2, 1, 0.8, 2, 350, { tags: ['wire'], icon: ic('roll', '#f2f2f2', '#2b2b2b') });
+defItem('radio_portable', 'วิทยุพกพา', 'electric', 1, 1, 0.5, 1, 450, { tags: ['radio'], icon: ic('box', '#3a3a3a', '#c9cdd1', '#e0b23c') });
+defItem('solar_charger', 'แผงชาร์จพลังงานแสงอาทิตย์ (พับได้)', 'electric', 2, 2, 0.9, 1, 1590, { rarity: 'uncommon', tags: ['charge', 'solar'], icon: ic('board', '#1f3f6a', '#c9cdd1') });
+
+/* ---------- Fuel & cooking gear ---------- */
+defItem('portable_stove', 'เตาแก๊สปิกนิก', 'fuel', 2, 2, 2.0, 1, 590, { tags: ['stove', 'cook'], icon: ic('case', '#3a3a3a', '#c9cdd1') });
+defItem('charcoal', 'ถ่านไม้ 5 กก.', 'fuel', 2, 2, 5.0, 2, 80, { uses: 20, tags: ['charcoal', 'fuel'], icon: ic('sack', '#2b2b2b', '#c43c2c', '#f2efe6') });
+defItem('lpg_tank_small', 'ถังแก๊สหุงต้ม 4 กก.', 'fuel', 2, 3, 9.0, 1, 1200, { uses: 400, tags: ['gas', 'fuel'], icon: ic('jug', '#2f63a8', '#c9cdd1', '#2f63a8') });
+defItem('matches', 'ไม้ขีดไฟ (แพ็ก 10)', 'misc', 1, 1, 0.1, 10, 12, { uses: 400, tags: ['fire'], icon: ic('box', '#c4202a', '#f2c230', '#2b2b2b') });
+defItem('pot_large', 'หม้อสแตนเลสใหญ่', 'tool', 2, 2, 1.4, 1, 450, { tags: ['pot', 'cook', 'boil'], dura: 500, icon: ic('tub', '#c9cdd1', '#8a9096', '#8a9096') });
+defItem('water_filter', 'เครื่องกรองน้ำพกพา', 'tool', 1, 2, 0.4, 1, 1290, { uses: 1000, rarity: 'uncommon', tags: ['filter'], icon: ic('bottle', '#2f63a8', '#c9cdd1', '#ffffff') });
+
+/* ---------- Bags & carriers ---------- */
+defBag('hand_cart', 'รถเข็นของพับได้', 4, 4, 6.0, 1490, [8, 6], 60, 'hand', { tags: ['cart'], icon: ic('crate', '#2f63a8', '#3a3a3a') });
+defBag('shopping_trolley', 'รถเข็นซูเปอร์มาร์เก็ต', 4, 4, 14.0, 2500, [10, 8], 90, 'hand', { tags: ['cart', 'noisy'], icon: ic('crate', '#c9cdd1', '#c4202a') });
+defBag('duffel_bag', 'กระเป๋าดัฟเฟิล', 3, 2, 0.9, 790, [6, 4], 22, 'hand', { icon: ic('pouch', '#3a3a3a', '#c4202a') });
+defBag('cooler_box', 'กระติกน้ำแข็ง 25 ลิตร', 3, 3, 2.5, 690, [4, 4], 25, 'hand', { tags: ['insulated'], icon: ic('crate', '#2f63a8', '#f2f2f2') });
+defBag('zip_bag_pack', 'ถุงซิปล็อก (แพ็ก)', 1, 1, 0.1, 49, [2, 2], 3, null, { tags: ['sealed'], icon: ic('pack', '#e9f4f8', '#2b8ac4', '#ffffff') });
+defBag('tactical_pack', 'เป้ยุทธวิธี', 3, 4, 2.0, 3500, [6, 7], 30, 'back', { rarity: 'rare', icon: ic('backpack', '#4b5a3a', '#2a3a2a') });
+
+/* ---------- Clothing (worn layers arrive with injuries in 1D) ---------- */
+defItem('work_gloves', 'ถุงมือช่าง', 'clothing', 1, 1, 0.15, 2, 89, { tags: ['gloves', 'protect'], icon: ic('pouch', '#c9a46a', '#7a5a3a') });
+defItem('raincoat', 'เสื้อกันฝน', 'clothing', 2, 2, 0.4, 1, 159, { tags: ['rain'], icon: ic('pouch', '#f2c230', '#2b2b2b') });
+defItem('boots_rubber', 'รองเท้าบูทยาง', 'clothing', 2, 2, 1.4, 1, 290, { tags: ['boots', 'protect'], icon: ic('pouch', '#2b2b2b', '#5f656b') });
+defItem('jacket_denim', 'เสื้อแจ็กเก็ตยีนส์', 'clothing', 2, 2, 0.9, 1, 690, { tags: ['protect'], icon: ic('pouch', '#2f4a7a', '#c9a46a') });
+defItem('motorcycle_helmet', 'หมวกกันน็อก', 'clothing', 2, 2, 1.2, 1, 790, { tags: ['helmet', 'protect'], icon: ic('round', '#2b2b2b', '#c9cdd1', '#c4202a') });
+defItem('face_mask_box', 'หน้ากากอนามัย (กล่อง 50)', 'hygiene', 1, 1, 0.15, 6, 79, { uses: 50, tags: ['mask'], icon: ic('box', '#e9f4f8', '#2b8ac4', '#2b8ac4') });
+
+/* ---------- Hygiene ---------- */
+defItem('hand_sanitizer', 'เจลล้างมือ 500 มล.', 'hygiene', 1, 2, 0.5, 4, 89, { uses: 100, tags: ['sanitize'], icon: ic('bottle', '#9ccfe6', '#2b8ac4', '#ffffff') });
+defItem('detergent', 'ผงซักฟอก 1 กก.', 'hygiene', 2, 2, 1.0, 4, 79, { uses: 20, tags: ['wash'], icon: ic('box', '#2b8ac4', '#f2c230', '#ffffff') });
+defItem('toothpaste', 'ยาสีฟัน', 'hygiene', 1, 1, 0.15, 10, 49, { uses: 60, tags: ['dental'], icon: ic('bar', '#f2f2f2', '#c4202a', '#2b8ac4') });
+defItem('bleach', 'น้ำยาฟอกขาว 1 ลิตร', 'hygiene', 1, 2, 1.05, 4, 45, { uses: 40, tags: ['disinfect', 'water_treat'], icon: ic('bottle', '#f2f2f2', '#2f63a8', '#c4202a') });
+defItem('trash_bags', 'ถุงขยะ (ม้วน)', 'hygiene', 1, 1, 0.3, 6, 39, { uses: 30, tags: ['bag_waste'], icon: ic('roll', '#2b2b2b', '#5f656b') });
+defItem('insect_spray', 'สเปรย์กำจัดแมลง', 'hygiene', 1, 2, 0.4, 4, 99, { uses: 30, tags: ['pest'], icon: ic('bottle', '#3a7a3a', '#f2c230', '#c4202a') });
+
+/* ---------- Misc ---------- */
+defItem('notebook', 'สมุดบันทึกและปากกา', 'misc', 1, 1, 0.2, 4, 35, { icon: ic('box', '#2f63a8', '#f2efe6', '#ffffff') });
+defItem('city_map_paper', 'แผนที่เขตเมือง (กระดาษ)', 'misc', 1, 1, 0.05, 2, 60, { icon: ic('board', '#e9e2c8', '#c4202a') });
+defItem('whistle', 'นกหวีด', 'misc', 1, 1, 0.02, 4, 25, { tags: ['noise_maker'], icon: ic('lighter', '#e0b23c', '#2b2b2b') });
+defItem('scrap_metal', 'เศษเหล็ก', 'material', 1, 1, 0.6, 10, 0, { tags: ['scrap'], icon: ic('box', '#8a9096', '#5f656b', '#5f656b') });
+defItem('scrap_wood', 'เศษไม้', 'material', 1, 2, 0.8, 10, 0, { tags: ['wood', 'scrap'], icon: ic('plank', '#c9a46a', '#8a6a42') });
+defItem('cloth_rag', 'ผ้าขี้ริ้ว', 'material', 1, 1, 0.08, 20, 10, { tags: ['cloth', 'rag'], icon: ic('pouch', '#c9b48a', '#8a7a5a') });
+
+/* ===== 14-data-locations.js ===== */
+/* ==========================================================================
+   14 · LOCATIONS, SHOP FIXTURES & LOOT POOLS (§4.3)
+   Layouts are fixed (same every life). Container contents are generated from
+   the world seed the first time a location is visited in a life, so the same
+   items sit in the same places every life.
+   ========================================================================== */
+
+/* ---------- Shop fixture furniture (merged into FURNITURE) ---------- */
+Object.assign(FURNITURE, {
+  shop_shelf:    { name: 'ชั้นวางสินค้า', size: [2.0, 0.6, 1.75], slot: 'large', asset: 'prop.shop_shelf', grid: [10, 4], limit: 250, stock: 'shelf' },
+  wall_shelf:    { name: 'ชั้นวางติดผนัง', size: [2.4, 0.45, 2.0], slot: 'large', asset: 'prop.wall_shelf', grid: [12, 4], limit: 250, stock: 'shelf' },
+  chiller:       { name: 'ตู้แช่เย็นแบบเปิด', size: [2.0, 0.8, 1.9], slot: 'large', asset: 'prop.chiller', grid: [10, 4], limit: 200, temp: 'fridge', power: 700, stock: 'shelf' },
+  drink_cooler:  { name: 'ตู้แช่เครื่องดื่ม', size: [1.4, 0.7, 2.0], slot: 'large', asset: 'prop.drink_cooler', grid: [7, 5], limit: 200, temp: 'fridge', power: 450, stock: 'shelf' },
+  shop_freezer:  { name: 'ตู้แช่แข็งแบบนอน', size: [2.0, 0.9, 0.9], slot: 'large', asset: 'prop.shop_freezer', grid: [10, 4], limit: 200, temp: 'freezer', power: 500, stock: 'bin' },
+  checkout:      { name: 'เคาน์เตอร์คิดเงิน', size: [1.6, 0.7, 1.0], slot: 'large', asset: 'prop.checkout', act: 'checkout' },
+  market_stall:  { name: 'แผงผักผลไม้', size: [2.0, 1.1, 0.85], slot: 'large', asset: 'prop.market_stall', grid: [10, 5], limit: 250, stock: 'table' },
+  meat_stall:    { name: 'แผงเนื้อสัตว์', size: [2.0, 1.1, 0.85], slot: 'large', asset: 'prop.meat_stall', grid: [10, 5], limit: 250, stock: 'table' },
+  dry_stall:     { name: 'แผงของแห้ง', size: [2.0, 1.1, 0.85], slot: 'large', asset: 'prop.market_stall', grid: [10, 5], limit: 250, stock: 'table' },
+  sweets_stall:  { name: 'แผงขนมไทย', size: [1.6, 0.9, 0.85], slot: 'large', asset: 'prop.market_stall', grid: [8, 4], limit: 120, stock: 'table' },
+  pharmacy_shelf:{ name: 'ชั้นยาและเวชภัณฑ์', size: [1.8, 0.4, 2.0], slot: 'large', asset: 'prop.wall_shelf', grid: [9, 5], limit: 120, stock: 'shelf' },
+  glass_counter: { name: 'ตู้กระจกหลังเคาน์เตอร์', size: [2.0, 0.6, 1.0], slot: 'large', asset: 'prop.glass_counter', grid: [8, 3], limit: 60, stock: 'shelf' },
+  tool_rack:     { name: 'แผงเครื่องมือ', size: [2.0, 0.5, 2.0], slot: 'large', asset: 'prop.tool_rack', grid: [10, 5], limit: 300, stock: 'shelf' },
+  pallet_stack:  { name: 'กองวัสดุบนพาเลท', size: [1.3, 1.1, 1.0], slot: 'large', asset: 'prop.pallet_stack', grid: [8, 8], limit: 900, stock: 'pile' },
+  cart_bay:      { name: 'ที่เก็บรถเข็น', size: [1.6, 1.0, 1.0], slot: 'large', asset: 'prop.cart_bay', grid: [8, 8], limit: 400 },
+  produce_bins:  { name: 'กระบะผักผลไม้', size: [2.0, 1.0, 0.9], slot: 'large', asset: 'prop.produce_bins', grid: [10, 5], limit: 250, stock: 'table' },
+  bakery_case:   { name: 'ตู้ขนมปังและเบเกอรี', size: [1.6, 0.7, 1.4], slot: 'large', asset: 'prop.bakery_case', grid: [8, 4], limit: 80, stock: 'shelf' },
+});
+
+/**
+ * Loot pools: weighted item ids. Weight = relative frequency; [id, weight, maxQty].
+ */
+const POOLS = {
+  conv_snacks: [['chips', 4, 3], ['crackers_rice', 3, 3], ['biscuits', 4, 3], ['wafer', 3, 3], ['cookies', 2, 2], ['chocolate', 4, 4], ['candy', 3, 3], ['seaweed_snack', 2, 3], ['peanuts', 2, 2], ['energy_bar', 2, 3], ['protein_bar', 1, 2]],
+  conv_instant: [['noodle_pack', 6, 10], ['noodle_tomyum', 5, 10], ['noodle_pork', 5, 10], ['noodle_cup', 5, 6], ['jok_cup', 4, 6], ['rice_vermicelli_cup', 3, 4], ['instant_rice_cup', 2, 4], ['instant_soup', 2, 6], ['canned_tuna', 3, 4], ['canned_sardine', 4, 4], ['canned_sausage', 2, 3], ['canned_chicken_curry', 1, 2]],
+  conv_drinks: [['water_600', 8, 12], ['water_1500', 5, 6], ['soda_can', 4, 6], ['cola', 3, 3], ['lemon_soda', 2, 2], ['energy_drink', 4, 6], ['sports_drink', 3, 4], ['green_tea_bottle', 3, 4], ['canned_coffee', 3, 4], ['uht_milk', 3, 3], ['chocolate_milk', 2, 2], ['orange_juice', 2, 2], ['beer_can', 2, 6]],
+  conv_chill: [['yogurt', 4, 6], ['ham', 2, 2], ['sausage_fresh', 2, 2], ['cheese_slices', 1, 2], ['fresh_milk', 2, 2], ['cake_slice', 1, 2], ['buns', 2, 2], ['bread_loaf', 3, 2], ['croissant', 2, 2], ['salted_egg', 2, 4], ['khanom_chan', 1, 2]],
+  conv_frozen: [['ready_meal_basil', 5, 4], ['ready_meal_green_curry', 4, 4], ['frozen_dimsum', 3, 3], ['frozen_pork_bun', 3, 3], ['ice_pop', 4, 8], ['ice_cream', 2, 2], ['frozen_dumplings', 2, 2]],
+  conv_misc: [['batteries', 3, 4], ['lighter', 3, 5], ['candle', 2, 4], ['toilet_paper', 2, 2], ['soap', 3, 3], ['toothpaste', 2, 2], ['hand_sanitizer', 2, 2], ['face_mask_box', 2, 2], ['plasters', 2, 2], ['paracetamol', 2, 2], ['matches', 2, 3], ['trash_bags', 1, 2], ['shopping_bag', 2, 2], ['zip_bag_pack', 1, 2]],
+
+  sm_dry: [['rice_5kg', 4, 2], ['rice_sticky_2kg', 2, 2], ['rice_brown_1kg', 2, 2], ['flour_1kg', 2, 2], ['pasta_500', 3, 3], ['rice_noodle_dry', 3, 3], ['glass_noodle', 2, 3], ['oats_800', 2, 2], ['mung_beans', 2, 2], ['red_beans', 2, 2], ['lentils', 1, 2], ['sugar_1kg', 3, 3], ['salt', 2, 3], ['palm_sugar', 1, 2], ['cereal', 2, 2]],
+  sm_canned: [['canned_tuna', 5, 6], ['canned_sardine', 5, 6], ['canned_mackerel', 4, 6], ['canned_pork', 3, 4], ['canned_corn', 3, 4], ['baked_beans', 3, 4], ['canned_bamboo', 2, 3], ['canned_mushroom', 2, 3], ['canned_soup', 3, 4], ['canned_chicken_curry', 2, 3], ['canned_massaman', 2, 3], ['canned_pineapple', 2, 3], ['canned_longan', 2, 3], ['canned_fruit_cocktail', 2, 3], ['evaporated_milk', 2, 4], ['condensed_milk', 2, 4], ['coconut_milk', 3, 6], ['canned_tomato', 2, 3], ['canned_sausage', 2, 3], ['pickled_mustard', 2, 4], ['peanut_butter', 2, 2], ['jam', 2, 2], ['honey', 1, 2]],
+  sm_condiment: [['fish_sauce', 4, 3], ['soy_sauce', 3, 3], ['oyster_sauce', 3, 3], ['chili_sauce', 2, 3], ['vinegar', 2, 3], ['cooking_oil', 4, 3], ['seasoning_powder', 2, 3], ['curry_paste_green', 2, 4], ['curry_paste_red', 2, 4], ['tomyum_paste', 2, 2], ['pepper_ground', 1, 3], ['sesame', 1, 3], ['instant_coffee', 2, 2], ['tea_bags', 2, 2], ['cocoa_powder', 1, 2], ['dried_chili', 1, 3]],
+  sm_snacks: [['chips', 4, 3], ['biscuits', 3, 3], ['crackers', 3, 3], ['cookies', 3, 3], ['wafer', 2, 3], ['chocolate', 3, 4], ['candy', 2, 3], ['dried_mango', 2, 2], ['cashews', 1, 2], ['peanuts', 2, 3], ['seaweed_snack', 2, 3], ['energy_bar', 2, 4], ['protein_bar', 2, 3]],
+  sm_drinks: [['water_1500', 6, 6], ['water_6l', 4, 2], ['water_350_pack', 4, 2], ['mineral_water', 2, 4], ['cola', 3, 3], ['lemon_soda', 2, 3], ['orange_juice', 3, 3], ['guava_juice', 2, 3], ['coconut_water', 2, 3], ['uht_milk', 4, 4], ['soy_milk', 3, 3], ['chocolate_milk', 3, 3], ['sports_drink', 2, 4], ['green_tea_bottle', 2, 4], ['beer_can', 2, 6], ['rice_whisky', 1, 2]],
+  sm_meat: [['pork_1kg', 3, 2], ['pork_belly', 3, 2], ['pork_minced', 3, 3], ['pork_chop', 2, 2], ['chicken_breast', 3, 2], ['chicken_thigh', 3, 2], ['chicken_wings', 2, 3], ['chicken_whole', 1, 1], ['beef_steak', 2, 3], ['beef_ribeye', 1, 2], ['beef_minced', 2, 2], ['sausage_fresh', 2, 2], ['ham', 2, 2], ['bacon', 2, 2], ['meatballs', 2, 2]],
+  sm_seafood: [['fish_tilapia', 3, 2], ['fish_mackerel_fresh', 3, 3], ['shrimp_500', 2, 2], ['squid', 2, 2]],
+  sm_dairy: [['fresh_milk', 4, 3], ['yogurt', 4, 6], ['cheese_slices', 2, 3], ['butter', 2, 2], ['egg', 3, 12], ['eggs_tray30', 2, 1], ['duck_egg', 1, 6]],
+  sm_frozen: [['frozen_chicken', 4, 2], ['frozen_fish_fillet', 3, 3], ['frozen_shrimp', 2, 2], ['frozen_fries', 2, 2], ['frozen_veg_mix', 3, 3], ['frozen_dumplings', 2, 3], ['frozen_dimsum', 2, 3], ['frozen_pork_bun', 2, 2], ['frozen_chicken_nuggets', 2, 2], ['roti_frozen', 1, 2], ['ice_cream', 3, 2], ['ice_pop', 2, 6], ['ready_meal_basil', 2, 3], ['ready_meal_green_curry', 2, 3]],
+  sm_produce: [['cabbage', 2, 2], ['chinese_kale', 2, 3], ['morning_glory', 2, 3], ['cucumber', 2, 3], ['tomato', 2, 3], ['carrot', 2, 3], ['potato', 2, 2], ['onion', 2, 2], ['garlic', 2, 2], ['shallot', 2, 2], ['banana', 2, 2], ['apple', 2, 3], ['orange', 2, 2], ['mango', 2, 3], ['watermelon', 1, 1], ['pineapple', 1, 2], ['mushroom_oyster', 2, 3], ['corn_cob', 1, 3]],
+  sm_bakery: [['bread_loaf', 4, 3], ['buns', 3, 3], ['croissant', 3, 3], ['cake_slice', 2, 3]],
+  sm_household: [['toilet_paper', 4, 2], ['soap', 3, 4], ['detergent', 2, 2], ['bleach', 2, 2], ['toothpaste', 2, 3], ['hand_sanitizer', 2, 2], ['trash_bags', 2, 3], ['insect_spray', 2, 2], ['face_mask_box', 2, 2], ['zip_bag_pack', 2, 3], ['food_box', 2, 2], ['candle', 2, 4], ['matches', 2, 3], ['lighter', 2, 4], ['batteries', 3, 4], ['batteries_d', 2, 3], ['flashlight', 1, 1], ['led_lantern', 1, 1], ['radio_portable', 1, 1], ['powerbank', 1, 1], ['notebook', 1, 2]],
+  sm_cookware: [['pot_large', 2, 1], ['frying_pan', 2, 1], ['kitchen_knife', 2, 2], ['can_opener', 2, 2], ['portable_stove', 2, 1], ['gas_canister', 4, 6], ['charcoal', 2, 2], ['cooler_box', 1, 1], ['bucket', 1, 1], ['tote_bag', 2, 2], ['backpack_small', 1, 1], ['backpack_medium', 1, 1], ['duffel_bag', 1, 1]],
+
+  mk_veg: [['morning_glory', 5, 4], ['chinese_kale', 4, 4], ['cabbage', 3, 2], ['cucumber', 3, 3], ['tomato', 3, 3], ['long_beans', 3, 3], ['eggplant', 3, 3], ['chili_fresh', 4, 4], ['thai_basil', 4, 4], ['lemongrass', 3, 3], ['galangal', 2, 3], ['kaffir_lime_leaf', 2, 3], ['lime', 3, 3], ['carrot', 2, 3], ['pumpkin', 2, 1], ['mushroom_oyster', 2, 3], ['corn_cob', 2, 3], ['green_papaya', 2, 2], ['garlic', 2, 2], ['shallot', 2, 2]],
+  mk_fruit: [['banana', 4, 2], ['mango', 4, 4], ['papaya', 3, 2], ['watermelon', 2, 1], ['pineapple', 3, 2], ['rambutan', 3, 2], ['guava', 3, 2], ['orange', 2, 2]],
+  mk_meat: [['pork_1kg', 4, 2], ['pork_belly', 4, 2], ['pork_minced', 4, 3], ['chicken_whole', 2, 1], ['chicken_thigh', 3, 2], ['chicken_wings', 3, 2], ['meatballs', 2, 2], ['beef_minced', 1, 2], ['egg', 3, 12], ['duck_egg', 2, 6], ['eggs_tray30', 2, 1]],
+  mk_fish: [['fish_tilapia', 4, 2], ['fish_mackerel_fresh', 5, 4], ['shrimp_500', 3, 2], ['squid', 3, 2], ['dried_fish', 2, 2], ['dried_shrimp', 2, 2]],
+  mk_dry: [['rice_5kg', 3, 2], ['rice_sticky_2kg', 3, 2], ['dried_chili', 3, 3], ['dried_shiitake', 2, 2], ['garlic', 3, 3], ['shallot', 3, 3], ['palm_sugar', 2, 2], ['fish_sauce', 3, 2], ['salted_egg', 3, 6], ['peanuts', 2, 3], ['sesame', 2, 2], ['curry_paste_green', 2, 3], ['curry_paste_red', 2, 3], ['coconut_milk', 2, 4]],
+  mk_sweets: [['khanom_chan', 3, 3], ['mango_sticky_rice', 3, 3], ['thong_yod', 2, 3], ['khanom_krok', 3, 3], ['bua_loy_cup', 2, 3], ['dried_mango', 2, 2]],
+
+  hw_tools: [['hammer', 3, 2], ['saw', 3, 2], ['screwdriver', 3, 2], ['pliers', 2, 2], ['cordless_drill', 1, 1], ['crowbar', 2, 1], ['axe', 1, 1], ['machete', 2, 1], ['shovel', 2, 1], ['pipe_wrench', 1, 1], ['sharpening_stone', 2, 2], ['sewing_kit', 1, 2], ['work_gloves', 3, 2], ['flashlight', 2, 2], ['headlamp', 1, 2]],
+  hw_fasteners: [['nails_1kg', 6, 5], ['screws_box', 4, 4], ['duct_tape', 5, 4], ['wood_glue', 3, 4], ['zip_ties', 3, 4], ['rope', 3, 3], ['padlock', 2, 3], ['chain', 2, 2], ['extension_cord', 2, 2], ['batteries', 2, 4], ['batteries_d', 2, 3], ['tarp', 2, 2], ['paint_can', 1, 2]],
+  hw_lumber: [['plank', 8, 4], ['plywood', 4, 1], ['steel_sheet', 2, 1], ['steel_pipe', 2, 1], ['cement_bag', 1, 1], ['scrap_wood', 1, 4]],
+  hw_misc: [['jerry_can', 2, 1], ['lpg_tank_small', 1, 1], ['charcoal', 2, 2], ['bucket', 2, 2], ['hand_cart', 1, 1], ['raincoat', 2, 2], ['boots_rubber', 1, 1], ['tool_roll', 1, 2], ['backpack_medium', 1, 1], ['hiking_pack', 1, 1], ['water_filter', 1, 1], ['solar_charger', 1, 1], ['cooler_box', 1, 1]],
+
+  ph_meds: [['paracetamol', 6, 6], ['ibuprofen', 4, 4], ['antidiarrheal', 3, 4], ['ors', 4, 10], ['vitamin_c', 2, 2], ['multivitamin', 2, 2], ['thermometer', 1, 1]],
+  ph_wound: [['povidone', 4, 3], ['alcohol_70', 4, 3], ['saline', 3, 2], ['gauze_set', 4, 3], ['sterile_gauze', 4, 4], ['plasters', 4, 4], ['elastic_bandage', 3, 3], ['medical_tape', 3, 3], ['burn_gel', 2, 2], ['splint', 1, 1], ['first_aid_kit', 1, 1]],
+  ph_rx: [['antibiotic', 4, 3], ['suture_kit', 2, 1], ['tourniquet', 1, 1]],
+  ph_misc: [['face_mask_box', 3, 3], ['hand_sanitizer', 3, 3], ['soap', 2, 3], ['toothpaste', 2, 2], ['sports_drink', 2, 4], ['water_600', 2, 6], ['energy_bar', 1, 3]],
+};
+
+/**
+ * Locations. dist = km from home. hours = [open, close) pre-outbreak (24 = open all day).
+ * room: interior rectangle (x0,x1,z0,z1); door on the +z wall at doorX.
+ * fixtures: [type, x, z, rot, pool(s)].
+ */
+const LOCATIONS = {
+  home: { name: 'บ้าน', short: 'บ้าน', icon: '🏠', map: [300, 330], dist: 0 },
+  conv: {
+    name: 'ร้านสะดวกซื้อ 24 ชม. ปากซอย', short: 'ร้านสะดวกซื้อ', icon: '🏪', map: [365, 305], dist: 0.35, hours: [0, 24], density: 1.0,
+    room: { x0: -5, x1: 5, z0: -4, z1: 4, floorMat: 'tile', wall: '#e8ecef' }, doorX: 2.8, light: 0xf4f8ff, sign: ['ร้านสะดวกซื้อ', '#2f8a4a'],
+    fixtures: [
+      ['wall_shelf', -2.6, -3.7, 0, 'conv_snacks'], ['drink_cooler', 0.2, -3.6, 0, 'conv_drinks'], ['drink_cooler', 1.7, -3.6, 0, 'conv_drinks'], ['chiller', 3.8, -3.5, 0, 'conv_chill'],
+      ['shop_shelf', -2.0, -1.1, 0, 'conv_instant'], ['shop_shelf', -2.0, 0.8, 0, 'conv_misc'], ['shop_freezer', 1.6, -0.6, 0, 'conv_frozen'],
+      ['wall_shelf', -4.75, 0.6, 3, 'conv_snacks'], ['checkout', 2.6, 2.4, 1, null],
+    ],
+  },
+  pharmacy: {
+    name: 'ร้านขายยาสุขภาพดี', short: 'ร้านขายยา', icon: '💊', map: [420, 390], dist: 0.7, hours: [8, 22], density: 1.0,
+    room: { x0: -4, x1: 4, z0: -3.5, z1: 3.5, floorMat: 'tile', wall: '#e9f2ee' }, doorX: 2.2, light: 0xf4f8ff, sign: ['ร้านขายยา', '#2f7a6a'],
+    fixtures: [
+      ['pharmacy_shelf', -2.2, -3.25, 0, 'ph_meds'], ['pharmacy_shelf', 0.2, -3.25, 0, 'ph_wound'], ['glass_counter', 2.4, -2.4, 0, 'ph_rx'],
+      ['shop_shelf', -1.6, 0.2, 0, 'ph_misc'], ['pharmacy_shelf', -3.75, 0.6, 3, 'ph_wound'], ['checkout', 2.6, 0.6, 1, null],
+    ],
+  },
+  market: {
+    name: 'ตลาดสดเทศบาล', short: 'ตลาดสด', icon: '🥬', map: [80, 200], dist: 1.3, hours: [4, 13], density: 1.4, open: true,
+    room: { x0: -8, x1: 8, z0: -7, z1: 7, floorMat: 'concrete', wall: '#c9c4b8' }, doorX: 0, light: 0xfff2d8, sign: ['ตลาดสด', '#b8242a'],
+    fixtures: [
+      ['market_stall', -5.5, -5.2, 0, 'mk_veg'], ['market_stall', -2.8, -5.2, 0, 'mk_veg'], ['meat_stall', 0.6, -5.2, 0, 'mk_meat'], ['meat_stall', 3.3, -5.2, 0, 'mk_fish'], ['dry_stall', 6.0, -5.2, 0, 'mk_dry'],
+      ['market_stall', -5.5, -1.2, 2, 'mk_fruit'], ['market_stall', -5.5, 0.4, 0, 'mk_veg'], ['dry_stall', -1.8, -1.2, 2, 'mk_dry'], ['meat_stall', -1.8, 0.4, 0, 'mk_meat'],
+      ['sweets_stall', 2.2, -1.2, 2, 'mk_sweets'], ['market_stall', 2.2, 0.4, 0, 'mk_fruit'], ['meat_stall', 5.8, -1.2, 2, 'mk_fish'], ['market_stall', 5.8, 0.4, 0, 'mk_veg'],
+      ['market_stall', -5.5, 4.2, 2, 'mk_veg'], ['dry_stall', 5.8, 4.2, 2, 'mk_dry'], ['checkout', 1.6, 4.6, 0, null],
+    ],
+  },
+  hardware: {
+    name: 'ร้านวัสดุก่อสร้าง ช.รุ่งเรือง', short: 'ร้านวัสดุก่อสร้าง', icon: '🔨', map: [520, 120], dist: 1.6, hours: [8, 18], density: 1.0,
+    room: { x0: -6, x1: 6, z0: -5, z1: 5, floorMat: 'concrete', wall: '#d6d0c2' }, doorX: 3.4, light: 0xfff4e0, sign: ['วัสดุก่อสร้าง', '#c9733a'],
+    fixtures: [
+      ['tool_rack', -3.6, -4.7, 0, 'hw_tools'], ['tool_rack', -1.3, -4.7, 0, 'hw_fasteners'], ['tool_rack', 1.0, -4.7, 0, 'hw_misc'],
+      ['pallet_stack', 4.4, -3.8, 0, 'hw_lumber'], ['pallet_stack', 4.4, -1.8, 0, 'hw_lumber'], ['pallet_stack', -5.0, -1.0, 0, 'hw_lumber'],
+      ['shop_shelf', -1.8, -1.2, 0, 'hw_fasteners'], ['shop_shelf', -1.8, 1.0, 0, 'hw_tools'], ['shop_shelf', 1.5, -1.2, 0, 'hw_misc'],
+      ['cart_bay', -4.6, 3.6, 0, null], ['checkout', 3.4, 2.6, 1, null],
+    ],
+  },
+  supermarket: {
+    name: 'ซูเปอร์มาร์เก็ตในห้างสรรพสินค้า', short: 'ซูเปอร์มาร์เก็ต', icon: '🛒', map: [780, 380], dist: 2.5, hours: [10, 22], density: 1.0,
+    room: { x0: -10, x1: 10, z0: -8, z1: 8, floorMat: 'tile', wall: '#e6e3dc' }, doorX: 6.5, light: 0xf8faff, sign: ['ซูเปอร์มาร์เก็ต', '#1f4f8a'],
+    fixtures: [
+      ['chiller', -8.6, -7.5, 0, 'sm_meat'], ['chiller', -6.4, -7.5, 0, 'sm_meat'], ['chiller', -4.2, -7.5, 0, 'sm_seafood'], ['chiller', -2.0, -7.5, 0, 'sm_dairy'], ['chiller', 0.2, -7.5, 0, 'sm_dairy'],
+      ['drink_cooler', 2.0, -7.45, 0, 'sm_drinks'], ['drink_cooler', 3.5, -7.45, 0, 'sm_drinks'], ['bakery_case', 5.4, -7.4, 0, 'sm_bakery'], ['wall_shelf', 8.0, -7.6, 0, 'sm_cookware'],
+      ['shop_shelf', -7.0, -4.2, 0, 'sm_dry'], ['shop_shelf', -4.8, -4.2, 0, 'sm_dry'], ['shop_shelf', -7.0, -2.4, 2, 'sm_canned'], ['shop_shelf', -4.8, -2.4, 2, 'sm_canned'],
+      ['shop_shelf', -1.6, -4.2, 0, 'sm_canned'], ['shop_shelf', 0.6, -4.2, 0, 'sm_condiment'], ['shop_shelf', -1.6, -2.4, 2, 'sm_snacks'], ['shop_shelf', 0.6, -2.4, 2, 'sm_snacks'],
+      ['shop_shelf', 3.8, -4.2, 0, 'sm_household'], ['shop_shelf', 6.0, -4.2, 0, 'sm_household'], ['shop_shelf', 3.8, -2.4, 2, 'sm_drinks'], ['shop_shelf', 6.0, -2.4, 2, 'sm_condiment'],
+      ['shop_freezer', -6.0, 0.6, 0, 'sm_frozen'], ['shop_freezer', -3.6, 0.6, 0, 'sm_frozen'], ['produce_bins', -0.6, 0.6, 0, 'sm_produce'], ['produce_bins', 1.8, 0.6, 0, 'sm_produce'],
+      ['shop_shelf', 5.0, 0.6, 0, 'sm_cookware'], ['wall_shelf', -9.75, 2.6, 3, 'sm_drinks'], ['wall_shelf', 9.75, 0.0, 1, 'sm_household'],
+      ['cart_bay', -8.2, 6.6, 0, null], ['checkout', 2.6, 5.6, 1, null], ['checkout', 4.8, 5.6, 1, null],
+    ],
+  },
+};
+/** Fixed items in specific fixtures, independent of pools (e.g. trolleys in the cart bay). */
+const FIXED_STOCK = {
+  'supermarket:cart_bay': [['shopping_trolley', 1], ['shopping_bag', 3]],
+  'hardware:cart_bay': [['hand_cart', 1], ['shopping_bag', 2]],
+};
+const LOC_IDS = Object.keys(LOCATIONS).filter((k) => k !== 'home');
+const WALK_KMH = 4.5, RUN_KMH = 8.5;
+function locDef(id) { return LOCATIONS[id] || LOCATIONS.home; }
+/** Is a shop open at this absolute minute (pre-outbreak only; afterwards it's a free-for-all). */
+function shopOpen(id, min) {
+  const L = LOCATIONS[id];
+  if (!L || !L.hours) return true;
+  const h = U.timeOf(min).dayMin / 60;
+  return h >= L.hours[0] && h < L.hours[1];
+}
+
 /* ===== 20-inventory.js ===== */
 /* ==========================================================================
    20 · INVENTORY MODEL — grid containers, item instances, transfers
@@ -4987,7 +5457,7 @@ const Inv = {
   canStack(a, b) {
     const d = itemDef(a.id);
     return a.id === b.id && d.stack > 1 && !a.inv && !b.inv && !a.st && !b.st &&
-      (a.cond == null || a.cond === b.cond) && (a.uses == null || a.uses === b.uses);
+      (a.cond == null || a.cond === b.cond) && (a.uses == null || a.uses === b.uses) && a.unpaid === b.unpaid;
   },
   /** Place item at an exact position. Returns the slot or null. */
   placeAt(c, it, x, y, r) {
@@ -5187,8 +5657,17 @@ class Character {
   carried() {
     let w = 0;
     for (const c of [this.d.pockets]) w += Inv.weight(c);
-    for (const k of ['back', 'hand', 'weapon']) if (this.d.equip[k]) w += Inv.itemWeight(this.d.equip[k]);
+    for (const k of ['back', 'hand', 'weapon']) {
+      const it = this.d.equip[k]; if (!it) continue;
+      // Wheeled carts roll their load: only a quarter of the contents counts against carry capacity.
+      if (k === 'hand' && this.isCart(it)) w += itemDef(it.id).weight * 0.4 + Inv.weight(it.inv) * 0.25;
+      else w += Inv.itemWeight(it);
+    }
     return w;
+  }
+  isCart(it) { const d = it && itemDef(it.id); return !!(d && d.tags && d.tags.includes('cart')); }
+  /** Pushing a cart is slower than walking free-handed. */
+  cartFactor() { return this.isCart(this.d.equip.hand) ? 0.82 : 1;
   }
   /** Carry capacity (kg) = base + strength + fitness, scaled by arm/leg health and trait. */
   capacity() {
@@ -5209,7 +5688,7 @@ class Character {
     const legF = Math.min(b.legL.hp / BODY_PARTS.legL.hp, b.legR.hp / BODY_PARTS.legR.hp);
     f *= 0.45 + 0.55 * legF;
     if (this.d.needs.energy < 15) f *= 0.8;
-    return Math.max(0, f);
+    return Math.max(0, f * this.cartFactor());
   }
   health() {
     let sum = 0, max = 0;
@@ -5275,7 +5754,8 @@ function createRun({ bg, difficulty, name }) {
     cash: CFG.START_CASH,
     chars: [createCharacterData({ name, bg, profileSkills: P.skills })],
     active: 0,
-    home: { furniture: [], lightsOn: true },
+    home: { furniture: [], lightsOn: true, piles: [] },
+    locs: {},
     flags: { outbreak: false },
     log: [],
     scene: 'home',
@@ -5331,6 +5811,7 @@ const Sanitize = {
     c.limit = U.num(c.limit, 20, 0.1, 9999);
     c.label = typeof c.label === 'string' ? c.label : (label || '');
     if (!['ambient', 'fridge', 'freezer'].includes(c.temp)) c.temp = 'ambient';
+    if (c.shop != null && !LOCATIONS[c.shop]) delete c.shop;
     const old = Array.isArray(c.slots) ? c.slots : [];
     c.slots = [];
     const overflow = [];
@@ -5361,6 +5842,7 @@ const Sanitize = {
     if (d.grid) it.inv = Sanitize.container(it.inv, d.name);
     else delete it.inv;
     if (it.st != null && typeof it.st !== 'object') delete it.st;
+    if (it.unpaid != null && !LOCATIONS[it.unpaid]) delete it.unpaid;
     return it;
   },
   character(c) {
@@ -5400,7 +5882,7 @@ const Sanitize = {
     const tmpl = {
       schema: CFG.SCHEMA_RUN, build: BUILD, life: 1, createdAt: Date.now(), worldSeed: P.worldSeed,
       lifeSeed: 1, rng: {}, difficulty: 'standard', time: { min: CFG.START_MINUTE, speedIdx: 2 },
-      cash: CFG.START_CASH, chars: [], active: 0, home: { furniture: [], lightsOn: true },
+      cash: CFG.START_CASH, chars: [], active: 0, home: { furniture: [], lightsOn: true, piles: [] }, locs: {},
       flags: { outbreak: false }, log: [], scene: 'home',
     };
     U.deepFill(st, tmpl);
@@ -5418,7 +5900,28 @@ const Sanitize = {
     st.log = st.log.filter((e) => e && typeof e.t === 'number' && typeof e.msg === 'string').slice(-200);
     if (typeof st.flags !== 'object' || !st.flags) st.flags = { outbreak: false };
     st.flags.outbreak = !!st.flags.outbreak;
-    if (!['home'].includes(st.scene)) st.scene = 'home';
+    if (st.scene !== 'home' && !LOC_IDS.includes(st.scene)) st.scene = 'home';
+    const pileList = (arr) => (Array.isArray(arr) ? arr : []).filter((p) => p && typeof p === 'object').map((p) => ({
+      uid: typeof p.uid === 'string' ? p.uid : U.uid(), floor: U.num(p.floor, 0, 0, 1) | 0, x: U.num(p.x, 0, -60, 60), z: U.num(p.z, 0, -60, 60),
+      inv: Object.assign(Sanitize.container(p.inv, STR.ground), { w: 8, h: 6, limit: 200 }),
+    })).filter((p) => p.inv.slots.length);
+    st.home.piles = pileList(st.home.piles);
+    const locs = {};
+    for (const id of LOC_IDS) {
+      const L = st.locs[id];
+      if (!L || typeof L !== 'object' || !Array.isArray(L.furniture)) continue;
+      const fixtures = locDef(id).fixtures;
+      const furn = L.furniture.filter((f) => f && FURNITURE[f.type]).map((f, i) => {
+        const def = FURNITURE[f.type], fx = fixtures.find((q, k) => id + ':' + k === f.uid);
+        const out = { uid: String(f.uid), type: f.type, floor: 0, x: fx ? fx[1] : U.num(f.x, 0, -30, 30), z: fx ? fx[2] : U.num(f.z, 0, -30, 30), rot: fx ? fx[3] : (U.num(f.rot, 0, 0, 3) | 0), label: def.name, pool: fx ? fx[4] : null };
+        if (def.grid) { const c = f.inv && typeof f.inv === 'object' ? f.inv : Inv.makeContainer(1, 1, 1); c.w = def.grid[0]; c.h = def.grid[1]; c.limit = def.limit; c.temp = def.temp || 'ambient'; out.inv = Sanitize.container(c, def.name); out.inv.shop = id; }
+        return out;
+      });
+      if (furn.length !== fixtures.length) continue;   // garbled → regenerate on next visit
+      locs[id] = { furniture: furn, piles: pileList(L.piles), initial: U.num(L.initial, 1, 1, 1e6), depletedTo: U.num(L.depletedTo, 1, 0, 1), visits: U.num(L.visits, 0, 0, 1e6) | 0, lastVisit: L.lastVisit == null ? null : U.num(L.lastVisit, 0, 0, 1e9) };
+    }
+    st.locs = locs;
+    if (st.scene !== 'home' && !st.locs[st.scene]) st.scene = 'home';
     // Furniture: rebuild from layout if missing/garbled; keep containers by matching type+position.
     const fresh = buildHomeFurniture(st.worldSeed);
     const old = Array.isArray(st.home.furniture) ? st.home.furniture.filter((f) => f && FURNITURE[f.type]) : [];
@@ -5685,6 +6188,7 @@ const Outbreak = {
     GameClock.onMinute((m) => {
       if (!S.flags.outbreak && m >= CFG.OUTBREAK_MINUTE) {
         S.flags.outbreak = true;
+        World.clearUnpaid();
         logEvent(STR.outbreakToast, 'bad');
         Bus.emit('toast', { kind: 'bad', msg: STR.outbreakToast, dur: 9000 });
         Bus.emit('outbreak');
@@ -5694,6 +6198,254 @@ const Outbreak = {
         logEvent(STR.outbreakSoon, 'warn');
         Bus.emit('toast', { kind: 'warn', msg: STR.outbreakSoon, dur: 7000 });
       }
+    });
+  },
+};
+
+/* ===== 24-world-state.js ===== */
+/* ==========================================================================
+   24 · WORLD STATE — location generation & depletion, shop payment, travel
+   ========================================================================== */
+
+const World = {
+  /** Map coordinates → km (city routing factor 1.2; 200 map px = 1 km). */
+  km(a, b) {
+    const A = locDef(a).map, B = locDef(b).map;
+    return (Math.hypot(A[0] - B[0], A[1] - B[1]) / 200) * 1.2;
+  },
+  loc(id) { return S.locs[id] || null; },
+  /** Create a location's fixtures and stock the first time it is visited in this life. */
+  ensureLoc(id) {
+    if (S.locs[id]) return S.locs[id];
+    const L = locDef(id);
+    const diff = difficultyOf(S.difficulty);
+    const furniture = L.fixtures.map(([type, x, z, rot, pool], i) => {
+      const def = FURNITURE[type];
+      const f = { uid: id + ':' + i, type, floor: 0, x, z, rot, label: def.name, pool };
+      if (def.grid) { f.inv = Inv.makeContainer(def.grid[0], def.grid[1], def.limit, def.name, def.temp || 'ambient'); f.inv.shop = id; }
+      return f;
+    });
+    furniture.forEach((f, i) => {
+      if (!f.inv) return;
+      const rng = RNG.local('loot|' + S.worldSeed + '|' + id + '|' + i);
+      const fixed = FIXED_STOCK[id + ':' + f.type];
+      if (fixed) for (const [iid, q] of fixed) { const it = Inv.makeItem(iid, q); Inv.add(f.inv, it); }
+      if (f.pool) this.stock(f.inv, POOLS[f.pool], rng, 0.92 * (L.density || 1) * diff.loot);
+    });
+    const st = { furniture, piles: [], initial: 0, depletedTo: 1, visits: 0, lastVisit: null };
+    st.initial = this.countItems(st);
+    S.locs[id] = st;
+    if (!S.flags.outbreak) this.markUnpaid(st, id);
+    return st;
+  },
+  /** Fill a container from a weighted pool until ~fill of its cells are used. */
+  stock(c, pool, rng, fill) {
+    if (!pool || !pool.length) return 0;
+    const sum = pool.reduce((a, p) => a + p[1], 0);
+    const cells = c.w * c.h;
+    const occupied = () => c.slots.reduce((a, s) => a + Inv.area(s.it), 0);
+    let used = occupied(), fails = 0, n = 0;
+    while (used < cells * Math.min(0.97, fill) && fails < 40) {
+      let r = rng() * sum, pick = pool[0];
+      for (const p of pool) { r -= p[1]; if (r <= 0) { pick = p; break; } }
+      if (!ITEMS[pick[0]]) { fails++; continue; }
+      const it = Inv.makeItem(pick[0], 1 + Math.floor(rng() * pick[2]));
+      if (Inv.add(c, it) === 0) { n++; const u = occupied(); if (u === used) fails++; used = u; } else fails++;
+    }
+    return n;
+  },
+  countItems(st) {
+    let n = 0;
+    for (const f of st.furniture) if (f.inv) Inv.walk(f.inv, (it) => { n += it.qty; });
+    return n;
+  },
+  markUnpaid(st, id) {
+    for (const f of st.furniture) if (f.inv) Inv.walk(f.inv, (it) => { it.unpaid = id; });
+  },
+  /**
+   * Other scavengers take a growing share after the outbreak (§4.2). Deterministic:
+   * each slot rolls against the target remaining fraction for the current day.
+   */
+  deplete(id) {
+    const st = S.locs[id]; if (!st || !S.flags.outbreak) return;
+    const days = Math.max(0, S.time.min / 1440 - CFG.OUTBREAK_MINUTE / 1440);
+    const diff = difficultyOf(S.difficulty);
+    const target = Math.max(0.12, 1 - days * 0.035 * (2 - diff.loot));
+    if (target >= st.depletedTo - 0.01) return;
+    const takeFrac = 1 - target / st.depletedTo;
+    const rng = RNG.local('deplete|' + S.worldSeed + '|' + id + '|' + Math.floor(days));
+    for (const f of st.furniture) {
+      if (!f.inv) continue;
+      f.inv.slots = f.inv.slots.filter((s) => {
+        if (rng() >= takeFrac) return true;
+        if (s.it.qty > 1 && rng() < 0.5) { s.it.qty = Math.ceil(s.it.qty / 2); return true; }
+        return false;
+      });
+    }
+    st.depletedTo = target;
+  },
+  lootPct(id) {
+    const st = S.locs[id]; if (!st || !st.initial) return 0;
+    return Math.round((1 - this.countItems(st) / st.initial) * 100);
+  },
+  /** The outbreak voids every shop: unpaid flags are dropped everywhere. */
+  clearUnpaid() {
+    const clear = (c) => Inv.walk(c, (it) => { delete it.unpaid; });
+    for (const id in S.locs) { for (const f of S.locs[id].furniture) if (f.inv) clear(f.inv); for (const p of S.locs[id].piles) clear(p.inv); }
+    for (const d of S.chars) { clear(d.pockets); for (const k of ['back', 'hand', 'weapon']) if (d.equip[k]) { delete d.equip[k].unpaid; if (d.equip[k].inv) clear(d.equip[k].inv); } }
+    for (const f of S.home.furniture) { if (f.inv) clear(f.inv); if (f.sub) clear(f.sub); }
+    for (const p of S.home.piles || []) clear(p.inv);
+  },
+};
+
+/** Pre-outbreak shopping: carry goods to the counter, pay with cash (§4.2). */
+const Shop = {
+  /** Unpaid items the character carries (incl. equipped bags/carts and the bags themselves). */
+  unpaid(ch) {
+    const out = [];
+    const visit = (it, c, slot) => { if (it.unpaid) out.push({ it, c, slot }); };
+    for (const c of [ch.d.pockets]) Inv.walk(c, visit);
+    for (const k of ['back', 'hand', 'weapon']) {
+      const it = ch.d.equip[k]; if (!it) continue;
+      if (it.unpaid) out.push({ it, equip: k });
+      if (it.inv) Inv.walk(it.inv, visit);
+    }
+    return out;
+  },
+  total(list) { return list.reduce((a, e) => a + (itemDef(e.it.id).price || 0) * e.it.qty, 0); },
+  pay(ch) {
+    const list = this.unpaid(ch), tot = this.total(list);
+    if (tot > S.cash) return false;
+    S.cash -= tot;
+    for (const e of list) delete e.it.unpaid;
+    logEvent(STR.paidLog(U.money(tot)), 'info');
+    return true;
+  },
+  /** Put every unpaid carried item back into the shop (piles at the door if shelves are full). */
+  returnAll(ch) {
+    const st = World.loc(S.scene); if (!st) return;
+    const targets = st.furniture.filter((f) => f.inv).map((f) => f.inv);
+    const pile = Scene.pileNear(0, Scene.W.spawn.x, Scene.W.spawn.z, true);
+    for (const e of this.unpaid(ch)) {
+      if (e.equip) { ch.d.equip[e.equip] = null; Inv.addToAny([...targets, pile.inv], e.it); continue; }
+      Inv.remove(e.c, e.slot);
+      if (Inv.addToAny([...targets, pile.inv], e.it) > 0) console.warn('[Shop] could not return', e.it.id);
+    }
+    Scene.syncPiles();
+  },
+};
+
+/** Travel between locations: time cost from distance, pace and load (§4.1, §4.4). */
+const Travel = {
+  /** Minutes to travel; pace: 'walk' | 'run'. Heavy loads slow you, running drains stamina. */
+  minutes(from, to, pace) {
+    const ch = activeChar();
+    const km = World.km(from, to);
+    const kmh = (pace === 'run' ? RUN_KMH : WALK_KMH) * Math.max(0.25, ch.speedFactor()) * (1 + ch.skill('fitness') * 0.02);
+    return Math.max(2, Math.round((km / kmh) * 60));
+  },
+  canLeave() {
+    const ch = activeChar();
+    return ch.speedFactor() > 0.01;
+  },
+  /** Advance the clock through the trip (all systems tick), then enter the destination. */
+  async go(to, pace) {
+    const from = S.scene, mins = this.minutes(from, to, pace);
+    const d = S.chars[S.active];
+    TravelUI.show(locDef(to).name, mins);
+    d._moving = pace === 'run' ? 'run' : 'walk';
+    const t0 = S.time.min;
+    let done = 0;
+    while (done < mins) {
+      const step = Math.min(mins - done, Math.max(1, Math.ceil(mins / 30)));
+      GameClock.advance(step); done += step;
+      TravelUI.progress(done / mins, S.time.min);
+      await new Promise((r) => requestAnimationFrame(r));
+    }
+    d._moving = null;
+    if (pace === 'run') d.needs.stamina = Math.max(0, d.needs.stamina - Math.min(80, mins * 2.2));
+    S.travelLog = { from, to, at: t0, mins };
+    TravelUI.hide();
+    Scene.enter(to);
+  },
+};
+
+/* ===== 25-power.js ===== */
+/* ==========================================================================
+   25 · UTILITIES TIMELINE (§9.2) — grid power & municipal water.
+   Normal service until (failDay − 10); telegraphed scheduled load-shedding that
+   grows each day for the final 10 days; permanent failure from failDay 00:00.
+   The outage schedule is deterministic per life (event seed) and announced each
+   morning. Generators / cold-hold are layered on top in the cooling system.
+   ========================================================================== */
+
+const Power = {
+  failDay() { return S ? (S.flags.failDayOverride || difficultyOf(S.difficulty).utilityFailDay) : 60; },
+  brownoutStart() { return this.failDay() - 10; },
+  /** Outage windows [startMin, endMin) (minutes into the day) for a given day number. */
+  outages(day) {
+    const F = this.failDay(), B = F - 10;
+    if (day < B || day >= F) return [];
+    const k = day - B + 1;                          // 1..10
+    const totalH = 1 + k * 1.1;                     // 2.1 h … 12 h per day
+    const rng = RNG.local('brownout|' + (S ? S.lifeSeed : 1) + '|' + day);
+    const blocks = k < 4 ? 1 : k < 8 ? 2 : 3;
+    const out = [];
+    for (let i = 0; i < blocks; i++) {
+      const len = (totalH / blocks) * 60;
+      const slot = (1440 / blocks) * i;
+      const start = Math.floor(slot + rng() * Math.max(0, 1440 / blocks - len));
+      out.push([start, Math.min(1440, start + Math.round(len))]);
+    }
+    return out;
+  },
+  gridOn(min = S ? S.time.min : 0) {
+    if (!S) return true;
+    if (S.flags.gridForcedOff) return false;
+    const day = Math.floor(min / 1440), m = min - day * 1440;
+    if (day >= this.failDay()) return false;
+    for (const [a, b] of this.outages(day)) if (m >= a && m < b) return false;
+    return true;
+  },
+  waterOn(min = S ? S.time.min : 0) {
+    if (!S) return true;
+    const day = Math.floor(min / 1440);
+    if (S.flags.gridForcedOff) return false;
+    return day < this.failDay();            // water pressure holds until the failure day
+  },
+  /** Light flicker factor shortly before a scheduled outage (visual warning). */
+  flicker(min) {
+    if (!S) return 1;
+    const day = Math.floor(min / 1440), m = min - day * 1440;
+    for (const [a] of this.outages(day)) if (m >= a - 12 && m < a) return 0.55 + 0.45 * Math.abs(Math.sin(performance.now() * 0.03 + m));
+    return 1;
+  },
+  stage(min = S ? S.time.min : 0) {
+    const day = Math.floor(min / 1440);
+    if (day >= this.failDay()) return 'failed';
+    if (day >= this.brownoutStart()) return 'brownout';
+    return 'normal';
+  },
+  init() {
+    // Morning announcement of today's schedule; milestone messages.
+    GameClock.onHour((t) => {
+      if (t.hour !== 7) return;
+      const st = this.stage();
+      if (st === 'brownout') {
+        const list = this.outages(t.day).map(([a, b]) => U.pad2(Math.floor(a / 60)) + ':' + U.pad2(a % 60) + '–' + U.pad2(Math.floor(b / 60)) + ':' + U.pad2(b % 60)).join(', ');
+        const msg = STR.brownoutNews(this.failDay() - t.day, list);
+        logEvent(msg, 'warn'); Bus.emit('toast', { kind: 'warn', msg, dur: 9000 });
+      } else if (st === 'normal' && t.day === this.brownoutStart() - 3) {
+        logEvent(STR.gridWarning, 'warn'); Bus.emit('toast', { kind: 'warn', msg: STR.gridWarning, dur: 8000 });
+      }
+    });
+    GameClock.onDay((t) => {
+      if (t.day === this.failDay()) { logEvent(STR.gridFailed, 'bad'); Bus.emit('toast', { kind: 'bad', msg: STR.gridFailed, dur: 10000 }); }
+    });
+    let was = true;
+    GameClock.onMinute((m) => {
+      const on = this.gridOn(m);
+      if (on !== was) { Bus.emit('power:changed', on); was = on; }
     });
   },
 };
@@ -6752,8 +7504,8 @@ const HomeWorld = {
     if (x >= -2.6 && x <= 0.4 && z > b.z1 && z <= b.z1 + 1.3) return -0.07;
     return HomeWorld.YARD_Y;
   },
-  roomAt(floor, x, z) {
-    return HOME.rooms.find((r) => r.floor === floor && x >= r.x0 && x <= r.x1 && z >= r.z0 && z <= r.z1) || null;
+  roomAt(floor, x, z, L = HOME) {
+    return L.rooms.find((r) => r.floor === floor && x >= r.x0 && x <= r.x1 && z >= r.z0 && z <= r.z1) || null;
   },
 
   build(scene) {
@@ -6767,11 +7519,23 @@ const HomeWorld = {
     }
     W.root.add(W.outdoor);
     this.buildFloors(W);
-    this.buildWalls(W);
+    this.buildWalls(W, HOME, 2);
     this.buildStairs(W);
-    this.buildRoomLights(W);
+    this.buildRoomLights(W, HOME);
     this.buildYard(W);
     this.buildStreet(W);
+    // World interface used by Scene / Nav / Render / Avatar
+    const lot = HOME.lot, b = HOME.bounds;
+    Object.assign(W, {
+      kind: 'home', layout: HOME, floorsCount: 2, stairs: HOME.stairs,
+      groundY: (x, z, f) => HomeWorld.groundY(x, z, f),
+      navAreas: [{ x0: lot.x0 - 0.5, x1: lot.x1 + 0.5, z0: lot.z0 - 0.5, z1: lot.z1 + 2.2 }, { x0: b.x0 - 0.25, x1: b.x1 + 0.25, z0: b.z0 - 0.25, z1: b.z1 + 0.25 }],
+      camBounds: { x0: lot.x0 - 6, x1: lot.x1 + 6, z0: lot.z0 - 4, z1: lot.z1 + 10 },
+      pickY0: HomeWorld.YARD_Y, slab: b, dustRect: b,
+      isIndoor: (x, z, f) => f === 1 || (x > b.x0 && x < b.x1 && z > b.z0 && z < b.z1),
+      exit: { x: 2.8, z: lot.z1 + 1.4, floor: 0 },
+      spawn: { x: 2.8, z: lot.z1 - 1.2, floor: 0, rot: Math.PI },
+    });
     scene.add(W.root);
     return W;
   },
@@ -6827,18 +7591,18 @@ const HomeWorld = {
   },
 
   /* ---------- Walls with openings; full + cut variants ---------- */
-  wallLines(floor) {
+  wallLines(floor, L = HOME) {
     const map = new Map();
     const addSeg = (axis, at, a, b) => {
       const key = axis + ':' + at.toFixed(3);
       if (!map.has(key)) map.set(key, { axis, at, segs: [] });
       map.get(key).segs.push([Math.min(a, b), Math.max(a, b)]);
     };
-    for (const r of HOME.rooms.filter((q) => q.floor === floor)) {
+    for (const r of L.rooms.filter((q) => q.floor === floor)) {
       addSeg('z', r.z0, r.x0, r.x1); addSeg('z', r.z1, r.x0, r.x1);
       addSeg('x', r.x0, r.z0, r.z1); addSeg('x', r.x1, r.z0, r.z1);
     }
-    const b = HOME.bounds, lines = [];
+    const b = L.bounds, lines = [];
     for (const { axis, at, segs } of map.values()) {
       segs.sort((p, q) => p[0] - q[0]);
       const merged = [];
@@ -6852,12 +7616,12 @@ const HomeWorld = {
     }
     return lines;
   },
-  buildWalls(W) {
+  buildWalls(W, L = HOME, floors = 2) {
     const H = CFG.FLOOR_H;
-    for (let floor = 0; floor < 2; floor++) {
+    for (let floor = 0; floor < floors; floor++) {
       const y0 = floor * H;
-      for (const line of this.wallLines(floor)) {
-        const ops = HOME.openings.filter((o) => o.floor === floor && o.axis === line.axis && Math.abs(o.at - line.at) < 1e-6 && o.a >= line.a - 1e-6 && o.b <= line.b + 1e-6).sort((p, q) => p.a - q.a);
+      for (const line of this.wallLines(floor, L)) {
+        const ops = L.openings.filter((o) => o.floor === floor && o.axis === line.axis && Math.abs(o.at - line.at) < 1e-6 && o.a >= line.a - 1e-6 && o.b <= line.b + 1e-6).sort((p, q) => p.a - q.a);
         const thick = line.exterior ? this.WALL_T_EXT : this.WALL_T_INT;
         // Spans of solid wall + openings (with sill/lintel parts)
         const parts = []; // {a, b, y0, y1}
@@ -6886,7 +7650,7 @@ const HomeWorld = {
               const mid = (p.a + p.b) / 2;
               const px = line.axis === 'x' ? line.at + side * 0.3 : mid;
               const pz = line.axis === 'z' ? line.at + side * 0.3 : mid;
-              const room = this.roomAt(floor, px, pz);
+              const room = this.roomAt(floor, px, pz, L);
               const mat = room ? Mat.tex('plaster', room.wall, 0.92, 0, 0.3) : Mat.tex('ext_wall', '#efe3c8', 0.9, 0, 0.5);
               const t = thick / 2;
               const off = side * t / 2;
@@ -6918,7 +7682,7 @@ const HomeWorld = {
         W.floors[floor].group.add(wrap);
         const rec = { line, full, cut, floor };
         W.floors[floor].walls.push(rec);
-        for (const o of ops) this.buildOpening(W, o, line, thick, rec);
+        for (const o of ops) this.buildOpening(W, o, line, thick, rec, L);
       }
     }
   },
@@ -6927,7 +7691,7 @@ const HomeWorld = {
     return line.axis === 'z' ? { x0: a, x1: b, z0: line.at - t, z1: line.at + t } : { x0: line.at - t, x1: line.at + t, z0: a, z1: b };
   },
   /** Window frames/glass/grilles and door frames/leaves. Added to both wall variants as needed. */
-  buildOpening(W, o, line, thick, rec) {
+  buildOpening(W, o, line, thick, rec, L = HOME) {
     const y0 = o.floor * CFG.FLOOR_H;
     const along = (a, len, h, d, mat, lo, offN = 0) => {
       // helper producing a box on the wall plane
@@ -6937,7 +7701,7 @@ const HomeWorld = {
     const mid = (o.a + o.b) / 2, len = o.b - o.a;
     if (o.kind === 'window') {
       const sill = o.sill || 0.9, top = 2.2, h = top - sill;
-      const room = this.roomAt(o.floor, line.axis === 'x' ? line.at - (line.outward || 1) * 0.3 : mid, line.axis === 'z' ? line.at - (line.outward || 1) * 0.3 : mid);
+      const room = this.roomAt(o.floor, line.axis === 'x' ? line.at - (line.outward || 1) * 0.3 : mid, line.axis === 'z' ? line.at - (line.outward || 1) * 0.3 : mid, L);
       const glow = this.windowGlowMat(W, room ? room.id : 'none');
       const make = (cutH) => {
         const pb = new PB('win' + o.a + o.at);
@@ -7037,8 +7801,8 @@ const HomeWorld = {
   },
 
   /* ---------- Ceiling lights & lamps ---------- */
-  buildRoomLights(W) {
-    for (const r of HOME.rooms) {
+  buildRoomLights(W, L = HOME) {
+    for (const r of L.rooms) {
       const y = r.floor * CFG.FLOOR_H + 2.72;
       const cx = (r.x0 + r.x1) / 2, cz = (r.z0 + r.z1) / 2;
       const fixture = new PB('lamp' + r.id);
@@ -7256,11 +8020,7 @@ const Nav = {
   stair: null,   // {bottom:{x,z}, top:{x,z}}
 
   build(W, furniture) {
-    const b = HOME.bounds, lot = HOME.lot;
-    const areas = [
-      { x0: lot.x0 - 0.5, x1: lot.x1 + 0.5, z0: lot.z0 - 0.5, z1: lot.z1 + 2.2 },
-      { x0: b.x0 - 0.25, x1: b.x1 + 0.25, z0: b.z0 - 0.25, z1: b.z1 + 0.25 },
-    ];
+    const areas = W.navAreas;
     this.grids = areas.map((a, floor) => {
       const nx = Math.ceil((a.x1 - a.x0) / this.cell), nz = Math.ceil((a.z1 - a.z0) / this.cell);
       const g = { floor, x0: a.x0, z0: a.z0, nx, nz, block: new Uint8Array(nx * nz) };
@@ -7274,8 +8034,8 @@ const Nav = {
         if (f.rot % 2) [w, d] = [d, w];
         rects.push({ x0: f.x - w / 2, x1: f.x + w / 2, z0: f.z - d / 2, z1: f.z + d / 2 });
       }
-      if (floor === 0) {
-        const s = HOME.stairs;
+      if (floor === 0 && W.stairs) {
+        const s = W.stairs;
         rects.push({ x0: s.x0, x1: s.x1, z0: s.zBottom, z1: s.zTop + 0.05 });
       }
       const r = this.radius;
@@ -7287,7 +8047,8 @@ const Nav = {
       }
       return g;
     });
-    const s = HOME.stairs, mx = (s.x0 + s.x1) / 2;
+    if (!W.stairs) { this.stair = null; return; }
+    const s = W.stairs, mx = (s.x0 + s.x1) / 2;
     this.stair = { bottom: { x: mx, z: s.zBottom - 0.3 }, top: { x: mx, z: s.zTop + 0.3 } };
     // Make sure the stair landings are walkable.
     for (const [floor, p] of [[0, this.stair.bottom], [1, this.stair.top]]) {
@@ -7384,7 +8145,7 @@ const Nav = {
     const tgt = this.walkable(to.floor, to.x, to.z) ? { x: to.x, z: to.z } : this.nearestWalkable(to.floor, to.x, to.z);
     if (!tgt) return null;
     const startOk = this.walkable(from.floor, from.x, from.z) ? from : Object.assign({ floor: from.floor }, this.nearestWalkable(from.floor, from.x, from.z) || from);
-    if (from.floor === to.floor) {
+    if (from.floor === to.floor || !this.stair) {
       const p = this.astar(from.floor, startOk.x, startOk.z, tgt.x, tgt.z);
       return p && p.map((q) => ({ x: q.x, z: q.z, floor: from.floor }));
     }
@@ -7544,7 +8305,7 @@ const Render = {
   },
   /** Floating dust motes inside the house — catch the warm light. */
   buildDust() {
-    const n = this.q.dust, pos = new Float32Array(n * 3), rng = U.makeRng(5), b = HOME.bounds;
+    const n = this.q.dust, pos = new Float32Array(n * 3), rng = U.makeRng(5), b = this.W.dustRect;
     for (let i = 0; i < n; i++) { pos[i * 3] = U.lerp(b.x0, b.x1, rng()); pos[i * 3 + 1] = rng() * 2.6; pos[i * 3 + 2] = U.lerp(b.z0, b.z1, rng()); }
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
     this.dustMat = new THREE.PointsMaterial({ color: 0xffe2b0, size: 0.022, transparent: true, opacity: 0.45, depthWrite: false, blending: THREE.AdditiveBlending });
@@ -7561,8 +8322,8 @@ const Render = {
     const s = this.cam.curDist * 0.0016;
     this.cam.tx += (dx * Math.cos(y) + dz * Math.sin(y)) * s * 60;
     this.cam.tz += (-dx * Math.sin(y) + dz * Math.cos(y)) * s * 60;
-    const L = HOME.lot;
-    this.cam.tx = U.clamp(this.cam.tx, L.x0 - 6, L.x1 + 6); this.cam.tz = U.clamp(this.cam.tz, L.z0 - 4, L.z1 + 10);
+    const B = this.W ? this.W.camBounds : { x0: -30, x1: 30, z0: -30, z1: 30 };
+    this.cam.tx = U.clamp(this.cam.tx, B.x0, B.x1); this.cam.tz = U.clamp(this.cam.tz, B.z0, B.z1);
     this.cam.follow = false;
   },
   updateCamera(dt, focus) {
@@ -7601,8 +8362,8 @@ const Render = {
     }
   },
   setViewFloor(f) {
-    this.viewFloor = U.clamp(f, 0, 1);
-    if (this.W) this.W.floors[1].group.visible = this.viewFloor >= 1;
+    this.viewFloor = U.clamp(f, 0, this.W ? this.W.floors.length - 1 : 1);
+    if (this.W && this.W.floors[1]) this.W.floors[1].group.visible = this.viewFloor >= 1;
     Bus.emit('viewfloor', this.viewFloor);
   },
 
@@ -7655,7 +8416,10 @@ const Render = {
    */
   updateLights(focus, lightsOn, powerOn = true) {
     const W = this.W; if (!W) return;
-    const want = lightsOn && powerOn && this.night > 0.25;
+    const shop = W.kind === 'location';
+    const want = lightsOn && powerOn && (shop || this.night > 0.25);
+    const flick = S ? Power.flicker(S.time.min) : 1;
+    if (W.shopPanelMat) W.shopPanelMat.emissiveIntensity = want ? 1.4 * flick : 0;
     const sources = [];
     for (const L of W.lights) {
       const on = want && (L.kind !== 'street');
@@ -7678,7 +8442,7 @@ const Render = {
     });
     for (let i = 0; i < this.lightPool.length; i++) {
       const L = this.lightPool[i], src = sources[i];
-      if (src) { L.position.copy(src.pos); L.color.set(src.color); L.intensity = src.intensity * (src.flicker || 1); L.distance = src.dist; L.visible = true; }
+      if (src) { L.position.copy(src.pos); L.color.set(src.color); L.intensity = src.intensity * (src.kind === 'street' ? 1 : flick); L.distance = src.dist; L.visible = true; }
       else { L.intensity = 0; L.visible = false; }
     }
   },
@@ -7700,14 +8464,14 @@ const Render = {
     }
     // Ground plane of the viewed floor
     const fy = this.viewFloor * CFG.FLOOR_H;
-    const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -(this.viewFloor === 0 ? HomeWorld.YARD_Y : fy));
+    const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -(this.viewFloor === 0 ? W.pickY0 : fy));
     const gp = new THREE.Vector3();
     let ground = null;
     if (this.ray.ray.intersectPlane(plane, gp)) {
       // Re-intersect with the house slab height if inside the footprint on floor 0
-      if (this.viewFloor === 0) {
+      if (this.viewFloor === 0 && W.slab) {
         const p0 = new THREE.Vector3();
-        if (this.ray.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), p0) && HomeWorld.groundY(p0.x, p0.z) === 0) gp.copy(p0);
+        if (this.ray.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), p0) && W.groundY(p0.x, p0.z, 0) === 0) gp.copy(p0);
       }
       ground = { x: gp.x, z: gp.z, floor: this.viewFloor, dist: this.ray.ray.origin.distanceTo(gp) };
     }
@@ -7715,8 +8479,8 @@ const Render = {
     const sh = W.stairsObj ? this.ray.intersectObject(W.stairsObj, true)[0] : null;
     if (sh && (!furnHit || sh.distance < furnHit.dist) && (!ground || sh.distance <= ground.dist + 0.5)) return { kind: 'stairs', ground };
     // Upper floor: a click inside the stairwell opening also means "use the stairs".
-    const st = HOME.stairs;
-    if (ground && this.viewFloor === 1 && ground.x > st.x0 - 0.1 && ground.x < st.x1 + 0.1 && ground.z > st.zBottom && ground.z < st.zTop) return { kind: 'stairs', ground };
+    const st = W.stairs;
+    if (st && ground && this.viewFloor === 1 && ground.x > st.x0 - 0.1 && ground.x < st.x1 + 0.1 && ground.z > st.zBottom && ground.z < st.zTop) return { kind: 'stairs', ground };
     if (furnHit && (!ground || furnHit.dist <= ground.dist + 0.5)) return { kind: 'furn', uid: furnHit.uid, ground };
     return ground ? { kind: 'ground', ground } : null;
   },
@@ -7793,7 +8557,7 @@ class Avatar {
   }
   syncFromData() {
     const p = this.d.pos;
-    this.obj.position.set(p.x, HomeWorld.groundY(p.x, p.z, p.floor), p.z);
+    this.obj.position.set(p.x, Scene.W.groundY(p.x, p.z, p.floor), p.z);
     this.obj.rotation.y = p.rot;
   }
   refreshGear() { this.h.setGear({ back: this.d.equip.back, hand: this.d.equip.hand }); }
@@ -7852,7 +8616,7 @@ class Avatar {
       const t = U.clamp((d.pos.z - z0) / (z1 - z0), 0, 1);
       y = t * CFG.FLOOR_H;
       if (!up && t <= 0.001) y = 0;
-    } else y = HomeWorld.groundY(d.pos.x, d.pos.z, d.pos.floor);
+    } else y = Scene.W.groundY(d.pos.x, d.pos.z, d.pos.floor);
     this.obj.position.set(d.pos.x, y, d.pos.z);
     this.obj.rotation.y = d.pos.rot;
     // Auto-follow the visible floor while climbing.
@@ -8036,26 +8800,62 @@ const IconModels = {
 
 /* ===== 38-homescene.js ===== */
 /* ==========================================================================
-   38 · HOME SCENE — places furniture, the player avatar, ground piles; turns
-   clicks into actions (walk / open / sleep / drink) and drives per-frame updates.
+   38 · SCENE — the current playable place (home or a location). Builds its
+   world, furniture, avatar and ground piles; turns clicks into actions
+   (walk / open / sleep / drink / checkout / leave) and drives per-frame updates.
    ========================================================================== */
 
-const HomeScene = {
-  W: null, avatar: null, hover: null, pileObjs: new Map(),
+const Scene = {
+  W: null, avatar: null, hover: null, pileObjs: new Map(), stockObjs: new Map(),
+
+  /** The furniture list of the current place. */
+  furnList() { return S.scene === 'home' ? S.home.furniture : (World.loc(S.scene) || { furniture: [] }).furniture; },
+  piles() {
+    if (S.scene === 'home') { if (!Array.isArray(S.home.piles)) S.home.piles = []; return S.home.piles; }
+    return World.loc(S.scene).piles;
+  },
+  setPiles(list) { if (S.scene === 'home') S.home.piles = list; else World.loc(S.scene).piles = list; },
+  isHome() { return S.scene === 'home'; },
 
   build() {
-    this.W = HomeWorld.build(Render.scene);
-    for (const f of S.home.furniture) this.addFurniture(f);
-    Nav.build(this.W, S.home.furniture);
+    if (S.scene !== 'home') World.ensureLoc(S.scene);
+    this.W = S.scene === 'home' ? HomeWorld.build(Render.scene) : LocationWorld.build(Render.scene, S.scene);
+    for (const f of this.furnList()) this.addFurniture(f);
+    Nav.build(this.W, this.furnList());
     Render.setWorld(this.W);
     this.avatar = new Avatar(S.chars[S.active]);
     Render.scene.add(this.avatar.obj);
-    S.home.piles = Array.isArray(S.home.piles) ? S.home.piles : [];
-    for (const p of S.home.piles) this.addPileObj(p);
+    for (const p of this.piles()) this.addPileObj(p);
     Render.setViewFloor(S.chars[S.active].pos.floor);
     Render.cam.tx = S.chars[S.active].pos.x; Render.cam.tz = S.chars[S.active].pos.z;
     Render.cam.ctx = Render.cam.tx; Render.cam.ctz = Render.cam.tz;
   },
+  dispose() {
+    const W = this.W; if (!W) return;
+    Render.scene.remove(W.root);
+    Render.scene.remove(this.avatar.obj);
+    W.root.traverse((o) => { if (o.isMesh || o.isLineSegments) o.geometry.dispose(); });
+    this.avatar.h.dispose();
+    this.W = null; this.pileObjs.clear(); this.stockObjs.clear(); this.hover = null;
+    Render.showHover(null);
+    if (Render.dust) { Render.scene.remove(Render.dust); Render.dust = null; }
+  },
+  /** Move the active character to another place (after travel). */
+  enter(id) {
+    if (InvUI.isOpen) InvUI.close();
+    this.dispose();
+    S.scene = id;
+    if (id !== 'home') { const st = World.ensureLoc(id); World.deplete(id); st.visits++; st.lastVisit = S.time.min; }
+    const d = S.chars[S.active];
+    const tmpW = id === 'home' ? { x: 2.8, z: HOME.lot.z1 - 1.2, rot: Math.PI } : { x: locDef(id).doorX, z: locDef(id).room.z1 - 0.9, rot: Math.PI };
+    d.pos.x = tmpW.x; d.pos.z = tmpW.z; d.pos.floor = 0; d.pos.rot = tmpW.rot;
+    this.build();
+    Render.cam.follow = true;
+    logEvent(STR.arrived(locDef(id).name), 'info');
+    Bus.emit('scene:changed', id);
+    Save.saveRun('travel');
+  },
+
   addFurniture(f) {
     const def = FURNITURE[f.type];
     const obj = AssetRegistry.create(def.asset, { seed: f.uid });
@@ -8064,6 +8864,7 @@ const HomeScene = {
     obj.userData.furnUid = f.uid; obj.userData.floor = f.floor;
     (def.outdoor ? this.W.outdoor : this.W.floors[f.floor].group).add(obj);
     this.W.furn.set(f.uid, obj);
+    if (def.stock) this.refreshStock(f);
     if (def.light) {
       const p = new THREE.Vector3(0, def.light.y, 0).applyMatrix4(obj.matrixWorld.compose(obj.position, obj.quaternion, obj.scale));
       let lampMat = null;
@@ -8071,29 +8872,43 @@ const HomeScene = {
       this.W.lights.push({ kind: 'lamp', floor: f.floor, room: (HomeWorld.roomAt(f.floor, f.x, f.z) || {}).id, pos: p, color: def.light.color, intensity: def.light.intensity, dist: def.light.dist, lampMat });
     }
   },
-  furn(uid) { return S.home.furniture.find((f) => f.uid === uid) || null; },
+  /** Rebuild product meshes for a stocked fixture when its contents changed. */
+  refreshStock(f) {
+    const def = FURNITURE[f.type], obj = this.W && this.W.furn.get(f.uid);
+    if (!def.stock || !obj || !f.inv) return;
+    const sig = f.inv.slots.map((s) => s.it.id + s.it.qty + ':' + s.x + s.y).join('|');
+    const prev = this.stockObjs.get(f.uid);
+    if (prev && prev.sig === sig) return;
+    if (prev && prev.obj) { obj.remove(prev.obj); prev.obj.traverse((o) => { if (o.isMesh) o.geometry.dispose(); }); }
+    const st = ShelfDresser.build(f, def, f.inv);
+    if (st) obj.add(st);
+    this.stockObjs.set(f.uid, { sig, obj: st });
+  },
+  refreshAllStock() { for (const f of this.furnList()) if (FURNITURE[f.type].stock) this.refreshStock(f); },
+  furn(uid) { return this.furnList().find((f) => f.uid === uid) || null; },
 
   /* ---------- Ground piles (dropped items) ---------- */
   pileNear(floor, x, z, create) {
     let best = null, bd = 1.4;
-    for (const p of S.home.piles) {
+    for (const p of this.piles()) {
       if (p.floor !== floor) continue;
       const d = Math.hypot(p.x - x, p.z - z);
       if (d < bd) { bd = d; best = p; }
     }
     if (!best && create) {
       best = { uid: U.uid(), floor, x, z, inv: Inv.makeContainer(8, 6, 200, STR.ground) };
-      S.home.piles.push(best);
+      this.piles().push(best);
     }
     return best;
   },
-  /** Called after inventory changes: build/remove pile meshes. */
+  /** Called after inventory changes: build/remove pile meshes and refresh shelf stock. */
   syncPiles() {
-    S.home.piles = S.home.piles.filter((p) => {
+    this.setPiles(this.piles().filter((p) => {
       if (p.inv.slots.length) { if (!this.pileObjs.has(p.uid)) this.addPileObj(p); return true; }
       const o = this.pileObjs.get(p.uid); if (o) { o.parent.remove(o); this.pileObjs.delete(p.uid); }
       return false;
-    });
+    }));
+    this.refreshAllStock();
   },
   addPileObj(p) {
     const pb = new PB('pile' + p.uid);
@@ -8101,9 +8916,9 @@ const HomeScene = {
     pb.box(0.3, 0.12, 0.24, Mat.color('#e9e4d6', 0.9), 0.15, 0, 0.18, 0.02, [0, -0.3, 0]);
     pb.cyl(0.05, 0.05, 0.2, Mat.color('#2b7fc4', 0.3), -0.2, 0, 0.12, 10);
     const obj = pb.build();
-    obj.position.set(p.x, HomeWorld.groundY(p.x, p.z, p.floor), p.z);
+    obj.position.set(p.x, this.W.groundY(p.x, p.z, p.floor), p.z);
     obj.userData.pileUid = p.uid;
-    (p.floor === 1 ? this.W.floors[1].group : this.W.floors[0].group).add(obj);
+    this.W.floors[Math.min(p.floor, this.W.floors.length - 1)].group.add(obj);
     this.pileObjs.set(p.uid, obj);
   },
 
@@ -8118,6 +8933,7 @@ const HomeScene = {
   /** Actions available on a furniture piece (only implemented ones are offered). */
   actions(f) {
     const def = FURNITURE[f.type], out = [];
+    if (def.act === 'checkout') out.push({ key: 'checkout', label: STR.checkoutAct });
     if (f.inv) out.push({ key: 'open', label: STR.open + ' ' + f.label });
     if (def.act === 'sleep') out.push({ key: 'sleep', label: STR.sleepHere });
     if (def.act === 'water') out.push({ key: 'drink', label: STR.drinkTap });
@@ -8131,15 +8947,32 @@ const HomeScene = {
       open: () => InvUI.open(f),
       sleep: () => SleepUI.open(f),
       drink: () => { Needs.drinkTap(activeChar()); },
+      checkout: () => CheckoutUI.open(),
       walk: null,
     }[key];
     const ok = this.avatar.goTo({ x: ap.x, z: ap.z, floor: f.floor }, mode, () => {
       if (after) { this.face(f); after(); }
     });
     if (!ok) Bus.emit('toast', { kind: 'warn', msg: STR.cannotReach });
-    else { Render.cam.follow = true; Render.flashClick(ap.x, HomeWorld.groundY(ap.x, ap.z, f.floor), ap.z); }
+    else { Render.cam.follow = true; Render.flashClick(ap.x, this.W.groundY(ap.x, ap.z, f.floor), ap.z); }
   },
   face(f) { const d = S.chars[S.active]; d.pos.rot = Math.atan2(f.x - d.pos.x, f.z - d.pos.z); },
+  /** Is a ground point beyond the exit (gate / shop door)? */
+  isExitPoint(g) {
+    if (g.floor !== 0) return false;
+    if (this.isHome()) return g.z > HOME.lot.z1 + 0.6 && g.x > HOME.gate.x0 - 1 && g.x < HOME.gate.x1 + 1;
+    const r = locDef(S.scene).room;
+    return g.z > r.z1 + 0.6;
+  },
+  /** Walk to the exit, then open the city map. */
+  leave(mode = 'walk') {
+    const e = this.W.exit;
+    const ok = this.avatar.goTo({ x: e.x, z: e.z, floor: 0 }, mode, () => MapUI.open(true));
+    if (!ok) Bus.emit('toast', { kind: 'warn', msg: STR.cannotReach });
+    else Render.cam.follow = true;
+    return ok;
+  },
+  atExit() { const d = S.chars[S.active], e = this.W.exit; return d.pos.floor === 0 && Math.hypot(d.pos.x - e.x, d.pos.z - e.z) < 1.2; },
 
   click(ev, isDouble) {
     const hit = Render.pick(ev.clientX, ev.clientY);
@@ -8153,6 +8986,7 @@ const HomeScene = {
     }
     if (hit.kind === 'stairs') { this.useStairs(mode); return; }
     const g = hit.ground;
+    if (this.isExitPoint(g)) { this.leave(mode); return; }
     const pile = this.pileNear(g.floor, g.x, g.z, false);
     if (pile && Math.hypot(pile.x - g.x, pile.z - g.z) < 0.5) {
       const ok = this.avatar.goTo({ x: pile.x, z: pile.z, floor: pile.floor }, mode, () => InvUI.open(null));
@@ -8160,11 +8994,12 @@ const HomeScene = {
       return;
     }
     const ok = this.avatar.goTo({ x: g.x, z: g.z, floor: g.floor }, mode, null);
-    if (ok) { Render.cam.follow = true; Render.flashClick(g.x, HomeWorld.groundY(g.x, g.z, g.floor), g.z); }
+    if (ok) { Render.cam.follow = true; Render.flashClick(g.x, this.W.groundY(g.x, g.z, g.floor), g.z); }
     else Bus.emit('toast', { kind: 'warn', msg: STR.cannotReach });
   },
   /** Walk to the other floor via the stairs (target just past the far landing). */
   useStairs(mode = 'walk') {
+    if (!this.W.stairs) return;
     const d = S.chars[S.active];
     const up = d.pos.floor === 0;
     const t = up ? { x: Nav.stair.top.x - 0.6, z: Nav.stair.top.z + 0.1, floor: 1 } : { x: Nav.stair.bottom.x - 0.7, z: Nav.stair.bottom.z, floor: 0 };
@@ -8183,10 +9018,12 @@ const HomeScene = {
       if (f) items = this.actions(f).map((a) => ({ label: a.label, fn: () => this.doAction(f, a.key) }));
     } else {
       const g = hit.ground;
+      const fail = () => Bus.emit('toast', { kind: 'warn', msg: STR.cannotReach });
       items = [
-        { label: STR.walkHere, fn: () => this.avatar.goTo(g, 'walk') || Bus.emit('toast', { kind: 'warn', msg: STR.cannotReach }) },
-        { label: STR.runHere, fn: () => this.avatar.goTo(g, 'run') || Bus.emit('toast', { kind: 'warn', msg: STR.cannotReach }) },
-        { label: STR.sneakHere, fn: () => this.avatar.goTo(g, 'sneak') || Bus.emit('toast', { kind: 'warn', msg: STR.cannotReach }) },
+        { label: STR.walkHere, fn: () => this.avatar.goTo(g, 'walk') || fail() },
+        { label: STR.runHere, fn: () => this.avatar.goTo(g, 'run') || fail() },
+        { label: STR.sneakHere, fn: () => this.avatar.goTo(g, 'sneak') || fail() },
+        { label: STR.leaveAct, fn: () => this.leave() },
       ];
     }
     ContextMenu.show(ev.clientX, ev.clientY, items);
@@ -8200,6 +9037,8 @@ const HomeScene = {
     }
     const f = uid && this.furn(uid);
     if (hit && hit.kind === 'stairs') return S.chars[S.active].pos.floor === 0 ? STR.goUp : STR.goDown;
+    if (hit && hit.kind === 'ground' && this.isExitPoint(hit.ground)) return STR.leaveAct;
+    if (f && FURNITURE[f.type].act === 'checkout') return f.label + ' — ' + STR.checkoutAct;
     return f ? f.label + (f.inv ? ' — ' + STR.clickToOpen : '') : null;
   },
 
@@ -8209,9 +9048,321 @@ const HomeScene = {
     Render.playerRing.position.set(p.x, p.y + 0.02, p.z);
     Render.playerRing.visible = !S.chars[S.active].sleeping;
     if (this.W.awning) this.W.awning.visible = Render.viewFloor === 1 || Math.hypot(p.x - this.W.awning.userData.center.x, p.z - this.W.awning.userData.center.z) > 5;
+    if (this.W.exitMarker) this.W.exitMarker.material.opacity = 0.45 + Math.sin(performance.now() * 0.004) * 0.25;
     Render.updateCamera(realDt, { x: p.x, z: p.z });
     Render.updateDayNight(S.time.min);
-    Render.updateLights({ x: p.x, z: p.z }, S.home.lightsOn, true);
+    Render.updateLights({ x: p.x, z: p.z }, this.isHome() ? S.home.lightsOn : true, Power.gridOn());
+  },
+};
+const HomeScene = Scene; // legacy alias used by older harnesses
+
+/* ===== 39-location-world.js ===== */
+/* ==========================================================================
+   39 · LOCATION WORLDS — shop interiors built from LOCATIONS data, shop
+   fixture props, and ShelfDresser (product meshes generated from the real
+   container contents so shelves look full and visibly empty as they are looted).
+   ========================================================================== */
+
+const LocationWorld = {
+  layout(id) {
+    const L = locDef(id), r = L.room;
+    const rooms = [{ id: 'shop', floor: 0, name: L.name, x0: r.x0, x1: r.x1, z0: r.z0, z1: r.z1, floorMat: r.floorMat, wall: r.wall }];
+    const openings = [{ floor: 0, kind: 'door', axis: 'z', at: r.z1, a: L.doorX - 0.8, b: L.doorX + 0.8, main: true, name: 'ประตูร้าน' }];
+    if (L.open) {
+      // Open-air market hall: wide arches on every side, pillars in between.
+      for (const [axis, at, a0, a1] of [['z', r.z0, r.x0, r.x1], ['x', r.x0, r.z0, r.z1], ['x', r.x1, r.z0, r.z1], ['z', r.z1, r.x0, r.x1]]) {
+        for (let a = a0 + 0.6; a + 2.4 <= a1 - 0.4; a += 3.2) {
+          if (axis === 'z' && at === r.z1 && Math.abs(a + 1.2 - L.doorX) < 2.4) continue;
+          openings.push({ floor: 0, kind: 'arch', axis, at, a, b: a + 2.4 });
+        }
+      }
+    } else {
+      // Shop-front glazing either side of the door
+      const left = [r.x0 + 0.6, L.doorX - 1.2], right = [L.doorX + 1.2, r.x1 - 0.6];
+      for (const [a, b] of [left, right]) if (b - a > 0.8) openings.push({ floor: 0, kind: 'window', axis: 'z', at: r.z1, a, b, sill: 0.35 });
+    }
+    return { rooms, openings, bounds: { x0: r.x0, x1: r.x1, z0: r.z0, z1: r.z1 }, stairs: null };
+  },
+
+  build(scene, id) {
+    const L = locDef(id), r = L.room;
+    const lay = this.layout(id);
+    const W = { root: new THREE.Group(), floors: [{ group: new THREE.Group(), walls: [], cutGroup: new THREE.Group() }], blockers: [[]], lights: [], furn: new Map(), pickables: [], windowMats: new Map(), outdoor: new THREE.Group(), animated: [] };
+    W.root.add(W.floors[0].group); W.root.add(W.outdoor);
+    // Floor
+    const pb = new PB('locfloor' + id);
+    const fmat = { tile: Mat.tex('tile', '#ffffff', 0.25, 0, 0.4), concrete: Mat.tex('concrete', '#b9b6ae', 0.85, 0, 0.6) }[r.floorMat] || Mat.tex('tile', '#ffffff', 0.3);
+    const fg = new THREE.PlaneGeometry(r.x1 - r.x0, r.z1 - r.z0); fg.rotateX(-Math.PI / 2);
+    pb.geo(fg, fmat, (r.x0 + r.x1) / 2, 0.003, (r.z0 + r.z1) / 2);
+    // Sidewalk + road outside the door
+    const side = new THREE.PlaneGeometry(r.x1 - r.x0 + 30, 3.2); side.rotateX(-Math.PI / 2);
+    pb.geo(side, Mat.tex('pavers', '#a8a296', 0.9, 0, 0.6), 0, -0.02, r.z1 + 1.7);
+    const road = new THREE.PlaneGeometry(r.x1 - r.x0 + 60, 10); road.rotateX(-Math.PI / 2);
+    pb.geo(road, Mat.tex('asphalt', '#ffffff', 0.92, 0, 0.6), 0, -0.1, r.z1 + 8.3);
+    const ground = new THREE.PlaneGeometry(120, 120); ground.rotateX(-Math.PI / 2);
+    pb.geo(ground, Mat.tex('concrete', '#6f6c66', 0.95, 0, 0.4), 0, -0.12, 0);
+    W.floors[0].group.add(pb.build({ cast: false, uvTile: 1.2 }));
+    HomeWorld.buildWalls(W, lay, 1);
+    // Ceiling light panels on a grid
+    const fix = new PB('panels' + id);
+    const panelMat = Mat.get('panel:' + id, () => new THREE.MeshStandardMaterial({ color: 0xeeeeee, emissive: new THREE.Color(L.light || 0xf4f8ff), emissiveIntensity: 0, roughness: 0.4 }));
+    for (let x = r.x0 + 2.5; x < r.x1 - 1; x += 4) for (let z = r.z0 + 2.2; z < r.z1 - 0.8; z += 3.6) {
+      W.lights.push({ kind: 'ceiling', floor: 0, room: 'shop', pos: new THREE.Vector3(x, 2.6, z), color: L.light || 0xf4f8ff, intensity: 22, dist: 8.5 });
+    }
+    void fix; void panelMat;
+    // Neighbouring facades & a sign by the door
+    const out = new PB('locout' + id);
+    const facade = Mat.tex('ext_wall', '#d9d2c2', 0.9, 0, 0.6);
+    out.box(14, 7, 12, facade, r.x0 - 7.2, -0.1, (r.z0 + r.z1) / 2 - 2);
+    out.box(14, 6, 12, Mat.tex('ext_wall', '#cfd6c4', 0.9, 0, 0.6), r.x1 + 7.2, -0.1, (r.z0 + r.z1) / 2 - 2);
+    out.box(r.x1 - r.x0 + 30, 9, 6, Mat.tex('ext_wall', '#bdb6a8', 0.9, 0, 0.6), 0, -0.1, r.z0 - 3.2);
+    const signMat = new THREE.MeshStandardMaterial({ map: HomeWorld.signTexture(L.sign[0], L.sign[1], '#ffffff'), roughness: 0.5, emissive: new THREE.Color(0xffffff), emissiveIntensity: 0.08 });
+    const sg = new THREE.PlaneGeometry(2.6, 0.5);
+    out.box(0.08, 2.6, 0.08, Mat.color('#3a3f44', 0.5, 0.6), L.doorX + 1.6, -0.02, r.z1 + 1.2);
+    out.geo(sg, signMat, L.doorX + 1.6, 2.9, r.z1 + 1.25);
+    // Parked motorbikes add life to the street
+    for (let i = 0; i < 3; i++) {
+      const bx = r.x0 + 1 + i * 1.1;
+      out.box(0.25, 0.55, 1.6, Mat.color(['#c43c2c', '#2b2b2b', '#2f63a8'][i], 0.4, 0.4), bx, 0.25, r.z1 + 2.0, 0.08);
+      out.cyl(0.28, 0.28, 0.08, Mat.color('#151515', 0.8), bx, 0.28, r.z1 + 1.35, 12, [0, 0, Math.PI / 2]);
+      out.cyl(0.28, 0.28, 0.08, Mat.color('#151515', 0.8), bx, 0.28, r.z1 + 2.65, 12, [0, 0, Math.PI / 2]);
+    }
+    W.outdoor.add(out.build({ uvTile: 2.0 }));
+    W.streetLamps = [new THREE.Vector3(r.x0 - 1, 5.5, r.z1 + 3.2), new THREE.Vector3(r.x1 + 1, 5.5, r.z1 + 3.2)];
+    // Exit marker (glowing arrow on the sidewalk)
+    const arrow = new THREE.Mesh(new THREE.RingGeometry(0.35, 0.5, 24), new THREE.MeshBasicMaterial({ color: 0xffb347, transparent: true, opacity: 0.7, depthWrite: false }));
+    arrow.rotation.x = -Math.PI / 2; arrow.position.set(L.doorX, 0.02, r.z1 + 1.6);
+    W.outdoor.add(arrow); W.exitMarker = arrow;
+    scene.add(W.root);
+    Object.assign(W, {
+      kind: 'location', locId: id, layout: lay, floorsCount: 1, stairs: null,
+      groundY: () => 0,
+      navAreas: [{ x0: r.x0 - 0.4, x1: r.x1 + 0.4, z0: r.z0 - 0.4, z1: r.z1 + 2.6 }],
+      camBounds: { x0: r.x0 - 4, x1: r.x1 + 4, z0: r.z0 - 3, z1: r.z1 + 8 },
+      pickY0: 0, slab: null, dustRect: lay.bounds,
+      isIndoor: (x, z) => !L.open && x > r.x0 && x < r.x1 && z > r.z0 && z < r.z1,
+      exit: { x: L.doorX, z: r.z1 + 1.6, floor: 0 },
+      spawn: { x: L.doorX, z: r.z1 - 0.9, floor: 0, rot: Math.PI },
+    });
+    // The sidewalk strip beyond the facade line is walkable only through the door.
+    W.blockers[0].push({ x0: r.x0 - 0.5, x1: r.x1 + 0.5, z0: r.z1 + 2.4, z1: r.z1 + 3 });
+    return W;
+  },
+};
+
+/* ---------- Shop fixture props ---------- */
+Object.assign(PROPS, {
+  'prop.shop_shelf': (o) => {
+    const pb = new PB(o.seed); const m = Mat.color('#e9e6df', 0.5, 0.2), dark = Mat.color('#3a4048', 0.5, 0.5);
+    pb.box(2.0, 1.75, 0.04, m, 0, 0, -0.02);
+    pb.box(0.04, 1.75, 0.6, m, -0.98, 0, 0); pb.box(0.04, 1.75, 0.6, m, 0.98, 0, 0);
+    for (const y of [0.08, 0.5, 0.92, 1.34]) { pb.box(1.96, 0.025, 0.56, m, 0, y, 0); pb.box(1.96, 0.05, 0.02, Mat.color('#f2c230', 0.6), 0, y - 0.03, 0.28); }
+    pb.box(2.0, 0.08, 0.6, dark, 0, 0, 0);
+    pb.box(2.0, 0.22, 0.04, Mat.color('#1f4f8a', 0.6), 0, 1.75, -0.02);
+    return pb.build();
+  },
+  'prop.wall_shelf': (o) => {
+    const pb = new PB(o.seed); const m = Mat.color('#dcd8cf', 0.5, 0.2);
+    pb.box(2.4, 2.0, 0.04, m, 0, 0, -0.2);
+    pb.box(0.04, 2.0, 0.45, m, -1.18, 0, 0); pb.box(0.04, 2.0, 0.45, m, 1.18, 0, 0);
+    for (const y of [0.1, 0.55, 1.0, 1.45, 1.9]) pb.box(2.36, 0.025, 0.42, m, 0, y, 0);
+    for (const y of [0.1, 0.55, 1.0, 1.45]) pb.box(2.36, 0.045, 0.02, Mat.color('#e0b23c', 0.6), 0, y - 0.03, 0.21);
+    return pb.build();
+  },
+  'prop.chiller': (o) => {
+    const pb = new PB(o.seed); const body = Mat.color('#2f3a44', 0.4, 0.5), inner = Mat.color('#e9eef2', 0.3, 0.2);
+    pb.box(2.0, 0.35, 0.8, body, 0, 0, 0);
+    pb.box(2.0, 1.9, 0.08, body, 0, 0, -0.36);
+    pb.box(0.05, 1.9, 0.8, body, -0.98, 0, 0); pb.box(0.05, 1.9, 0.8, body, 0.98, 0, 0);
+    for (const y of [0.35, 0.75, 1.15, 1.55]) pb.box(1.9, 0.025, 0.6 - (y - 0.35) * 0.1, inner, 0, y, -0.02 - (y - 0.35) * 0.05);
+    pb.box(2.0, 0.25, 0.7, body, 0, 1.9, -0.05);
+    pb.box(1.9, 0.08, 0.02, Mat.emissive('#bfe3ff', 0.8), 0, 1.86, 0.28);
+    return pb.build();
+  },
+  'prop.drink_cooler': (o) => {
+    const pb = new PB(o.seed); const body = Mat.color('#c4202a', 0.4, 0.3);
+    pb.box(1.4, 0.12, 0.7, body, 0, 0, 0); pb.box(1.4, 0.2, 0.7, body, 0, 1.8, 0);
+    pb.box(1.4, 2.0, 0.05, body, 0, 0, -0.33); pb.box(0.06, 2.0, 0.7, body, -0.67, 0, 0); pb.box(0.06, 2.0, 0.7, body, 0.67, 0, 0);
+    for (const y of [0.12, 0.48, 0.84, 1.2, 1.56]) pb.box(1.28, 0.02, 0.6, Mat.color('#d9dde1', 0.4, 0.3), 0, y, 0);
+    pb.box(1.3, 1.7, 0.02, Mat.color('#cfe4ec', 0.05, 0, { transparent: true, opacity: 0.25, depthWrite: false }), 0, 0.15, 0.36);
+    pb.box(0.03, 1.7, 0.03, M.chrome(), 0, 0.15, 0.37);
+    pb.box(1.3, 0.2, 0.02, Mat.emissive('#ffffff', 0.5), 0, 1.8, 0.36);
+    return pb.build();
+  },
+  'prop.shop_freezer': (o) => {
+    const pb = new PB(o.seed);
+    const body = Mat.color('#e9eef2', 0.35, 0.2);
+    pb.box(2.0, 0.42, 0.9, body, 0, 0, 0, 0.03);
+    pb.box(2.0, 0.42, 0.06, body, 0, 0.42, -0.42); pb.box(2.0, 0.42, 0.06, body, 0, 0.42, 0.42);
+    pb.box(0.06, 0.42, 0.9, body, -0.97, 0.42, 0); pb.box(0.06, 0.42, 0.9, body, 0.97, 0.42, 0);
+    pb.box(1.9, 0.02, 0.8, Mat.color('#bcd6e8', 0.3), 0, 0.42, 0);
+    pb.box(2.0, 0.1, 0.9, Mat.color('#2f63a8', 0.5), 0, 0, 0);
+    pb.box(2.04, 0.05, 0.94, Mat.color('#c9cdd1', 0.3, 0.7), 0, 0.82, 0);
+    return pb.build();
+  },
+  'prop.checkout': (o) => {
+    const pb = new PB(o.seed);
+    pb.box(1.6, 0.9, 0.7, Mat.color('#2f3a44', 0.5, 0.3), 0, 0, 0, 0.02);
+    pb.box(1.65, 0.04, 0.75, Mat.color('#c9cdd1', 0.3, 0.6), 0, 0.9, 0);
+    pb.box(0.4, 0.3, 0.3, M.black(), 0.4, 0.94, -0.1);
+    pb.box(0.35, 0.25, 0.02, Mat.emissive('#4fa3d1', 0.4), 0.4, 1.1, 0.06);
+    pb.box(0.6, 0.02, 0.5, Mat.color('#1a1a1a', 0.4), -0.4, 0.94, 0);
+    pb.cyl(0.02, 0.02, 1.3, M.chrome(), 0.75, 0, -0.3, 6);
+    pb.box(0.3, 0.3, 0.04, Mat.emissive('#3aff8a', 0.8), 0.75, 1.3, -0.3);
+    return pb.build();
+  },
+  'prop.market_stall': (o) => {
+    const pb = new PB(o.seed); const wood = Mat.tex('wood_floor', '#b98a5a', 0.85);
+    pb.box(2.0, 0.06, 1.1, wood, 0, 0.75, 0, 0, [0.12, 0, 0]);
+    for (const x of [-0.95, 0.95]) for (const z of [-0.5, 0.5]) pb.box(0.06, 0.8, 0.06, wood, x, 0, z);
+    for (const x of [-0.95, 0.95]) pb.box(0.04, 1.4, 0.04, Mat.color('#5f656b', 0.5, 0.5), x, 0.8, -0.5);
+    const tarp = U.pick(pb.rng, ['#c4202a', '#2f63a8', '#3a7a3a', '#e0b23c']);
+    pb.box(2.4, 0.04, 1.8, Mat.get('tarp:' + tarp, () => new THREE.MeshStandardMaterial({ color: tarp, roughness: 0.9, transparent: true, opacity: 0.42, depthWrite: false, side: THREE.DoubleSide })), 0, 2.2, 0.1, 0, [0.18, 0, 0]);
+    pb.box(0.6, 0.25, 0.4, Mat.color('#2f63a8', 0.6), -0.6, 0, 0.2); // basket below
+    pb.box(0.3, 0.04, 0.25, Mat.color('#c9cdd1', 0.3, 0.6), 0.7, 0.86, 0.45); // scale
+    return pb.build();
+  },
+  'prop.meat_stall': (o) => {
+    const pb = new PB(o.seed);
+    pb.box(2.0, 0.8, 1.1, Mat.color('#c9cdd1', 0.25, 0.8), 0, 0, 0, 0.02);
+    pb.box(2.0, 0.04, 1.1, Mat.color('#e9eef2', 0.15, 0.6), 0, 0.8, 0);
+    pb.box(2.0, 0.04, 0.04, Mat.color('#5f656b', 0.4, 0.8), 0, 1.9, -0.45);
+    for (const x of [-0.95, 0.95]) pb.box(0.04, 1.9, 0.04, Mat.color('#5f656b', 0.4, 0.8), x, 0, -0.45);
+    for (let i = 0; i < 4; i++) { pb.cyl(0.004, 0.004, 0.18, M.chrome(), -0.6 + i * 0.4, 1.72, -0.45, 4); pb.sphere(0.1, Mat.color('#c8606a', 0.6), -0.6 + i * 0.4, 1.55, -0.45, 0.8, 1.6, 0.6, 8); }
+    pb.box(0.4, 0.06, 0.3, Mat.color('#8a5a32', 0.7), 0.6, 0.84, 0.2); // chopping block
+    pb.sphere(0.15, Mat.emissive('#ff4a3a', 0.8), 0, 2.1, 0, 1, 0.6, 1, 10); // red meat lamp
+    return pb.build();
+  },
+  'prop.glass_counter': (o) => {
+    const pb = new PB(o.seed);
+    pb.box(2.0, 0.3, 0.6, Mat.color('#e9e6df', 0.5), 0, 0, 0);
+    pb.box(2.0, 0.7, 0.6, Mat.color('#cfe4ec', 0.05, 0, { transparent: true, opacity: 0.22, depthWrite: false }), 0, 0.3, 0);
+    pb.box(1.96, 0.02, 0.56, Mat.color('#e9e6df', 0.3), 0, 0.62, 0);
+    pb.box(2.0, 0.03, 0.6, Mat.color('#c9cdd1', 0.2, 0.7), 0, 1.0, 0);
+    return pb.build();
+  },
+  'prop.tool_rack': (o) => {
+    const pb = new PB(o.seed);
+    pb.box(2.0, 2.0, 0.04, Mat.color('#c9b48a', 0.9), 0, 0, -0.22);
+    for (const x of [-0.98, 0.98]) pb.box(0.05, 2.0, 0.5, Mat.color('#2f63a8', 0.5, 0.5), x, 0, 0);
+    for (const y of [0.1, 0.5, 0.9, 1.3, 1.7]) pb.box(1.94, 0.03, 0.46, Mat.color('#5f656b', 0.5, 0.5), 0, y, 0);
+    return pb.build();
+  },
+  'prop.pallet_stack': (o) => {
+    const pb = new PB(o.seed); const w = Mat.tex('wood_floor', '#c9a46a', 0.85);
+    pb.box(1.3, 0.14, 1.1, w, 0, 0, 0);
+    return pb.build();
+  },
+  'prop.cart_bay': (o) => {
+    const pb = new PB(o.seed);
+    pb.box(1.6, 0.04, 1.0, Mat.color('#5f656b', 0.5, 0.6), 0, 0, 0);
+    for (const x of [-0.78, 0.78]) pb.box(0.04, 1.0, 1.0, Mat.color('#c4202a', 0.5, 0.4), x, 0, 0);
+    return pb.build();
+  },
+  'prop.produce_bins': (o) => {
+    const pb = new PB(o.seed); const w = Mat.tex('wood_floor', '#a87a4a', 0.85);
+    pb.box(2.0, 0.65, 1.0, w, 0, 0, 0, 0.02);
+    for (const x of [-0.5, 0.5]) pb.box(0.04, 0.12, 1.0, w, x, 0.65, 0);
+    pb.box(2.0, 0.3, 0.04, Mat.color('#3a7a3a', 0.6), 0, 0.65, -0.48);
+    return pb.build();
+  },
+  'prop.bakery_case': (o) => {
+    const pb = new PB(o.seed);
+    pb.box(1.6, 0.6, 0.7, M.lightWood(), 0, 0, 0, 0.02);
+    pb.box(1.6, 0.8, 0.7, Mat.color('#cfe4ec', 0.05, 0, { transparent: true, opacity: 0.2, depthWrite: false }), 0, 0.6, 0);
+    pb.box(1.56, 0.02, 0.66, M.lightWood(), 0, 1.0, 0);
+    pb.box(1.6, 0.04, 0.7, M.lightWood(), 0, 1.4, 0);
+    return pb.build();
+  },
+});
+for (const id of ['prop.shop_shelf', 'prop.wall_shelf', 'prop.chiller', 'prop.drink_cooler', 'prop.shop_freezer', 'prop.checkout', 'prop.market_stall', 'prop.meat_stall', 'prop.glass_counter', 'prop.tool_rack', 'prop.pallet_stack', 'prop.cart_bay', 'prop.produce_bins', 'prop.bakery_case']) AssetRegistry.register(id, PROPS[id]);
+
+/**
+ * ShelfDresser: product meshes from container contents.
+ * spec: where the grid maps onto the fixture (local space, front = +z).
+ */
+const SHELF_SPEC = {
+  'prop.shop_shelf':   { kind: 'shelf', w: 1.9, levels: [0.1, 0.52, 0.94, 1.36], depth: 0.52, z: 0.0, gap: 0.4 },
+  'prop.wall_shelf':   { kind: 'shelf', w: 2.3, levels: [0.12, 0.57, 1.02, 1.47, 1.92], depth: 0.4, z: 0.0, gap: 0.42 },
+  'prop.chiller':      { kind: 'shelf', w: 1.9, levels: [0.37, 0.77, 1.17, 1.57], depth: 0.5, z: -0.05, gap: 0.36 },
+  'prop.drink_cooler': { kind: 'shelf', w: 1.25, levels: [0.12, 0.48, 0.84, 1.2, 1.56], depth: 0.55, z: 0.0, gap: 0.32 },
+  'prop.glass_counter':{ kind: 'shelf', w: 1.9, levels: [0.32, 0.64, 1.03], depth: 0.45, z: 0.0, gap: 0.28 },
+  'prop.tool_rack':    { kind: 'shelf', w: 1.9, levels: [0.13, 0.53, 0.93, 1.33, 1.73], depth: 0.4, z: 0.0, gap: 0.36 },
+  'prop.bakery_case':  { kind: 'shelf', w: 1.5, levels: [0.62, 1.02, 1.42], depth: 0.55, z: 0.0, gap: 0.35 },
+  'prop.shop_freezer': { kind: 'bin', w: 1.82, d: 0.74, y: 0.44, gap: 0.35 },
+  'prop.market_stall': { kind: 'table', w: 1.85, d: 1.0, y: 0.82, tilt: 0.12, gap: 0.3 },
+  'prop.meat_stall':   { kind: 'table', w: 1.85, d: 1.0, y: 0.83, tilt: 0, gap: 0.2 },
+  'prop.produce_bins': { kind: 'table', w: 1.9, d: 0.9, y: 0.6, tilt: 0, gap: 0.25 },
+  'prop.pallet_stack': { kind: 'pile', w: 1.2, d: 1.0, y: 0.14, gap: 1.0 },
+  'prop.cart_bay':     { kind: 'pile', w: 1.5, d: 0.9, y: 0.04, gap: 1.0 },
+};
+const ShelfDresser = {
+  shapeOf(d) {
+    const k = (d.icon && d.icon.k) || 'box';
+    if (['can', 'bottle', 'smallbottle', 'jug', 'jar', 'cup', 'tub', 'candle'].includes(k)) return 'cyl';
+    if (['round', 'egg'].includes(k)) return 'ball';
+    if (['tray', 'frozen', 'bar', 'blister'].includes(k)) return 'flat';
+    if (['greens', 'banana'].includes(k)) return 'bunch';
+    if (['plank', 'board'].includes(k)) return 'board';
+    return 'box';
+  },
+  heightOf(d, shape) {
+    const k = (d.icon && d.icon.k) || 'box';
+    if (k === 'bottle' || k === 'jug') return 0.28;
+    if (k === 'sack') return 0.3;
+    if (shape === 'flat') return 0.06;
+    if (shape === 'cyl') return 0.13;
+    if (shape === 'ball') return 0.12;
+    return 0.18;
+  },
+  build(f, def, c) {
+    const spec = SHELF_SPEC[def.asset];
+    if (!spec || !c) return null;
+    const pb = new PB('stock' + f.uid);
+    const cw = spec.w / c.w;
+    for (const s of c.slots) {
+      const d = itemDef(s.it.id);
+      const [w, h] = Inv.dims(s.it, s.r);
+      const shape = this.shapeOf(d), frozenPack = d.icon && d.icon.k === 'frozen';
+      const col = (d.icon && (frozenPack ? d.icon.c2 : d.icon.c)) || '#999', col2 = (d.icon && (d.icon.b || d.icon.c2)) || col;
+      const mat = Mat.color(col, 0.55), mat2 = Mat.color(col2, 0.55);
+      const x0 = -spec.w / 2 + s.x * cw;
+      const maxCopies = Render.q.key === 'low' ? 1 : Render.q.key === 'medium' ? 2 : 3;
+      const copies = Math.min(maxCopies, Math.max(1, s.it.qty));
+      if (spec.kind === 'shelf') {
+        const lvl = spec.levels.length - 1 - Math.min(spec.levels.length - 1, s.y + h - 1);
+        const y = spec.levels[lvl] + 0.015;
+        const ht = Math.min(spec.gap * 0.88 * h, this.heightOf(d, shape) * 1.45 * (h > 1 ? 1.5 : 1));
+        for (let i = 0; i < w; i++) for (let k = 0; k < copies; k++) {
+          const x = x0 + (i + 0.5) * cw, z = spec.z + spec.depth / 2 - 0.08 - k * (spec.depth / 3);
+          this.addShape(pb, shape, mat, mat2, x, y, z, cw * 0.9, ht, Math.min(cw * 0.9, spec.depth / 3.1));
+        }
+      } else if (spec.kind === 'table' || spec.kind === 'bin') {
+        const cd = spec.d / c.h;
+        for (let i = 0; i < w; i++) for (let j = 0; j < h; j++) {
+          const x = x0 + (i + 0.5) * cw, z = -spec.d / 2 + (s.y + j + 0.5) * cd;
+          const y = spec.y + (spec.tilt ? (z + spec.d / 2) * -spec.tilt * 0.5 + 0.06 : 0);
+          const n = Math.min(3, copies + 1);
+          for (let k = 0; k < n; k++) this.addShape(pb, shape, mat, mat2, x + (k % 2 - 0.5) * cw * 0.28, y + Math.floor(k / 2) * 0.06, z + (k === 2 ? 0 : (k - 0.5) * cd * 0.25), cw * 0.72, this.heightOf(d, shape) * 0.85, cd * 0.7);
+        }
+      } else if (spec.kind === 'pile') {
+        const cd = spec.d / c.h;
+        const x = x0 + (w * cw) / 2, z = -spec.d / 2 + (s.y + h / 2) * cd;
+        const layers = Math.min(6, s.it.qty);
+        for (let k = 0; k < layers; k++) {
+          if (shape === 'board') pb.box(w * cw * 0.95, 0.06, h * cd * 0.95, mat, x, spec.y + k * 0.065, z);
+          else pb.box(w * cw * 0.9, 0.16, h * cd * 0.9, mat, x, spec.y + k * 0.17, z);
+        }
+      }
+    }
+    return pb.parts.length ? pb.build({ uvTile: 0, cast: false }) : null;
+  },
+  addShape(pb, shape, mat, mat2, x, y, z, w, h, d) {
+    if (shape === 'cyl') { const r = Math.min(w, d) / 2; pb.cyl(r, r, h, mat, x, y, z, 7); pb.cyl(r * 1.01, r * 1.01, h * 0.3, mat2, x, y + h * 0.35, z, 7); }
+    else if (shape === 'ball') { const r = Math.min(w, d, h * 1.5) / 2; pb.sphere(r, mat, x, y + r, z, 1, 0.9, 1, 5); }
+    else if (shape === 'flat') pb.box(w, h, d, mat, x, y, z);
+    else if (shape === 'bunch') { pb.box(w * 0.8, h * 0.5, d * 0.8, mat, x, y, z); pb.box(w * 0.5, h * 0.4, d * 0.5, mat2, x, y + h * 0.5, z); }
+    else { pb.box(w, h, d, mat, x, y, z); pb.box(w * 1.01, h * 0.22, d * 1.01, mat2, x, y + h * 0.5, z); }
   },
 };
 
@@ -8327,10 +9478,7 @@ const Noise = {
     if (m === 'sneak') r *= 1 - ch.skill('stealth') * 0.05;
     return r;
   },
-  indoors(d) {
-    const b = HOME.bounds;
-    return d.pos.floor === 1 || (d.pos.x > b.x0 && d.pos.x < b.x1 && d.pos.z > b.z0 && d.pos.z < b.z1);
-  },
+  indoors(d) { return !!(Scene.W && Scene.W.isIndoor(d.pos.x, d.pos.z, d.pos.floor)); },
 };
 
 const HUD = {
@@ -8360,16 +9508,18 @@ const HUD = {
     e.noise = U.el('div.noise', null, U.el('span', null, STR.noise), U.el('div.nbar', null, U.el('i')), U.el('em'));
     needBox.append(e.weight, e.noise);
     // Right column: cash, floors, lights, power
+    e.place = U.el('div.place');
     e.cash = U.el('div.cash');
     e.floors = U.el('div.floors');
     [[1, STR.floors[1]], [0, STR.floors[0]]].forEach(([f, label]) => e.floors.appendChild(U.el('button.fl', { 'data-f': f, on: { click: () => { Render.cam.follow = false; Render.setViewFloor(f); } } }, label)));
     e.floors.appendChild(U.el('button.fl.locked', { disabled: true, title: STR.basementLocked }, STR.basementLocked));
     e.lights = U.el('button.btn.sm', { on: { click: () => { S.home.lightsOn = !S.home.lightsOn; } } });
-    e.power = U.el('div.power', null, '⚡ ' + STR.powerOk);
-    const side = U.el('div.panel.side', null, e.cash, e.floors, U.el('div.row', null, e.lights, e.power));
+    e.power = U.el('div.power');
+    const side = U.el('div.panel.side', null, e.place, e.cash, e.floors, U.el('div.row', null, e.lights), e.power);
     // Bottom bar
     const bar = U.el('div.panel.bottombar', null,
       U.el('button.btn', { on: { click: () => InvUI.toggle() } }, '🎒 ' + STR.btnInventory),
+      U.el('button.btn', { on: { click: () => MapUI.open(false) } }, '🗺 ' + STR.btnMap),
       U.el('button.btn', { on: { click: () => SkillsUI.open() } }, '📈 ' + STR.btnSkills),
       U.el('button.btn', { on: { click: () => LogUI.open() } }, '📜 ' + STR.btnLog),
       U.el('button.btn', { on: { click: () => HelpUI.open() } }, '⌨ ' + STR.btnHelp),
@@ -8421,6 +9571,12 @@ const HUD = {
     e.noise.querySelector('em').textContent = indoors ? STR.noiseIndoor : Math.round(nz) + ' ม.';
     e.cash.textContent = STR.cash + ' ' + U.money(S.cash);
     for (const b of e.floors.querySelectorAll('.fl[data-f]')) b.classList.toggle('on', +b.dataset.f === Render.viewFloor);
+    e.floors.hidden = !Scene.isHome();
+    e.lights.hidden = !Scene.isHome();
+    e.place.textContent = locDef(S.scene).icon + ' ' + locDef(S.scene).name + (!Scene.isHome() && !S.flags.outbreak && !shopOpen(S.scene, S.time.min) ? ' · ' + STR.shopClosedNow : '');
+    const pst = Power.stage(), pon = Power.gridOn();
+    e.power.textContent = '⚡ ' + (pst === 'failed' ? STR.powerFailed : !pon ? STR.powerOff : pst === 'brownout' ? STR.powerBrownout : STR.powerOk);
+    e.power.className = 'power ' + (pst === 'failed' || !pon ? 'bad' : pst === 'brownout' ? 'warn' : '');
     e.lights.textContent = '💡 ' + STR.lights + ': ' + (S.home.lightsOn ? STR.lightsOn : STR.lightsOff);
     e.sleep.hidden = GameClock.sleepUntil == null;
     if (!e.fps.hidden) e.fps.textContent = `${Math.round(Render.fps.value)} FPS · ${Render.fps.ms.toFixed(1)} ms · ${Render.q.key} · calls ${Render.renderer.info.render.calls} · tris ${(Render.renderer.info.render.triangles / 1000).toFixed(0)}k`;
@@ -8454,12 +9610,12 @@ const InvUI = {
     if (!this.isOpen) GameClock.pauseLocks++;
     this.isOpen = true;
     this.furn = furn || null;
-    this.ground = HomeScene.pileNear(ch.d.pos.floor, ch.d.pos.x, ch.d.pos.z, true);
+    this.ground = Scene.pileNear(ch.d.pos.floor, ch.d.pos.x, ch.d.pos.z, true);
     this.tabs = [];
     if (furn && furn.inv) this.tabs.push({ key: 'main', label: furn.label, c: furn.inv });
     if (furn && furn.sub) this.tabs.push({ key: 'sub', label: furn.sub.label, c: furn.sub });
     // Storage within arm's reach (same floor, ≤ 2.2 m) opens as extra tabs — no extra walking.
-    for (const f of S.home.furniture) {
+    for (const f of Scene.furnList()) {
       if (f === furn || !f.inv || f.floor !== ch.d.pos.floor) continue;
       if (Math.hypot(f.x - ch.d.pos.x, f.z - ch.d.pos.z) > 2.2) continue;
       this.tabs.push({ key: 'near:' + f.uid, label: f.label, c: f.inv });
@@ -8476,8 +9632,8 @@ const InvUI = {
     GameClock.pauseLocks = Math.max(0, GameClock.pauseLocks - 1);
     U.$('#inv').hidden = true;
     Tooltip.hide();
-    HomeScene.syncPiles();
-    HomeScene.avatar.refreshGear();
+    Scene.syncPiles();
+    Scene.avatar.refreshGear();
     Bus.emit('inv:closed');
   },
   toggle() { if (this.isOpen) this.close(); else this.open(null); },
@@ -8586,6 +9742,7 @@ const InvUI = {
     if (s.it.st && s.it.st.portionsLeft != null) el.appendChild(U.el('span.portions', null, s.it.st.portionsLeft + '/' + d.portions));
     if (s.it.cond != null) el.appendChild(U.el('span.cond', null, U.el('i', { style: { width: Math.round(s.it.cond * 100) + '%', background: s.it.cond > 0.5 ? '#7fbf5f' : s.it.cond > 0.2 ? '#e0b23c' : '#d65a5a' } })));
     if (s.it.inv) el.appendChild(U.el('span.bagcount', null, s.it.inv.slots.length ? '▣' + s.it.inv.slots.length : '▢'));
+    if (s.it.unpaid) { el.classList.add('unpaid'); el.appendChild(U.el('span.pricetag', null, '฿' + d.price * s.it.qty)); }
     el._slot = s; el._c = c;
     el.dataset.name = d.name.toLowerCase();
     el.addEventListener('pointerdown', (e) => { if (e.button === 0) this.startDrag(e, { c, slot: s, side }); });
@@ -8606,15 +9763,15 @@ const InvUI = {
   /** Dropdown of every storage piece in the home: pick one → walk there and open it. */
   storageSelect() {
     const opts = [U.el('option', { value: '' }, STR.goToStorage)];
-    for (const f of S.home.furniture) {
+    for (const f of Scene.furnList()) {
       if (!f.inv) continue;
-      const room = HomeWorld.roomAt(f.floor, f.x, f.z);
+      const room = Scene.isHome() ? HomeWorld.roomAt(f.floor, f.x, f.z) : null;
       opts.push(U.el('option', { value: f.uid }, f.label + ' · ' + (room ? room.name : STR.floors[f.floor]) + (f.floor === 1 ? ' (' + STR.floors[1] + ')' : '')));
     }
     return U.el('select.sel.goto', { on: { change: (e) => {
-      const f = HomeScene.furn(e.target.value); if (!f) return;
+      const f = Scene.furn(e.target.value); if (!f) return;
       this.close();
-      HomeScene.doAction(f, 'open');
+      Scene.doAction(f, 'open');
     } } }, ...opts);
   },
 
@@ -8626,6 +9783,7 @@ const InvUI = {
     rows.push(`<div class="tt-r"><span>${STR.ttWeight}</span><b>${U.kg(Inv.itemWeight(it))}</b></div>`);
     rows.push(`<div class="tt-r"><span>${STR.ttSize}</span><b>${d.size[0]}×${d.size[1]}</b></div>`);
     if (d.price) rows.push(`<div class="tt-r"><span>${STR.ttPrice}</span><b>${U.money(d.price)}</b></div>`);
+    if (it.unpaid) rows.push(`<div class="tt-r"><span style="color:#ffb0a8">${STR.unpaidTag}</span><b>${U.money(d.price * it.qty)}</b></div>`);
     if (it.cond != null) rows.push(`<div class="tt-r"><span>${STR.ttCond}</span><b>${Math.round(it.cond * 100)}%</b></div>`);
     if (it.uses != null) rows.push(`<div class="tt-r"><span>${STR.ttUses}</span><b>${it.uses}</b></div>`);
     if (d.grid) rows.push(`<div class="tt-r"><span>${STR.ttCapacity}</span><b>${d.grid[0]}×${d.grid[1]} · ${d.limit} กก.</b></div>`);
@@ -8718,7 +9876,7 @@ const InvUI = {
   },
   changed() {
     Bus.emit('inv:changed');
-    HomeScene.avatar.refreshGear();
+    Scene.avatar.refreshGear();
     this.render();
   },
 
@@ -9051,7 +10209,7 @@ const SleepUI = {
   start(bed, until) {
     const def = FURNITURE[bed.type];
     Needs.bedQuality = def.bedQuality || 0.7;
-    HomeScene.avatar.bed = bed;
+    Scene.avatar.bed = bed;
     GameClock.startSleep(until);
   },
 };
@@ -9082,14 +10240,14 @@ const DebugUI = {
     const qty = U.el('input.txt.sm', { type: 'number', min: 1, value: 1 });
     const addItem = () => {
       const ch = activeChar(); let n = Math.max(1, +qty.value | 0);
-      const pile = HomeScene.pileNear(ch.d.pos.floor, ch.d.pos.x, ch.d.pos.z, true);
+      const pile = Scene.pileNear(ch.d.pos.floor, ch.d.pos.x, ch.d.pos.z, true);
       while (n > 0) {
         const it = Inv.makeItem(itemSel.value, n); const q = it.qty;
         const left = Inv.addToAny([...ch.containers(), pile.inv], it);
         if (left >= q) break;
         n -= q - left;
       }
-      HomeScene.syncPiles(); Bus.emit('inv:changed'); Toast.show(STR.dbgAdd + ': ' + itemDef(itemSel.value).name, 'info', 1500);
+      Scene.syncPiles(); Bus.emit('inv:changed'); Toast.show(STR.dbgAdd + ': ' + itemDef(itemSel.value).name, 'info', 1500);
     };
     const speedBtns = U.el('div.row', null, ...[1, 16, 60].map((m) => U.el('button.btn.sm' + (GameClock.debugMul === m ? '.on' : ''), { on: { click: () => { GameClock.debugMul = m; Modal.close(); this.open(); } } }, '×' + m)));
     body.append(
@@ -9103,6 +10261,154 @@ const DebugUI = {
       U.el('details', null, U.el('summary', null, STR.dbgAssets + ' (' + AssetRegistry.list().length + ')'), U.el('pre.assets', null, AssetRegistry.list().join('\n'))),
     );
     Modal.open({ title: STR.dbgTitle, body, wide: true, pauseTime: false });
+  },
+};
+
+/* ===== 55-map-ui.js ===== */
+/* ==========================================================================
+   55 · CITY MAP, TRAVEL OVERLAY, CHECKOUT (§4.3, §4.4)
+   ========================================================================== */
+
+const MapUI = {
+  sel: null,
+  /** atExit: opened from the gate/door (travel allowed without walking first). */
+  open(atExit = false) {
+    if (!S) return;
+    if (InvUI.isOpen) InvUI.close();
+    this.sel = this.sel && this.sel !== S.scene ? this.sel : LOC_IDS.find((id) => id !== S.scene) || 'home';
+    const body = U.el('div.mapwrap');
+    const svgBox = U.el('div.mapsvg', { html: this.svg() });
+    const card = U.el('div.mapcard');
+    body.append(svgBox, card);
+    const entry = Modal.open({ title: STR.mapTitle, body, wide: true, cls: 'mapmodal' });
+    const renderCard = () => {
+      card.innerHTML = '';
+      const id = this.sel, L = locDef(id), here = id === S.scene;
+      const st = S.locs[id];
+      const rows = [];
+      rows.push(U.el('h3', null, L.icon + ' ' + L.name));
+      if (here) rows.push(U.el('p.dim', null, STR.youAreHere));
+      else {
+        const walk = Travel.minutes(S.scene, id, 'walk'), run = Travel.minutes(S.scene, id, 'run');
+        rows.push(U.el('div.tt-r', null, U.el('span', null, STR.distance), U.el('b', null, World.km(S.scene, id).toFixed(2) + ' กม.')));
+        rows.push(U.el('div.tt-r', null, U.el('span', null, STR.travelWalk), U.el('b', null, U.dur(walk))));
+        rows.push(U.el('div.tt-r', null, U.el('span', null, STR.travelRun), U.el('b', null, U.dur(run))));
+        if (id !== 'home' && !S.flags.outbreak) {
+          const arrive = S.time.min + walk, open = shopOpen(id, arrive);
+          rows.push(U.el('div.tt-r', null, U.el('span', null, STR.hours), U.el('b' + (open ? '' : '.bad'), null, L.hours[1] === 24 && L.hours[0] === 0 ? STR.open24 : U.pad2(L.hours[0]) + ':00–' + U.pad2(L.hours[1]) + ':00' + (open ? '' : ' · ' + STR.closedAtArrival))));
+        }
+      }
+      rows.push(U.el('div.tt-r', null, U.el('span', null, STR.danger), U.el('b', null, Danger.label(id))));
+      if (id !== 'home') {
+        rows.push(U.el('div.tt-r', null, U.el('span', null, STR.looted), U.el('b', null, st ? World.lootPct(id) + '%' : STR.notVisited)));
+        if (st && st.lastVisit != null) { const t = U.timeOf(st.lastVisit); rows.push(U.el('div.tt-r', null, U.el('span', null, STR.lastVisit), U.el('b', null, STR.day + ' ' + t.day + ' ' + t.hhmm))); }
+      }
+      const ch = activeChar();
+      if (ch.load() > 1) rows.push(U.el('p.warn', null, STR.travelHeavy));
+      if (!here) {
+        const blockedClosed = id !== 'home' && !S.flags.outbreak && !shopOpen(id, S.time.min + Travel.minutes(S.scene, id, 'walk'));
+        const go = (pace) => {
+          if (!Travel.canLeave()) { Toast.show(STR.tooHeavyToMove, 'warn'); return; }
+          if (!Scene.isHome() && !S.flags.outbreak && Shop.unpaid(ch).length) { Modal.close(); CheckoutUI.open(true); return; }
+          const doGo = () => { Modal.closeAll(); Travel.go(id, pace); };
+          if (!atExit && !Scene.atExit()) { Modal.closeAll(); Scene.avatar.goTo(Scene.W.exit, 'walk', doGo) || doGo(); }
+          else doGo();
+        };
+        rows.push(U.el('div.row', null,
+          U.el('button.btn.primary', { disabled: blockedClosed, on: { click: () => go('walk') } }, '🚶 ' + STR.goWalk),
+          U.el('button.btn', { disabled: blockedClosed, on: { click: () => go('run') } }, '🏃 ' + STR.goRun)));
+      }
+      card.append(...rows);
+    };
+    svgBox.addEventListener('click', (e) => {
+      const n = e.target.closest('[data-loc]');
+      if (n) { this.sel = n.dataset.loc; svgBox.innerHTML = this.svg(); renderCard(); }
+    });
+    renderCard();
+    return entry;
+  },
+  svg() {
+    const roads = [];
+    // Stylised street grid: main roads + sois (lanes)
+    const main = [[0, 300, 900, 300], [300, 0, 300, 520], [0, 150, 900, 170], [600, 0, 640, 520], [0, 430, 900, 410], [150, 0, 120, 520]];
+    for (const [x1, y1, x2, y2] of main) roads.push(`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#3a3328" stroke-width="16" stroke-linecap="round"/><line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#5a4e3a" stroke-width="1.5" stroke-dasharray="10 10"/>`);
+    const rng = U.makeRng(99);
+    const blocks = [];
+    for (let i = 0; i < 70; i++) {
+      const x = rng() * 880, y = rng() * 500, w = 18 + rng() * 40, h = 14 + rng() * 30;
+      blocks.push(`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" fill="#251f18" stroke="#2f281e"/>`);
+    }
+    const river = '<path d="M0 470 C 200 440, 300 500, 500 470 S 800 440, 900 480 L900 520 L0 520Z" fill="#14202a"/>';
+    const nodes = Object.entries(LOCATIONS).map(([id, L]) => {
+      const [x, y] = L.map, sel = id === this.sel, here = id === S.scene;
+      const looted = id !== 'home' && S.locs[id] ? World.lootPct(id) : null;
+      const dcol = Danger.color(id);
+      return `<g data-loc="${id}" style="cursor:pointer">
+        <circle cx="${x}" cy="${y}" r="${sel ? 26 : 21}" fill="${here ? '#3a5a2a' : '#2a2116'}" stroke="${sel ? '#ffb347' : dcol}" stroke-width="${sel ? 3 : 2}"/>
+        <text x="${x}" y="${y + 7}" font-size="20" text-anchor="middle">${L.icon}</text>
+        <text x="${x}" y="${y + 42}" font-size="13" fill="#eadfc8" text-anchor="middle" font-family="Noto Sans Thai, Tahoma, sans-serif">${L.short}</text>
+        ${looted != null ? `<text x="${x}" y="${y + 57}" font-size="11" fill="#a39377" text-anchor="middle">ถูกค้นแล้ว ${looted}%</text>` : ''}
+        ${here ? `<text x="${x}" y="${y - 30}" font-size="11" fill="#9fd18a" text-anchor="middle">● ${STR.youAreHere}</text>` : ''}
+      </g>`;
+    }).join('');
+    const S0 = locDef(S.scene).map, S1 = locDef(this.sel).map;
+    const route = this.sel !== S.scene ? `<line x1="${S0[0]}" y1="${S0[1]}" x2="${S1[0]}" y2="${S1[1]}" stroke="#ffb347" stroke-width="3" stroke-dasharray="8 6" opacity="0.85"/>` : '';
+    return `<svg viewBox="0 0 900 520" width="100%"><rect width="900" height="520" fill="#1a1611"/>${river}${blocks.join('')}${roads.join('')}${route}${nodes}</svg>`;
+  },
+};
+
+/** Danger estimate shown on the map. Zombie density escalates with days (§4.2); full model in 1D. */
+const Danger = {
+  level(id) {
+    if (!S.flags.outbreak) return 0;
+    const day = S.time.min / 1440 - 1;
+    const base = Math.min(1, 0.12 + day * 0.02) * difficultyOf(S.difficulty).zombie;
+    const night = Render.night > 0.5 ? 1.4 : 1;
+    const dense = id === 'supermarket' ? 1.3 : id === 'market' ? 1.2 : id === 'home' ? 0.6 : 1;
+    return U.clamp(base * night * dense, 0, 1);
+  },
+  label(id) {
+    const v = this.level(id);
+    if (!S.flags.outbreak) return STR.dangerNone;
+    return v < 0.25 ? STR.dangerLow : v < 0.5 ? STR.dangerMid : v < 0.75 ? STR.dangerHigh : STR.dangerExtreme;
+  },
+  color(id) { const v = this.level(id); return v < 0.25 ? '#7fbf5f' : v < 0.5 ? '#e0b23c' : v < 0.75 ? '#e07a3a' : '#d65a5a'; },
+};
+
+const TravelUI = {
+  show(dest, mins) {
+    const el = U.$('#travel');
+    el.hidden = false;
+    el.innerHTML = '';
+    el.append(U.el('div.tbox', null, U.el('h3', null, STR.travelling(dest)), U.el('div.tbar', null, U.el('i#tfill')), U.el('div.ttime#ttime'), U.el('small.dim', null, STR.travelEta(U.dur(mins)))));
+  },
+  progress(f, min) { const i = U.$('#tfill'); if (i) i.style.width = Math.round(f * 100) + '%'; const t = U.$('#ttime'); if (t) t.textContent = STR.day + ' ' + U.timeOf(min).day + ' · ' + U.timeOf(min).hhmm; },
+  hide() { U.$('#travel').hidden = true; },
+};
+
+/** Checkout counter: pay for carried unpaid goods; leaving forces a choice (§4.2). */
+const CheckoutUI = {
+  open(leaving = false) {
+    const ch = activeChar();
+    if (S.flags.outbreak) { Toast.show(STR.noPayNeeded, 'info'); return; }
+    const list = Shop.unpaid(ch);
+    const body = U.el('div.checkout');
+    if (!list.length) body.appendChild(U.el('p.dim', null, STR.nothingToPay));
+    else {
+      const agg = new Map();
+      for (const e of list) { const k = e.it.id; agg.set(k, (agg.get(k) || 0) + e.it.qty); }
+      const tbl = U.el('table.bill');
+      for (const [id, q] of agg) { const d = itemDef(id); tbl.appendChild(U.el('tr', null, U.el('td', null, d.name), U.el('td.n', null, '×' + q), U.el('td.n', null, U.money(d.price * q)))); }
+      body.appendChild(tbl);
+      const tot = Shop.total(list);
+      body.append(U.el('div.tt-r.total', null, U.el('span', null, STR.total), U.el('b', null, U.money(tot))), U.el('div.tt-r', null, U.el('span', null, STR.cash), U.el('b' + (tot > S.cash ? '.bad' : ''), null, U.money(S.cash))));
+      if (leaving) body.appendChild(U.el('p.warn', null, STR.mustPay));
+    }
+    const tot = Shop.total(list);
+    Modal.open({ title: STR.checkoutTitle, body, actions: list.length ? [
+      { label: STR.returnItems, fn: () => { Shop.returnAll(ch); Toast.show(STR.itemsReturned, 'info'); } },
+      { label: STR.payBtn(U.money(tot)), primary: true, fn: () => { if (!Shop.pay(ch)) { Toast.show(STR.notEnoughCash, 'bad'); return false; } Toast.show(STR.paid, 'good'); return true; } },
+    ] : [{ label: STR.ok }] });
   },
 };
 
@@ -9143,6 +10449,7 @@ const Game = {
     // Systems subscribe once; they read the global S.
     Needs.init();
     Outbreak.init();
+    Power.init();
     GameClock.onDay(() => { if (Game.mode === 'play') Save.saveRun('day'); });
     const run = Save.loadRun();
     S = run || createRun({ bg: 'warehouse', difficulty: 'standard', name: '' });
@@ -9178,18 +10485,9 @@ const Game = {
     if (!RNG.streams.combat) RNG.init('combat', S.lifeSeed ^ 0x9e3779b9);
   },
   buildScene() {
-    if (HomeScene.W) this.disposeScene();
-    HomeScene.build();
+    if (Scene.W) Scene.dispose();
+    Scene.build();
     this.sceneState = S;
-  },
-  disposeScene() {
-    const W = HomeScene.W;
-    Render.scene.remove(W.root);
-    Render.scene.remove(HomeScene.avatar.obj);
-    W.root.traverse((o) => { if (o.isMesh || o.isLineSegments) o.geometry.dispose(); });
-    HomeScene.avatar.h.dispose();
-    HomeScene.W = null; HomeScene.pileObjs.clear();
-    if (Render.dust) { Render.scene.remove(Render.dust); Render.dust = null; }
   },
   toMenu(reloadRun) {
     if (InvUI.isOpen) InvUI.close();
@@ -9242,17 +10540,17 @@ const Game = {
         GameClock.update(realDt);
         const simDt = GameClock.simDt(realDt);
         this.cameraKeys(realDt);
-        HomeScene.update(realDt, simDt);
+        Scene.update(realDt, simDt);
         this.hudAcc += realDt;
         if (this.hudAcc > 0.12) { this.hudAcc = 0; HUD.update(); }
-      } else if (this.mode === 'menu' && HomeScene.W) {
+      } else if (this.mode === 'menu' && Scene.W) {
         // Slow cinematic orbit behind the menu
         Render.cam.follow = false;
         Render.cam.tx = -1; Render.cam.tz = 1;
         Render.cam.yaw += realDt * 0.04;
         Render.cam.dist = 24;
-        Render.setViewFloor(1);
-        HomeScene.avatar.update(0);
+        Render.setViewFloor(Scene.W.floors.length - 1);
+        Scene.avatar.update(0);
         Render.updateCamera(realDt, null);
         Render.updateDayNight(S.time.min);
         Render.updateLights(null, true, true);
@@ -9281,7 +10579,7 @@ const Game = {
   bindInput() {
     const cv = Render.renderer.domElement;
     let lastClick = 0, mDrag = null, hoverT = 0;
-    cv.addEventListener('contextmenu', (e) => { e.preventDefault(); if (this.mode === 'play' && !this.blocked()) HomeScene.contextMenu(e); });
+    cv.addEventListener('contextmenu', (e) => { e.preventDefault(); if (this.mode === 'play' && !this.blocked()) Scene.contextMenu(e); });
     cv.addEventListener('pointerdown', (e) => {
       if (this.mode !== 'play') return;
       ContextMenu.hide();
@@ -9290,14 +10588,14 @@ const Game = {
       if (GameClock.sleepUntil != null) { GameClock.endSleep('manual'); return; }
       const now = performance.now();
       const dbl = now - lastClick < 300; lastClick = now;
-      HomeScene.click(e, dbl);
+      Scene.click(e, dbl);
     });
     cv.addEventListener('pointermove', (e) => {
       this.mouse.x = e.clientX; this.mouse.y = e.clientY; this.mouse.inside = true;
       if (mDrag) { Render.pan(-(e.clientX - mDrag.x) * 0.06, -(e.clientY - mDrag.y) * 0.06); mDrag = { x: e.clientX, y: e.clientY }; return; }
       if (this.mode !== 'play' || this.blocked()) return;
       const now = performance.now();
-      if (now - hoverT > 70) { hoverT = now; HUD.setHint(HomeScene.hoverAt(e.clientX, e.clientY)); }
+      if (now - hoverT > 70) { hoverT = now; HUD.setHint(Scene.hoverAt(e.clientX, e.clientY)); }
     });
     cv.addEventListener('pointerup', (e) => { if (e.button === 1) mDrag = null; });
     cv.addEventListener('pointerleave', () => { this.mouse.inside = false; });
@@ -9334,8 +10632,9 @@ const Game = {
         case 'Digit4': GameClock.setSpeed(4); break;
         case 'PageUp': Render.cam.follow = false; Render.setViewFloor(Render.viewFloor + 1); break;
         case 'PageDown': Render.cam.follow = false; Render.setViewFloor(Render.viewFloor - 1); break;
-        case 'KeyH': case 'KeyM': case 'KeyB': case 'KeyC':
-          Toast.show({ KeyH: 'หน้าต่างสุขภาพ', KeyM: 'แผนที่เมือง', KeyB: 'โหมดสร้าง', KeyC: 'การคราฟต์' }[e.code] + ' จะเปิดใช้งานใน Phase ' + { KeyH: '1D', KeyM: '1B', KeyB: '1D', KeyC: '1C' }[e.code], 'info', 2200);
+        case 'KeyM': MapUI.open(false); break;
+        case 'KeyH': case 'KeyB': case 'KeyC':
+          Toast.show({ KeyH: 'หน้าต่างสุขภาพ', KeyB: 'โหมดสร้าง', KeyC: 'การคราฟต์' }[e.code] + ' จะเปิดใช้งานใน Phase ' + { KeyH: '1D', KeyB: '1D', KeyC: '1C' }[e.code], 'info', 2200);
           break;
         default: break;
       }
@@ -9347,7 +10646,7 @@ const Game = {
 /* Dev hook for test harnesses and the owner's own inspection. */
 window.HH = {
   get S() { return S; }, get P() { return P; },
-  Game, GameClock, Render, HomeScene, HomeWorld, Nav, InvUI, Inv, Save, Sanitize, ITEMS, FURNITURE, HOME,
+  Game, GameClock, Render, Scene, HomeScene, HomeWorld, World, Shop, Travel, Power, LOCATIONS, POOLS, Nav, InvUI, Inv, Save, Sanitize, ITEMS, FURNITURE, HOME,
   Icons, AssetRegistry, Character, activeChar, Modal, Toast, Needs, Skills, RNG, createRun, BUILD,
 };
 

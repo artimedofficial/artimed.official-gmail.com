@@ -48,8 +48,17 @@ class Character {
   carried() {
     let w = 0;
     for (const c of [this.d.pockets]) w += Inv.weight(c);
-    for (const k of ['back', 'hand', 'weapon']) if (this.d.equip[k]) w += Inv.itemWeight(this.d.equip[k]);
+    for (const k of ['back', 'hand', 'weapon']) {
+      const it = this.d.equip[k]; if (!it) continue;
+      // Wheeled carts roll their load: only a quarter of the contents counts against carry capacity.
+      if (k === 'hand' && this.isCart(it)) w += itemDef(it.id).weight * 0.4 + Inv.weight(it.inv) * 0.25;
+      else w += Inv.itemWeight(it);
+    }
     return w;
+  }
+  isCart(it) { const d = it && itemDef(it.id); return !!(d && d.tags && d.tags.includes('cart')); }
+  /** Pushing a cart is slower than walking free-handed. */
+  cartFactor() { return this.isCart(this.d.equip.hand) ? 0.82 : 1;
   }
   /** Carry capacity (kg) = base + strength + fitness, scaled by arm/leg health and trait. */
   capacity() {
@@ -70,7 +79,7 @@ class Character {
     const legF = Math.min(b.legL.hp / BODY_PARTS.legL.hp, b.legR.hp / BODY_PARTS.legR.hp);
     f *= 0.45 + 0.55 * legF;
     if (this.d.needs.energy < 15) f *= 0.8;
-    return Math.max(0, f);
+    return Math.max(0, f * this.cartFactor());
   }
   health() {
     let sum = 0, max = 0;

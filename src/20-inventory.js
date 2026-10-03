@@ -82,7 +82,7 @@ const Inv = {
   canStack(a, b) {
     const d = itemDef(a.id);
     return a.id === b.id && d.stack > 1 && !a.inv && !b.inv && !a.st && !b.st &&
-      (a.cond == null || a.cond === b.cond) && (a.uses == null || a.uses === b.uses);
+      (a.cond == null || a.cond === b.cond) && (a.uses == null || a.uses === b.uses) && a.unpaid === b.unpaid;
   },
   /** Place item at an exact position. Returns the slot or null. */
   placeAt(c, it, x, y, r) {

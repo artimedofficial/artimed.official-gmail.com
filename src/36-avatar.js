@@ -18,7 +18,7 @@ class Avatar {
   }
   syncFromData() {
     const p = this.d.pos;
-    this.obj.position.set(p.x, HomeWorld.groundY(p.x, p.z, p.floor), p.z);
+    this.obj.position.set(p.x, Scene.W.groundY(p.x, p.z, p.floor), p.z);
     this.obj.rotation.y = p.rot;
   }
   refreshGear() { this.h.setGear({ back: this.d.equip.back, hand: this.d.equip.hand }); }
@@ -77,7 +77,7 @@ class Avatar {
       const t = U.clamp((d.pos.z - z0) / (z1 - z0), 0, 1);
       y = t * CFG.FLOOR_H;
       if (!up && t <= 0.001) y = 0;
-    } else y = HomeWorld.groundY(d.pos.x, d.pos.z, d.pos.floor);
+    } else y = Scene.W.groundY(d.pos.x, d.pos.z, d.pos.floor);
     this.obj.position.set(d.pos.x, y, d.pos.z);
     this.obj.rotation.y = d.pos.rot;
     // Auto-follow the visible floor while climbing.

@@ -10,11 +10,7 @@ const Nav = {
   stair: null,   // {bottom:{x,z}, top:{x,z}}
 
   build(W, furniture) {
-    const b = HOME.bounds, lot = HOME.lot;
-    const areas = [
-      { x0: lot.x0 - 0.5, x1: lot.x1 + 0.5, z0: lot.z0 - 0.5, z1: lot.z1 + 2.2 },
-      { x0: b.x0 - 0.25, x1: b.x1 + 0.25, z0: b.z0 - 0.25, z1: b.z1 + 0.25 },
-    ];
+    const areas = W.navAreas;
     this.grids = areas.map((a, floor) => {
       const nx = Math.ceil((a.x1 - a.x0) / this.cell), nz = Math.ceil((a.z1 - a.z0) / this.cell);
       const g = { floor, x0: a.x0, z0: a.z0, nx, nz, block: new Uint8Array(nx * nz) };
@@ -28,8 +24,8 @@ const Nav = {
         if (f.rot % 2) [w, d] = [d, w];
         rects.push({ x0: f.x - w / 2, x1: f.x + w / 2, z0: f.z - d / 2, z1: f.z + d / 2 });
       }
-      if (floor === 0) {
-        const s = HOME.stairs;
+      if (floor === 0 && W.stairs) {
+        const s = W.stairs;
         rects.push({ x0: s.x0, x1: s.x1, z0: s.zBottom, z1: s.zTop + 0.05 });
       }
       const r = this.radius;
@@ -41,7 +37,8 @@ const Nav = {
       }
       return g;
     });
-    const s = HOME.stairs, mx = (s.x0 + s.x1) / 2;
+    if (!W.stairs) { this.stair = null; return; }
+    const s = W.stairs, mx = (s.x0 + s.x1) / 2;
     this.stair = { bottom: { x: mx, z: s.zBottom - 0.3 }, top: { x: mx, z: s.zTop + 0.3 } };
     // Make sure the stair landings are walkable.
     for (const [floor, p] of [[0, this.stair.bottom], [1, this.stair.top]]) {
@@ -138,7 +135,7 @@ const Nav = {
     const tgt = this.walkable(to.floor, to.x, to.z) ? { x: to.x, z: to.z } : this.nearestWalkable(to.floor, to.x, to.z);
     if (!tgt) return null;
     const startOk = this.walkable(from.floor, from.x, from.z) ? from : Object.assign({ floor: from.floor }, this.nearestWalkable(from.floor, from.x, from.z) || from);
-    if (from.floor === to.floor) {
+    if (from.floor === to.floor || !this.stair) {
       const p = this.astar(from.floor, startOk.x, startOk.z, tgt.x, tgt.z);
       return p && p.map((q) => ({ x: q.x, z: q.z, floor: from.floor }));
     }

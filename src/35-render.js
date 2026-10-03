@@ -117,7 +117,7 @@ const Render = {
   },
   /** Floating dust motes inside the house — catch the warm light. */
   buildDust() {
-    const n = this.q.dust, pos = new Float32Array(n * 3), rng = U.makeRng(5), b = HOME.bounds;
+    const n = this.q.dust, pos = new Float32Array(n * 3), rng = U.makeRng(5), b = this.W.dustRect;
     for (let i = 0; i < n; i++) { pos[i * 3] = U.lerp(b.x0, b.x1, rng()); pos[i * 3 + 1] = rng() * 2.6; pos[i * 3 + 2] = U.lerp(b.z0, b.z1, rng()); }
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
     this.dustMat = new THREE.PointsMaterial({ color: 0xffe2b0, size: 0.022, transparent: true, opacity: 0.45, depthWrite: false, blending: THREE.AdditiveBlending });
@@ -134,8 +134,8 @@ const Render = {
     const s = this.cam.curDist * 0.0016;
     this.cam.tx += (dx * Math.cos(y) + dz * Math.sin(y)) * s * 60;
     this.cam.tz += (-dx * Math.sin(y) + dz * Math.cos(y)) * s * 60;
-    const L = HOME.lot;
-    this.cam.tx = U.clamp(this.cam.tx, L.x0 - 6, L.x1 + 6); this.cam.tz = U.clamp(this.cam.tz, L.z0 - 4, L.z1 + 10);
+    const B = this.W ? this.W.camBounds : { x0: -30, x1: 30, z0: -30, z1: 30 };
+    this.cam.tx = U.clamp(this.cam.tx, B.x0, B.x1); this.cam.tz = U.clamp(this.cam.tz, B.z0, B.z1);
     this.cam.follow = false;
   },
   updateCamera(dt, focus) {
@@ -174,8 +174,8 @@ const Render = {
     }
   },
   setViewFloor(f) {
-    this.viewFloor = U.clamp(f, 0, 1);
-    if (this.W) this.W.floors[1].group.visible = this.viewFloor >= 1;
+    this.viewFloor = U.clamp(f, 0, this.W ? this.W.floors.length - 1 : 1);
+    if (this.W && this.W.floors[1]) this.W.floors[1].group.visible = this.viewFloor >= 1;
     Bus.emit('viewfloor', this.viewFloor);
   },
 
@@ -228,7 +228,10 @@ const Render = {
    */
   updateLights(focus, lightsOn, powerOn = true) {
     const W = this.W; if (!W) return;
-    const want = lightsOn && powerOn && this.night > 0.25;
+    const shop = W.kind === 'location';
+    const want = lightsOn && powerOn && (shop || this.night > 0.25);
+    const flick = S ? Power.flicker(S.time.min) : 1;
+    if (W.shopPanelMat) W.shopPanelMat.emissiveIntensity = want ? 1.4 * flick : 0;
     const sources = [];
     for (const L of W.lights) {
       const on = want && (L.kind !== 'street');
@@ -251,7 +254,7 @@ const Render = {
     });
     for (let i = 0; i < this.lightPool.length; i++) {
       const L = this.lightPool[i], src = sources[i];
-      if (src) { L.position.copy(src.pos); L.color.set(src.color); L.intensity = src.intensity * (src.flicker || 1); L.distance = src.dist; L.visible = true; }
+      if (src) { L.position.copy(src.pos); L.color.set(src.color); L.intensity = src.intensity * (src.kind === 'street' ? 1 : flick); L.distance = src.dist; L.visible = true; }
       else { L.intensity = 0; L.visible = false; }
     }
   },
@@ -273,14 +276,14 @@ const Render = {
     }
     // Ground plane of the viewed floor
     const fy = this.viewFloor * CFG.FLOOR_H;
-    const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -(this.viewFloor === 0 ? HomeWorld.YARD_Y : fy));
+    const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -(this.viewFloor === 0 ? W.pickY0 : fy));
     const gp = new THREE.Vector3();
     let ground = null;
     if (this.ray.ray.intersectPlane(plane, gp)) {
       // Re-intersect with the house slab height if inside the footprint on floor 0
-      if (this.viewFloor === 0) {
+      if (this.viewFloor === 0 && W.slab) {
         const p0 = new THREE.Vector3();
-        if (this.ray.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), p0) && HomeWorld.groundY(p0.x, p0.z) === 0) gp.copy(p0);
+        if (this.ray.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), p0) && W.groundY(p0.x, p0.z, 0) === 0) gp.copy(p0);
       }
       ground = { x: gp.x, z: gp.z, floor: this.viewFloor, dist: this.ray.ray.origin.distanceTo(gp) };
     }
@@ -288,8 +291,8 @@ const Render = {
     const sh = W.stairsObj ? this.ray.intersectObject(W.stairsObj, true)[0] : null;
     if (sh && (!furnHit || sh.distance < furnHit.dist) && (!ground || sh.distance <= ground.dist + 0.5)) return { kind: 'stairs', ground };
     // Upper floor: a click inside the stairwell opening also means "use the stairs".
-    const st = HOME.stairs;
-    if (ground && this.viewFloor === 1 && ground.x > st.x0 - 0.1 && ground.x < st.x1 + 0.1 && ground.z > st.zBottom && ground.z < st.zTop) return { kind: 'stairs', ground };
+    const st = W.stairs;
+    if (st && ground && this.viewFloor === 1 && ground.x > st.x0 - 0.1 && ground.x < st.x1 + 0.1 && ground.z > st.zBottom && ground.z < st.zTop) return { kind: 'stairs', ground };
     if (furnHit && (!ground || furnHit.dist <= ground.dist + 0.5)) return { kind: 'furn', uid: furnHit.uid, ground };
     return ground ? { kind: 'ground', ground } : null;
   },

@@ -15,10 +15,7 @@ const Noise = {
     if (m === 'sneak') r *= 1 - ch.skill('stealth') * 0.05;
     return r;
   },
-  indoors(d) {
-    const b = HOME.bounds;
-    return d.pos.floor === 1 || (d.pos.x > b.x0 && d.pos.x < b.x1 && d.pos.z > b.z0 && d.pos.z < b.z1);
-  },
+  indoors(d) { return !!(Scene.W && Scene.W.isIndoor(d.pos.x, d.pos.z, d.pos.floor)); },
 };
 
 const HUD = {
@@ -48,16 +45,18 @@ const HUD = {
     e.noise = U.el('div.noise', null, U.el('span', null, STR.noise), U.el('div.nbar', null, U.el('i')), U.el('em'));
     needBox.append(e.weight, e.noise);
     // Right column: cash, floors, lights, power
+    e.place = U.el('div.place');
     e.cash = U.el('div.cash');
     e.floors = U.el('div.floors');
     [[1, STR.floors[1]], [0, STR.floors[0]]].forEach(([f, label]) => e.floors.appendChild(U.el('button.fl', { 'data-f': f, on: { click: () => { Render.cam.follow = false; Render.setViewFloor(f); } } }, label)));
     e.floors.appendChild(U.el('button.fl.locked', { disabled: true, title: STR.basementLocked }, STR.basementLocked));
     e.lights = U.el('button.btn.sm', { on: { click: () => { S.home.lightsOn = !S.home.lightsOn; } } });
-    e.power = U.el('div.power', null, '⚡ ' + STR.powerOk);
-    const side = U.el('div.panel.side', null, e.cash, e.floors, U.el('div.row', null, e.lights, e.power));
+    e.power = U.el('div.power');
+    const side = U.el('div.panel.side', null, e.place, e.cash, e.floors, U.el('div.row', null, e.lights), e.power);
     // Bottom bar
     const bar = U.el('div.panel.bottombar', null,
       U.el('button.btn', { on: { click: () => InvUI.toggle() } }, '🎒 ' + STR.btnInventory),
+      U.el('button.btn', { on: { click: () => MapUI.open(false) } }, '🗺 ' + STR.btnMap),
       U.el('button.btn', { on: { click: () => SkillsUI.open() } }, '📈 ' + STR.btnSkills),
       U.el('button.btn', { on: { click: () => LogUI.open() } }, '📜 ' + STR.btnLog),
       U.el('button.btn', { on: { click: () => HelpUI.open() } }, '⌨ ' + STR.btnHelp),
@@ -109,6 +108,12 @@ const HUD = {
     e.noise.querySelector('em').textContent = indoors ? STR.noiseIndoor : Math.round(nz) + ' ม.';
     e.cash.textContent = STR.cash + ' ' + U.money(S.cash);
     for (const b of e.floors.querySelectorAll('.fl[data-f]')) b.classList.toggle('on', +b.dataset.f === Render.viewFloor);
+    e.floors.hidden = !Scene.isHome();
+    e.lights.hidden = !Scene.isHome();
+    e.place.textContent = locDef(S.scene).icon + ' ' + locDef(S.scene).name + (!Scene.isHome() && !S.flags.outbreak && !shopOpen(S.scene, S.time.min) ? ' · ' + STR.shopClosedNow : '');
+    const pst = Power.stage(), pon = Power.gridOn();
+    e.power.textContent = '⚡ ' + (pst === 'failed' ? STR.powerFailed : !pon ? STR.powerOff : pst === 'brownout' ? STR.powerBrownout : STR.powerOk);
+    e.power.className = 'power ' + (pst === 'failed' || !pon ? 'bad' : pst === 'brownout' ? 'warn' : '');
     e.lights.textContent = '💡 ' + STR.lights + ': ' + (S.home.lightsOn ? STR.lightsOn : STR.lightsOff);
     e.sleep.hidden = GameClock.sleepUntil == null;
     if (!e.fps.hidden) e.fps.textContent = `${Math.round(Render.fps.value)} FPS · ${Render.fps.ms.toFixed(1)} ms · ${Render.q.key} · calls ${Render.renderer.info.render.calls} · tris ${(Render.renderer.info.render.triangles / 1000).toFixed(0)}k`;

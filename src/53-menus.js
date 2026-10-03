@@ -187,7 +187,7 @@ const SleepUI = {
   start(bed, until) {
     const def = FURNITURE[bed.type];
     Needs.bedQuality = def.bedQuality || 0.7;
-    HomeScene.avatar.bed = bed;
+    Scene.avatar.bed = bed;
     GameClock.startSleep(until);
   },
 };

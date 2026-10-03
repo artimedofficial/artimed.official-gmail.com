@@ -34,6 +34,7 @@ const Game = {
     // Systems subscribe once; they read the global S.
     Needs.init();
     Outbreak.init();
+    Power.init();
     GameClock.onDay(() => { if (Game.mode === 'play') Save.saveRun('day'); });
     const run = Save.loadRun();
     S = run || createRun({ bg: 'warehouse', difficulty: 'standard', name: '' });
@@ -69,18 +70,9 @@ const Game = {
     if (!RNG.streams.combat) RNG.init('combat', S.lifeSeed ^ 0x9e3779b9);
   },
   buildScene() {
-    if (HomeScene.W) this.disposeScene();
-    HomeScene.build();
+    if (Scene.W) Scene.dispose();
+    Scene.build();
     this.sceneState = S;
-  },
-  disposeScene() {
-    const W = HomeScene.W;
-    Render.scene.remove(W.root);
-    Render.scene.remove(HomeScene.avatar.obj);
-    W.root.traverse((o) => { if (o.isMesh || o.isLineSegments) o.geometry.dispose(); });
-    HomeScene.avatar.h.dispose();
-    HomeScene.W = null; HomeScene.pileObjs.clear();
-    if (Render.dust) { Render.scene.remove(Render.dust); Render.dust = null; }
   },
   toMenu(reloadRun) {
     if (InvUI.isOpen) InvUI.close();
@@ -133,17 +125,17 @@ const Game = {
         GameClock.update(realDt);
         const simDt = GameClock.simDt(realDt);
         this.cameraKeys(realDt);
-        HomeScene.update(realDt, simDt);
+        Scene.update(realDt, simDt);
         this.hudAcc += realDt;
         if (this.hudAcc > 0.12) { this.hudAcc = 0; HUD.update(); }
-      } else if (this.mode === 'menu' && HomeScene.W) {
+      } else if (this.mode === 'menu' && Scene.W) {
         // Slow cinematic orbit behind the menu
         Render.cam.follow = false;
         Render.cam.tx = -1; Render.cam.tz = 1;
         Render.cam.yaw += realDt * 0.04;
         Render.cam.dist = 24;
-        Render.setViewFloor(1);
-        HomeScene.avatar.update(0);
+        Render.setViewFloor(Scene.W.floors.length - 1);
+        Scene.avatar.update(0);
         Render.updateCamera(realDt, null);
         Render.updateDayNight(S.time.min);
         Render.updateLights(null, true, true);
@@ -172,7 +164,7 @@ const Game = {
   bindInput() {
     const cv = Render.renderer.domElement;
     let lastClick = 0, mDrag = null, hoverT = 0;
-    cv.addEventListener('contextmenu', (e) => { e.preventDefault(); if (this.mode === 'play' && !this.blocked()) HomeScene.contextMenu(e); });
+    cv.addEventListener('contextmenu', (e) => { e.preventDefault(); if (this.mode === 'play' && !this.blocked()) Scene.contextMenu(e); });
     cv.addEventListener('pointerdown', (e) => {
       if (this.mode !== 'play') return;
       ContextMenu.hide();
@@ -181,14 +173,14 @@ const Game = {
       if (GameClock.sleepUntil != null) { GameClock.endSleep('manual'); return; }
       const now = performance.now();
       const dbl = now - lastClick < 300; lastClick = now;
-      HomeScene.click(e, dbl);
+      Scene.click(e, dbl);
     });
     cv.addEventListener('pointermove', (e) => {
       this.mouse.x = e.clientX; this.mouse.y = e.clientY; this.mouse.inside = true;
       if (mDrag) { Render.pan(-(e.clientX - mDrag.x) * 0.06, -(e.clientY - mDrag.y) * 0.06); mDrag = { x: e.clientX, y: e.clientY }; return; }
       if (this.mode !== 'play' || this.blocked()) return;
       const now = performance.now();
-      if (now - hoverT > 70) { hoverT = now; HUD.setHint(HomeScene.hoverAt(e.clientX, e.clientY)); }
+      if (now - hoverT > 70) { hoverT = now; HUD.setHint(Scene.hoverAt(e.clientX, e.clientY)); }
     });
     cv.addEventListener('pointerup', (e) => { if (e.button === 1) mDrag = null; });
     cv.addEventListener('pointerleave', () => { this.mouse.inside = false; });
@@ -225,8 +217,9 @@ const Game = {
         case 'Digit4': GameClock.setSpeed(4); break;
         case 'PageUp': Render.cam.follow = false; Render.setViewFloor(Render.viewFloor + 1); break;
         case 'PageDown': Render.cam.follow = false; Render.setViewFloor(Render.viewFloor - 1); break;
-        case 'KeyH': case 'KeyM': case 'KeyB': case 'KeyC':
-          Toast.show({ KeyH: 'หน้าต่างสุขภาพ', KeyM: 'แผนที่เมือง', KeyB: 'โหมดสร้าง', KeyC: 'การคราฟต์' }[e.code] + ' จะเปิดใช้งานใน Phase ' + { KeyH: '1D', KeyM: '1B', KeyB: '1D', KeyC: '1C' }[e.code], 'info', 2200);
+        case 'KeyM': MapUI.open(false); break;
+        case 'KeyH': case 'KeyB': case 'KeyC':
+          Toast.show({ KeyH: 'หน้าต่างสุขภาพ', KeyB: 'โหมดสร้าง', KeyC: 'การคราฟต์' }[e.code] + ' จะเปิดใช้งานใน Phase ' + { KeyH: '1D', KeyB: '1D', KeyC: '1C' }[e.code], 'info', 2200);
           break;
         default: break;
       }
@@ -238,7 +231,7 @@ const Game = {
 /* Dev hook for test harnesses and the owner's own inspection. */
 window.HH = {
   get S() { return S; }, get P() { return P; },
-  Game, GameClock, Render, HomeScene, HomeWorld, Nav, InvUI, Inv, Save, Sanitize, ITEMS, FURNITURE, HOME,
+  Game, GameClock, Render, Scene, HomeScene, HomeWorld, World, Shop, Travel, Power, LOCATIONS, POOLS, Nav, InvUI, Inv, Save, Sanitize, ITEMS, FURNITURE, HOME,
   Icons, AssetRegistry, Character, activeChar, Modal, Toast, Needs, Skills, RNG, createRun, BUILD,
 };
 
