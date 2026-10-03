@@ -15,14 +15,17 @@ await page.mouse.click(b.x, b.y, { button: 'right' });
 await page.waitForSelector('#ctxmenu');
 await page.screenshot({ path: 'shots/ctxmenu.png' });
 await page.click('#ctxmenu button >> nth=0');
+await page.waitForSelector('.eatbtns button.primary'); await page.screenshot({ path: 'shots/eat-portion.png' }); await page.click('.eatbtns button.primary');
 await page.waitForTimeout(200);
 b = await box('water_600'); await page.mouse.dblclick(b.x, b.y);
+await page.waitForSelector('.eatbtns button.primary'); await page.click('.eatbtns button.primary');
 await page.waitForTimeout(200);
 console.log('after eating:', await page.evaluate(() => { const ch = HH.activeChar(); const n = ch.d.pockets.slots.find((s) => s.it.id === 'noodle_pack'); return { sat: Math.round(ch.d.needs.satiety), hyd: Math.round(ch.d.needs.hydration), noodle: n && { qty: n.it.qty, st: n.it.st } }; }));
 // Tooltip
 b = await box('noodle_pack'); await page.mouse.move(b.x, b.y); await page.waitForTimeout(250);
 await page.screenshot({ path: 'shots/tooltip.png' });
 await page.keyboard.press('Escape');
+await page.waitForFunction(() => !HH.InvUI.isOpen);
 // Panels
 for (const [label, shot] of [['ทักษะ', 'skills'], ['บันทึก', 'log'], ['ปุ่มลัด', 'help']]) {
   await page.click(`.bottombar button:has-text("${label}"), .bottombar button[title="${label}"] >> nth=0`);
