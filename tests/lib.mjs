@@ -6,6 +6,7 @@ export async function launch({ w = 1440, h = 900 } = {}) {
   const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
   const ctx = await browser.newContext({ viewport: { width: w, height: h } });
   const page = await ctx.newPage();
+  page.setDefaultTimeout(120000);   // software rendering: a screenshot can take ~30 s
   const errs = [];
   page.on('pageerror', (e) => errs.push('ERR ' + e.message + ' | ' + (e.stack || '').split('\n').slice(0, 3).join(' / ')));
   page.on('console', (m) => {
