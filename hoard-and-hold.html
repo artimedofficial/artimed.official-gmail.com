@@ -238,6 +238,20 @@ button, input, select { font-family: inherit; font-size: inherit; }
 .slider { display: grid; grid-template-columns: 90px 1fr; gap: 8px; align-items: center; margin: 4px 0; }
 .invhint { grid-column: 1 / 3; color: var(--dim); font-size: 12px; text-align: center; }
 @media (max-width: 1100px) { .needs { left: 10px; top: 128px; } .bgcards { grid-template-columns: repeat(2, 1fr); } }
+/* Phase 2B */
+.wx { font-size: 12px; color: #bcd4e6; cursor: pointer; margin-top: 3px; } .wx:hover { color: #fff; }
+.arow { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; padding: 7px 0; border-bottom: 1px solid #2c241a; font-size: 13px; }
+.arow b { min-width: 150px; } .arow .small { font-size: 11px; color: var(--dim); } .arow .warn { color: var(--warn); } .arow button { margin-left: auto; }
+.arow .mbar { flex: 0 0 160px; }
+.farm .tabs { display: flex; gap: 6px; margin-bottom: 10px; }
+.fcard { border: 1px solid #3a3022; border-radius: 8px; padding: 8px 10px; margin-bottom: 10px; background: #1a1612; } .fcard.focus { border-color: var(--amber); }
+.fhead { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; } .fhead button { margin-left: auto; }
+.frow { display: flex; align-items: center; gap: 8px; font-size: 12px; margin-bottom: 4px; } .frow .mbar { flex: 0 0 180px; }
+.plot { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; padding: 5px 0; border-top: 1px dashed #2c241a; font-size: 12px; } .plot .mbar { flex: 0 0 80px; } .plot button { margin-left: auto; }
+.mbar { height: 7px; background: #2a231a; border-radius: 4px; overflow: hidden; } .mbar i { display: block; height: 100%; background: var(--good); }
+.mbar.warn i { background: var(--warn); } .mbar.bad i { background: var(--bad); } .mbar.grow i { background: #8fd16a; } .mbar.water i { background: #4fa3d1; }
+.wxnow { display: flex; gap: 14px; align-items: center; margin-bottom: 8px; } .wxbig { font-size: 44px; }
+table.fc { border-collapse: collapse; margin: 6px 0; } table.fc td { padding: 4px 12px; border-bottom: 1px solid #2c241a; font-size: 13px; }
 </style>
 </head>
 <body>
@@ -4493,6 +4507,49 @@ const STR = {
   // Death (1D) / misc
   outbreakToast: 'การระบาดเริ่มขึ้นแล้ว! ร้านค้าปิดหมด เงินสดแทบไม่มีค่าอีกต่อไป',
   outbreakSoon: 'ข่าวด่วน: มีรายงานผู้ป่วยอาการคลุ้มคลั่งหลายเขตทั่วกรุง',
+  // Phase 2B — free arrangement
+  arrTitle: 'จัดบ้าน / สร้างและวางเฟอร์นิเจอร์ (K)', hbArrange: 'จัดบ้าน', moveAct: 'ย้าย / หมุน', pickUpAct: 'ยกเก็บเข้ากระเป๋า', dismantleAct: 'รื้อ (ได้ไม้คืนครึ่งหนึ่ง)',
+  arrHint: 'โหมดจัดวาง — เลื่อนเมาส์เพื่อเลือกตำแหน่ง · คลิกซ้าย = วาง · R = หมุน · คลิกขวา/Esc = ยกเลิก · PgUp/PgDn = เปลี่ยนชั้น',
+  arrWall: 'ชนผนังหรือคร่อมห้อง — ต้องอยู่ในห้องเดียว', arrLot: 'ต้องอยู่ภายในรั้วบ้าน', arrGate: 'ห้ามวางขวางทางเข้าประตูรั้ว', arrStairs: 'ห้ามวางขวางบันได',
+  arrDoor: 'ห้ามวางขวางประตู (เว้นระยะ 70 ซม.)', arrOverlap: 'ทับกับเฟอร์นิเจอร์อื่น', arrIndoorOnly: 'ของชิ้นนี้ต้องอยู่ในบ้าน', arrOutdoorOnly: 'ต้องทำบนพื้นดินในสนามเท่านั้น',
+  arrStairsName: 'บันไดขึ้นชั้นบน', arrFixed: 'ของชิ้นนี้ย้ายไม่ได้', arrBlocks: (w) => 'วางตรงนี้ไม่ได้: จะปิดทางเดินไปยัง "' + w + '"',
+  arrMoved: (n) => 'ย้าย' + n + 'เรียบร้อย', arrPicked: (n) => 'ยก' + n + 'เก็บแล้ว', arrDismantled: (n) => 'รื้อ' + n + 'แล้ว', arrBuilt: (n) => 'สร้าง' + n + 'เสร็จแล้ว',
+  arrNotEmpty: 'ต้องเอาของ/น้ำ/ต้นไม้ออกให้หมดก่อน', arrNeed: (l) => 'ยังขาด: ' + l,
+  arrIntro: 'จัดบ้านได้อิสระ: คลิกขวาที่เฟอร์นิเจอร์ชิ้นไหนก็ได้ → "ย้าย / หมุน" แล้วคลิกวางบนกริด 25 ซม. (สีเขียว = วางได้ สีแดง = วางไม่ได้) ระบบจะไม่ยอมให้วางปิดทางเดิน ประตู หรือบันได การย้ายใช้เวลาตามขนาดของ',
+  arrBuildTitle: 'สร้างเฟอร์นิเจอร์จากวัสดุ', arrTools: (t) => 'เครื่องมือ: ' + t, arrFarmInfo: (n) => 'ปลูกได้ ' + n + ' ต้น', arrStoreInfo: (c, kg) => 'เก็บของ ' + c + ' ช่อง / ' + kg + ' กก.',
+  arrMissing: (l) => 'ขาด: ' + l, arrPlaceBtn: 'เลือกที่วาง', arrInstallTitle: 'ของที่ติดตั้ง/วางได้ (กระถาง ถังน้ำ ตู้แช่ เครื่องปั่นไฟ)', arrNoInstall: 'ยังไม่มีของที่ติดตั้งได้ (ซื้อได้ที่ร้านวัสดุก่อสร้าง)',
+  arrMoveHelp: 'เคล็ดลับ: วางถังเก็บน้ำหรือโอ่ง "ชิดผนังด้านนอกบ้าน" จะรับน้ำฝนจากรางหลังคาได้มากกว่าวางกลางสนามหลายสิบเท่า',
+  // Phase 2B — water
+  drinkStoreAct: (l) => 'ดื่มน้ำ (เหลือ ' + l + ' ล.)', waterInfoAct: 'ดูระดับน้ำทั้งหมด', fillStoresAct: 'รองน้ำประปาเติมโอ่ง/ถังทั้งหมด', boilAct: 'ต้มน้ำ 5 ลิตร (ทำให้ดื่มได้ปลอดภัย)',
+  drinkBoiledAct: (l) => 'ดื่มน้ำต้มสุก (' + l + ' ล.)', noTapWater: 'ก๊อกไม่มีน้ำแล้ว (ประปาหยุดจ่าย) ใช้น้ำจากโอ่ง/ถังเก็บน้ำ', storeEmpty: 'ไม่มีน้ำเหลือ',
+  drankL: (l, src) => 'ดื่มน้ำ ' + l + ' ล. จาก' + src, boiledWater: 'หม้อน้ำต้มสุก', filtered: 'กรองด้วยเครื่องกรองน้ำแล้ว', rawWarn: 'เป็นน้ำฝนที่ยังไม่ผ่านการต้ม/กรอง',
+  illWater: 'ท้องเสียจากน้ำไม่สะอาด! ดื่มน้ำต้มสุก/เกลือแร่และพักผ่อน', filledStores: (n) => 'รองน้ำประปาเติมเพิ่ม ' + n + ' ลิตร', storesFull: 'โอ่งและถังเต็มหมดแล้ว',
+  boiledFull: 'หม้อน้ำต้มสุกเต็มแล้ว', noWaterAnywhere: 'ไม่มีน้ำในโอ่ง/ถังเลย', boiled: (l) => 'ต้มน้ำ ' + l + ' ลิตร เก็บไว้ในหม้อน้ำต้มสุก',
+  // Phase 2B — farming
+  hbFarm: 'สวน/น้ำ', farmTitle: 'สวนผัก · น้ำ · ลมฟ้าอากาศ (G)', tabPlots: '🌱 แปลงผัก', tabWater: '💧 น้ำ', tabWeather: '🌦 อากาศ',
+  harvestAct: 'เก็บเกี่ยว', plantAct: 'ปลูก', waterPlotAct: 'รดน้ำ', farmInfoAct: 'ดูแปลงผัก', plantTitle: 'เลือกเมล็ดพันธุ์', plantHint: 'เลือกพืชที่จะปลูก (ใช้เมล็ด 1 ครั้งจากซอง) — ผักบางชนิดต้องใช้กระบะหรือแปลงดิน',
+  cropDied: (n, why) => n + 'ตายแล้ว (' + why + ')', cropOld: 'หมดอายุต้น', cropDry: 'ขาดน้ำนานเกินไป', cropReady: (n) => n + 'พร้อมเก็บเกี่ยวแล้ว!',
+  cropWrongBed: (n) => n + 'ต้องปลูกในกระบะหรือแปลงดินที่กว้างกว่านี้', plotTaken: 'ช่องนี้มีต้นไม้แล้ว', noSeeds: (n) => 'ไม่มีเมล็ด' + n, planted: (n) => 'ปลูก' + n + 'แล้ว',
+  plotWet: 'ดินยังชุ่มอยู่ ไม่ต้องรดน้ำ', watered: (n) => 'รดน้ำ' + n + 'แล้ว', harvested: (n, q) => 'เก็บ' + n + 'ได้ ' + q + ' หน่วย',
+  farmAwayNote: 'ตอนนี้อยู่นอกบ้าน ดูข้อมูลได้อย่างเดียว', noPlots: 'ยังไม่มีแปลงปลูก — ซื้อกระถางที่ร้านวัสดุ หรือสร้างกระบะ/แปลงดินจากเมนูจัดบ้าน (K)',
+  farmSkill: (lv, g, y) => 'ทักษะเกษตร Lv ' + lv + ' → โตเร็วขึ้น +' + g + '% · ผลผลิต +' + y + '%', plotOutdoor: 'กลางแจ้ง (ได้น้ำฝน)', plotIndoor: 'ในบ้าน',
+  lightLabel: (p) => 'แสง ' + p + '%', moisture: 'ความชื้นดิน', tooDark: 'มืดเกินไป — ย้ายไปใกล้หน้าต่างหรือออกไปกลางแจ้ง พืชจะโตช้ามาก',
+  plotEmpty: (i) => 'ช่อง ' + i + ': ว่าง', stageName: ['เพิ่งหยอดเมล็ด', 'ต้นอ่อน', 'กำลังโต', 'โตเต็มที่', 'พร้อมเก็บ', 'ตายแล้ว'],
+  readyNow: 'เก็บได้เลย', cropDead: 'เคลียร์แปลงแล้วปลูกใหม่', daysLeft: (d) => isFinite(d) ? 'อีก ~' + d.toFixed(1) + ' วัน' : 'ไม่โต (ขาดแสง/น้ำ)', harvestN: (n, m) => 'เก็บแล้ว ' + n + (m ? '/' + m : '') + ' ครั้ง',
+  plantHealth: 'สุขภาพ', growth: 'การเติบโต', clearPlot: 'ถอนทิ้ง', seedsLeft: (n) => 'มีเมล็ด ' + n,
+  cropTime: (d, r, h) => 'เก็บครั้งแรก ~' + d + ' วัน' + (r ? ' แล้วเก็บซ้ำทุก ' + r + ' วัน' + (h ? ' (' + h + ' ครั้ง)' : '') : ''),
+  waterSafe: 'น้ำดื่มได้ (ประปา/ต้มแล้ว)', waterRaw: 'น้ำฝนดิบ (ต้องต้ม/กรอง)', tapState: 'น้ำประปา', tapOn: 'ไหลปกติ', tapOff: 'หยุดจ่ายแล้ว',
+  waterExplain: (f) => 'น้ำฝนดิบดื่มได้แต่เสี่ยงท้องเสีย — ต้มที่เตาแก๊ส หรือพกเครื่องกรองน้ำ (' + f + ') ก่อนดื่ม · พืชใช้น้ำดิบได้เลย',
+  haveFilter: 'มีเครื่องกรองแล้ว ✓', noFilter: 'ยังไม่มีเครื่องกรอง', rawShare: (n) => 'น้ำดิบ ' + n + ' ล.', mainsFed: 'ต่อประปา (เติมเองตอนน้ำยังไหล)',
+  catchGutter: (a) => 'รับน้ำจากรางหลังคา ✓ (' + a + ' ตร.ม.)', catchOpen: (a) => 'รับน้ำฝนจากปากถังเท่านั้น (' + a + ' ตร.ม.)', catchNone: 'อยู่ในร่ม ไม่ได้รับน้ำฝน', boiledPot: 'หม้อน้ำต้มสุก',
+  gutterTip: 'ฝน 10 มม. บนพื้นที่ 1 ตร.ม. = น้ำ 10 ลิตร · ถังที่ตั้งชิดผนังนอกบ้านรับน้ำจากรางหลังคา ~10 ตร.ม.',
+  // Phase 2B — weather
+  wxTitle: 'สภาพอากาศ — คลิกเพื่อดูพยากรณ์', wxIcon: { clear: '☀', partly: '⛅', cloudy: '☁', rain: '🌦', heavy: '🌧', storm: '⛈' },
+  wxName: { clear: 'แดดจัด', partly: 'มีเมฆบางส่วน', cloudy: 'เมฆมาก', rain: 'ฝนตก', heavy: 'ฝนตกหนัก', storm: 'พายุฝนฟ้าคะนอง' },
+  rainNow: (m) => 'ฝนตก ' + m + ' มม./ชม.', cloudNow: (p) => 'เมฆปกคลุม ' + p + '%', rainEffects: 'ฝนกลบเสียงและลดระยะมองเห็นของซอมบี้ เติมน้ำในถังกลางแจ้ง และรดน้ำแปลงผักให้เอง',
+  forecastTitle: 'พยากรณ์อากาศ (จากทีวี/วิทยุ)', forecastNone: 'ไม่มีพยากรณ์อากาศ (ไฟดับ ทีวีดูไม่ได้)', today: 'วันนี้', rainMm: (m) => 'ฝน ~' + m + ' มม.', noRain: 'ไม่มีฝน',
+  seasonNote: (m, mm, d) => 'เดือน ' + m + ' ปกติฝนตกราว ' + d + ' วัน รวม ~' + mm + ' มม. (ค่าเฉลี่ยกรุงเทพฯ)',
+  dbgWeather: 'สภาพอากาศ / สวน', dbgRainHeavy: 'ให้ฝนตกหนัก 2 ชม.', dbgRainStop: 'หยุดฝน', dbgGrowAll: 'เร่งผักทุกแปลงให้พร้อมเก็บ',
 };
 
 /* ===== 02-util.js ===== */
@@ -5748,6 +5805,121 @@ const BARRICADE = {
 /** Hostile survivor ambush (§8.5). */
 const AMBUSH = { baseChance: 0.06, nightMul: 2.2, haulMul: 0.000015, demandFrac: [0.2, 0.4] };
 
+/* ===== 17-data-home2.js ===== */
+/* ==========================================================================
+   17 · PHASE 2B DATA — free furniture placement, weather & water, farming.
+   ========================================================================== */
+
+/* ---------- Calendar (§4.1): Day 0 = 20 April (late hot season, first rains soon) ---------- */
+const CALENDAR = { year: 2026, month: 3, day: 20 };   // JS month index (3 = April)
+const MONTHS_TH = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+
+/**
+ * Bangkok climate normals per month (Jan..Dec): rain days, total rain (mm),
+ * daily max / min temperature (°C), base cloudiness 0..1. Source: TMD 1991–2020 normals (rounded).
+ */
+const CLIMATE = [
+  { days: 1, mm: 15, tmax: 32, tmin: 22, cloud: 0.15 },
+  { days: 2, mm: 25, tmax: 33, tmin: 24, cloud: 0.2 },
+  { days: 3, mm: 40, tmax: 34, tmin: 26, cloud: 0.25 },
+  { days: 6, mm: 80, tmax: 35, tmin: 27, cloud: 0.3 },
+  { days: 15, mm: 200, tmax: 34, tmin: 27, cloud: 0.5 },
+  { days: 16, mm: 160, tmax: 33, tmin: 26, cloud: 0.55 },
+  { days: 17, mm: 170, tmax: 33, tmin: 26, cloud: 0.6 },
+  { days: 19, mm: 200, tmax: 33, tmin: 26, cloud: 0.6 },
+  { days: 21, mm: 330, tmax: 32, tmin: 25, cloud: 0.65 },
+  { days: 16, mm: 240, tmax: 32, tmin: 25, cloud: 0.5 },
+  { days: 6, mm: 50, tmax: 32, tmin: 24, cloud: 0.3 },
+  { days: 1, mm: 10, tmax: 31, tmin: 22, cloud: 0.15 },
+];
+/** Weather tuning. mm/h thresholds for labels; masking of outdoor noise and zombie sight by rain. */
+const WEATHER = { light: 2, heavy: 10, storm: 20, noiseMask: 0.4, sightMask: 0.3 };
+
+/* ---------- Water (§9.2) ---------- */
+/**
+ * Stores: cap (L); open (m² of open mouth that catches rain when outdoors);
+ * mains: refilled from the municipal supply while water is on; start: litres at Day 0.
+ * Gutter rule: an open store standing outdoors within WATER.gutterDist of the house wall
+ * catches the roof run-off (WATER.roofArea m²).
+ */
+const WATER = {
+  ptsPerL: 32,            // hydration points per litre (100 = full; ≈ 2.5 L/day)
+  gutterDist: 0.9, roofArea: 10,
+  rawRisk: 0.3,           // chance of gut illness per litre of untreated rain water
+  boilBatchL: 5, boilMin: 15, boilGas: 1.2, boiledCap: 10,
+  fillMin: 10,            // filling all stores from the tap (water on)
+};
+Object.assign(FURNITURE.water_jar, { store: { cap: 200, open: 0.35, start: 160 }, act: null, yardOK: true });
+Object.assign(FURNITURE.water_tank, { store: { cap: 1000, mains: true, start: 1000 }, act: null });
+FURNITURE.sink_counter.act = 'tap'; FURNITURE.basin.act = 'tap';
+
+/* ---------- New furniture ---------- */
+Object.assign(FURNITURE, {
+  water_drum:  { name: 'ถังเก็บน้ำ 200 ลิตร', size: [0.62, 0.62, 0.92], slot: 'medium', asset: 'prop.water_drum', store: { cap: 200, open: 0.28, start: 0 }, fromItem: 'water_drum_item', yardOK: true, install: 10 },
+  plant_pot:   { name: 'กระถางปลูกผัก', size: [0.45, 0.45, 0.36], slot: 'small', asset: 'prop.plant_pot', farm: { beds: 1, kind: 'pot' }, fromItem: 'plant_pot_item', yardOK: true, install: 3 },
+  planter_box: { name: 'กระบะปลูกผักไม้', size: [1.25, 0.5, 0.45], slot: 'medium', asset: 'prop.planter_box', farm: { beds: 3, kind: 'box' }, yardOK: true },
+  garden_bed:  { name: 'แปลงผักดิน', size: [1.2, 2.4, 0.18], slot: 'decor', asset: 'prop.garden_bed', farm: { beds: 6, kind: 'bed' }, outdoorOnly: true },
+  wood_shelf:  { name: 'ชั้นวางไม้ทำเอง', size: [1.2, 0.4, 1.6], slot: 'medium', asset: 'prop.wood_shelf', grid: [6, 4], limit: 60 },
+});
+for (const t of ['crate', 'boxes', 'workbench', 'chair', 'outdoor_table', 'potted_tree', 'drying_rack', 'generator', 'water_tank', 'cabinet_small', 'metal_shelf']) if (FURNITURE[t]) FURNITURE[t].yardOK = true;
+/** Never movable (too big / rooted). */
+const FIXED_FURNITURE = new Set(['car', 'mango_tree']);
+/** Minutes to move a piece by slot class (strength XP scales with it). */
+const MOVE_MIN = { small: 3, tabletop: 2, medium: 6, large: 12, bed: 12, decor: 5, generator: 12 };
+
+/** Furniture the player can build at home from materials (B → เฟอร์นิเจอร์). */
+const CRAFT_FURN = [
+  { type: 'planter_box', uses: [['plank', 3], ['nails_1kg', 10], ['potting_soil', 2]], tools: ['hammer'], min: 40, skill: 'carpentry' },
+  { type: 'garden_bed', uses: [['potting_soil', 1]], tools: ['shovel'], min: 90, skill: 'farming' },
+  { type: 'crate', uses: [['plank', 2], ['nails_1kg', 8]], tools: ['hammer'], min: 25, skill: 'carpentry' },
+  { type: 'wood_shelf', uses: [['plank', 4], ['nails_1kg', 12]], tools: ['hammer'], min: 45, skill: 'carpentry' },
+];
+
+/* ---------- Items ---------- */
+CATEGORIES.farm = { name: 'เกษตร', color: '#6aa84f' };
+defItem('potting_soil', 'ดินปลูกผสม 5 กก.', 'material', 2, 2, 5, 4, 35, { tags: ['soil', 'farm'], icon: ic('sack', '#5a3f2a', '#8a6a42', '#3a8a2a') });
+defItem('plant_pot_item', 'กระถางปลูกผัก 12 นิ้ว (พร้อมดิน)', 'material', 2, 2, 5.5, 2, 79, { installs: 'plant_pot', tags: ['farm'], icon: ic('tub', '#b8582e', '#5a3f2a', '#b8582e') });
+defItem('water_drum_item', 'ถังพลาสติก 200 ลิตร (มีฝา)', 'material', 3, 3, 9, 1, 690, { installs: 'water_drum', tags: ['water_container'], icon: ic('tub', '#2f63a8', '#1f3f6a', '#2f63a8') });
+defItem('watering_can', 'บัวรดน้ำ 5 ลิตร', 'tool', 2, 2, 0.5, 1, 89, { tags: ['farm', 'watering'], icon: ic('jug', '#3a8a2a', '#2b5a1a', '#3a8a2a') });
+
+/**
+ * Crops (§5.6 Farming, Phase 2). days = time to first harvest (real Thai growing time × 0.5 by owner decision);
+ * regrow = days between later harvests; harvests = number of harvests (0 = until lifespan); life = days alive.
+ * beds = which plot kinds suit it. out = produce item; qty = [min, max] per harvest.
+ */
+const CROPS = {
+  morning_glory: { name: 'ผักบุ้ง', seed: 'seed_morning_glory', out: 'morning_glory', qty: [2, 3], days: 12.5, regrow: 5, harvests: 3, beds: ['pot', 'box', 'bed'], leaf: '#3f8a2f', fruit: null, h: 0.35 },
+  thai_basil:    { name: 'กะเพรา', seed: 'seed_basil', out: 'thai_basil', qty: [1, 2], days: 20, regrow: 7, harvests: 0, life: 60, beds: ['pot', 'box', 'bed'], leaf: '#2f6a2a', fruit: null, h: 0.45 },
+  chili:         { name: 'พริกขี้หนู', seed: 'seed_chili', out: 'chili_fresh', qty: [1, 2], days: 42, regrow: 7, harvests: 0, life: 120, beds: ['pot', 'box', 'bed'], leaf: '#356a2a', fruit: '#d8281a', h: 0.55 },
+  long_beans:    { name: 'ถั่วฝักยาว', seed: 'seed_long_bean', out: 'long_beans', qty: [1, 2], days: 27, regrow: 4, harvests: 4, beds: ['box', 'bed'], leaf: '#4a8a32', fruit: '#7fbf4a', h: 0.9 },
+  tomato:        { name: 'มะเขือเทศ', seed: 'seed_tomato', out: 'tomato', qty: [1, 2], days: 37, regrow: 5, harvests: 4, beds: ['pot', 'box', 'bed'], leaf: '#3f7a2f', fruit: '#e0402a', h: 0.75 },
+  eggplant:      { name: 'มะเขือเปราะ', seed: 'seed_eggplant', out: 'eggplant', qty: [1, 2], days: 32, regrow: 5, harvests: 6, beds: ['pot', 'box', 'bed'], leaf: '#3a6a3a', fruit: '#9ccf6a', h: 0.6 },
+  chinese_kale:  { name: 'คะน้า', seed: 'seed_kale', out: 'chinese_kale', qty: [2, 3], days: 22, regrow: 0, harvests: 1, beds: ['pot', 'box', 'bed'], leaf: '#2f5a4a', fruit: null, h: 0.35 },
+  cucumber:      { name: 'แตงกวา', seed: 'seed_cucumber', out: 'cucumber', qty: [1, 2], days: 20, regrow: 3, harvests: 4, beds: ['box', 'bed'], leaf: '#4a8a3a', fruit: '#5aa03a', h: 0.7 },
+  pumpkin:       { name: 'ฟักทอง', seed: 'seed_pumpkin', out: 'pumpkin', qty: [1, 2], days: 50, regrow: 0, harvests: 1, beds: ['bed'], leaf: '#4a7a2a', fruit: '#e08a2a', h: 0.45 },
+};
+for (const [id, c] of Object.entries(CROPS)) {
+  defItem(c.seed, 'เมล็ดพันธุ์' + c.name + ' (ซอง)', 'farm', 1, 1, 0.02, 10, id === 'pumpkin' ? 25 : 15, { uses: 10, crop: id, tags: ['seed', 'farm'], icon: ic('pack', c.fruit || c.leaf, '#f2e6c8', '#3a8a2a') });
+}
+/**
+ * Farming tuning. Moisture 0..1 per plot: dries per day (outdoor sun / indoor),
+ * rain adds mmPerFull⁻¹ per mm. Light: outdoor 1, indoor near a window 0.6, deep indoor 0.15.
+ */
+const FARM = {
+  dryOut: 0.5, dryIn: 0.3, rainPerMm: 0.05,
+  wetOk: 0.25, wetLow: 0.1, wiltDays: 2.5, recoverPerDay: 0.6,
+  lightOut: 1.0, lightWindow: 0.6, lightDark: 0.15, windowDist: 1.6,
+  waterL: { pot: 1, box: 2.5, bed: 6 }, waterMin: 3, waterMinCan: 1,
+  plantMin: 2, harvestMin: 2, skillGrow: 0.03, skillYield: 0.06,
+};
+
+/* ---------- Shop stock for 2B ---------- */
+POOLS.hw_misc.push(['plant_pot_item', 3, 4], ['water_drum_item', 2, 2], ['potting_soil', 3, 4], ['watering_can', 2, 2]);
+POOLS.hw_fasteners.push(...Object.values(CROPS).map((c) => [c.seed, 1, 4]));
+POOLS.mk_veg.push(['seed_morning_glory', 1, 3], ['seed_basil', 1, 3], ['seed_chili', 1, 3], ['seed_kale', 1, 3]);
+/** Farmer background starts with a few seed packs in the storage room. */
+const BG_START_STOCK = { farmer: [['metal_shelf', 'seed_morning_glory', 1], ['metal_shelf', 'seed_chili', 1], ['metal_shelf', 'seed_basil', 1], ['metal_shelf', 'potting_soil', 2]] };
+
 /* ===== 20-inventory.js ===== */
 /* ==========================================================================
    20 · INVENTORY MODEL — grid containers, item instances, transfers
@@ -6148,6 +6320,10 @@ function createRun({ bg, difficulty, name }) {
   st.home.gas = 70;
   st.home.loads = {};
   st.home.furniture = buildHomeFurniture(st.worldSeed);
+  for (const [type, id, qty] of BG_START_STOCK[bg] || []) {
+    const f = st.home.furniture.find((x) => x.type === type && x.inv);
+    if (f) Inv.add(f.inv, Inv.makeItem(id, qty));
+  }
   return st;
 }
 
@@ -6159,6 +6335,7 @@ function buildHomeFurniture(worldSeed) {
     if (opts && opts.onTop != null) f.onTop = opts.onTop;
     if (def.grid) f.inv = Inv.makeContainer(def.grid[0], def.grid[1], def.limit, f.label, def.temp || 'ambient');
     if (def.sub) f.sub = Inv.makeContainer(def.sub.grid[0], def.sub.grid[1], def.sub.limit, def.sub.name, def.sub.temp);
+    initFurnState(f);
     return f;
   });
   const rng = RNG.local('homestock|' + worldSeed);
@@ -6179,6 +6356,14 @@ function buildHomeFurniture(worldSeed) {
   }
   for (const f of list) { if (f.sub && f.sub.temp === 'freezer') Spoil.freezeContents(f.sub); if (f.inv && f.inv.temp === 'freezer') Spoil.freezeContents(f.inv); }
   return list;
+}
+
+/** Per-type runtime state: water stores (litres, of which raw/untreated) and farm plots. */
+function initFurnState(f) {
+  const def = FURNITURE[f.type];
+  if (def.store && !f.water) f.water = { l: def.store.start || 0, raw: 0 };
+  if (def.farm && !f.farm) f.farm = { plots: new Array(def.farm.beds).fill(null), moist: 0.6 };
+  return f;
 }
 
 /* ---------- Lifetime profile helpers ---------- */
@@ -6341,6 +6526,7 @@ const Sanitize = {
         };
         if (def.grid) f.inv = fixC(f.inv, def, def.temp || 'ambient', f.label); else delete f.inv;
         if (def.sub) f.sub = fixC(f.sub, def.sub, def.sub.temp, def.sub.name); else delete f.sub;
+        Sanitize.furnState(f, def);
         return f;
       });
     }
@@ -6358,6 +6544,8 @@ const Sanitize = {
     if (st.travel && (typeof st.travel !== 'object' || !LOCATIONS[st.travel.to])) st.travel = null;
     if (st.travel) st.travel.left = U.num(st.travel.left, 10, 0, 1000);
     st.flags.invulnerable = !!st.flags.invulnerable;
+    if (st.flags.wxForce && !(typeof st.flags.wxForce === 'object' && isFinite(st.flags.wxForce.mmh) && isFinite(st.flags.wxForce.until))) delete st.flags.wxForce;
+    st.home.boiled = U.num(st.home.boiled, 0, 0, WATER.boiledCap);
     if (!st.home.loads || typeof st.home.loads !== 'object' || Array.isArray(st.home.loads)) st.home.loads = {};
     st.food.reserve = Array.isArray(st.food.reserve) ? st.food.reserve.filter((x) => ITEMS[x]) : [];
     st.food.exclude = Array.isArray(st.food.exclude) ? st.food.exclude.filter((x) => ITEMS[x]) : [];
@@ -6368,6 +6556,27 @@ const Sanitize = {
     st.schema = CFG.SCHEMA_RUN;
     st.build = BUILD;
     return st;
+  },
+  /** Water store and farm plot state (Phase 2B). */
+  furnState(f, def) {
+    if (def.store) {
+      const w = f.water && typeof f.water === 'object' ? f.water : { l: def.store.start || 0, raw: 0 };
+      w.l = U.num(w.l, 0, 0, def.store.cap); w.raw = U.num(w.raw, 0, 0, w.l);
+      f.water = w;
+    } else delete f.water;
+    if (def.farm) {
+      const fm = f.farm && typeof f.farm === 'object' ? f.farm : {};
+      const old = Array.isArray(fm.plots) ? fm.plots : [];
+      fm.plots = [];
+      for (let i = 0; i < def.farm.beds; i++) {
+        const p = old[i];
+        if (!p || typeof p !== 'object' || !CROPS[p.crop]) { fm.plots.push(null); continue; }
+        fm.plots.push({ crop: p.crop, at: U.num(p.at, 0, 0, 1e9), g: U.num(p.g, 0, 0, 1), hp: U.num(p.hp, 1, 0, 1), n: U.num(p.n, 0, 0, 99) | 0, dead: !!p.dead });
+      }
+      fm.moist = U.num(fm.moist, 0.6, 0, 1);
+      f.farm = fm;
+    } else delete f.farm;
+    if (f.onTop != null) f.onTop = U.num(f.onTop, 0, 0, 3);
   },
   profile(p) {
     if (!p || typeof p !== 'object') return createProfile();
@@ -6568,10 +6777,7 @@ const Needs = {
     check('hyd', d.needs.hydration, 25, STR.thirsty);
     check('en', d.needs.energy, 20, STR.tired);
   },
-  drinkTap(ch) {
-    ch.d.needs.hydration = U.clamp(ch.d.needs.hydration + 35, 0, 100);
-    logEvent(STR.drank(STR.tapWater));
-  },
+  drinkTap(ch) { return Water.drink(ch, 'tap'); },
 };
 
 /* ---------- Outbreak milestone ---------- */
@@ -7148,12 +7354,12 @@ const Body = {
 
 /** Conditions such as food poisoning (illness system is extended in 1D). */
 const Illness = {
-  add(d, type, sev) {
+  add(d, type, sev, msg = STR.illPoison) {
     const ex = d.ill.find((x) => x.type === type);
     if (ex) { ex.sev = Math.min(1, ex.sev + sev * 0.5); ex.h = Math.max(ex.h, 12 + sev * 24); }
     else d.ill.push({ type, sev: U.clamp(sev, 0.1, 1), h: 12 + sev * 24 });
-    logEvent(STR.illPoison, 'bad');
-    Bus.emit('toast', { kind: 'bad', msg: STR.illPoison });
+    logEvent(msg, 'bad');
+    Bus.emit('toast', { kind: 'bad', msg });
   },
   minute(d) {
     for (const x of d.ill) {
@@ -7327,7 +7533,7 @@ const Appliances = {
   generatorNoise() {
     const g = this.generator(); if (!g) return 0;
     const st = this.genState(g);
-    return st.on && st.fuel > 0 && g.slot === 'G1' ? 25 : 0;
+    return st.on && st.fuel > 0 && !Arrange.indoor(g.floor, g.x, g.z) ? 25 : 0;
   },
   setGen(on) {
     const g = this.generator(); if (!g) return;
@@ -10305,19 +10511,33 @@ const Scene = {
   addFurniture(f) {
     const def = FURNITURE[f.type];
     const obj = AssetRegistry.create(def.asset, { seed: f.uid });
-    obj.position.set(f.x, f.floor * CFG.FLOOR_H + (f.onTop || 0) + (def.outdoor ? HomeWorld.YARD_Y : 0), f.z);
+    // Home: anything may stand in the yard (free arrangement) → ground height and group by position.
+    const out = this.isHome() ? !Arrange.indoor(f.floor, f.x, f.z) : !!def.outdoor;
+    const gy = this.isHome() ? (f.floor === 0 ? HomeWorld.groundY(f.x, f.z, 0) : 0) : (def.outdoor ? HomeWorld.YARD_Y : 0);
+    obj.position.set(f.x, f.floor * CFG.FLOOR_H + (f.onTop || 0) + gy, f.z);
     obj.rotation.y = -f.rot * Math.PI / 2;
     obj.userData.furnUid = f.uid; obj.userData.floor = f.floor;
-    (def.outdoor ? this.W.outdoor : this.W.floors[f.floor].group).add(obj);
+    (out ? this.W.outdoor : this.W.floors[f.floor].group).add(obj);
     this.W.furn.set(f.uid, obj);
     if (def.stock) this.refreshStock(f);
     if (def.light) {
       const p = new THREE.Vector3(0, def.light.y, 0).applyMatrix4(obj.matrixWorld.compose(obj.position, obj.quaternion, obj.scale));
       let lampMat = null;
       obj.traverse((o) => { if (o.isMesh && o.material.emissive && o.material.side === THREE.DoubleSide) lampMat = o.material; });
-      this.W.lights.push({ kind: 'lamp', floor: f.floor, room: (HomeWorld.roomAt(f.floor, f.x, f.z) || {}).id, pos: p, color: def.light.color, intensity: def.light.intensity, dist: def.light.dist, lampMat });
+      this.W.lights.push({ kind: 'lamp', uid: f.uid, floor: f.floor, room: (HomeWorld.roomAt(f.floor, f.x, f.z) || {}).id, pos: p, color: def.light.color, intensity: def.light.intensity, dist: def.light.dist, lampMat });
     }
+    if (f.farm) { FarmView.forget(f.uid); FarmView.attach(f); }
   },
+  /** Remove a piece's mesh (and its lamp light) from the scene. */
+  removeFurnitureObj(f) {
+    const obj = this.W && this.W.furn.get(f.uid);
+    if (obj) { if (obj.parent) obj.parent.remove(obj); obj.traverse((o) => { if (o.isMesh) o.geometry.dispose(); }); this.W.furn.delete(f.uid); }
+    if (this.W) this.W.lights = this.W.lights.filter((L) => L.uid !== f.uid);
+    this.stockObjs.delete(f.uid);
+    if (typeof FarmView !== 'undefined') FarmView.forget(f.uid);
+  },
+  /** Rebuild a piece after it moved (group, height, lamp position, crops). */
+  refreshFurniture(f) { this.removeFurnitureObj(f); this.addFurniture(f); },
   /** Rebuild product meshes for a stocked fixture when its contents changed. */
   refreshStock(f) {
     const def = FURNITURE[f.type], obj = this.W && this.W.furn.get(f.uid);
@@ -10387,17 +10607,44 @@ const Scene = {
     if (f.type === 'car') out.push({ key: 'siphon', label: STR.siphonAct });
     if (f.inv) out.push({ key: 'open', label: STR.open + ' ' + f.label });
     if (def.act === 'sleep') out.push({ key: 'sleep', label: STR.sleepHere });
-    if (def.act === 'water') out.push({ key: 'drink', label: STR.drinkTap });
+    if (def.act === 'tap') { out.push({ key: 'drink', label: STR.drinkTap }); if (this.isHome() && Water.stores().length) out.push({ key: 'fillStores', label: STR.fillStoresAct }); }
+    if (def.store && f.water) { out.push({ key: 'drinkStore', label: STR.drinkStoreAct(Math.round(f.water.l)) }); out.push({ key: 'waterInfo', label: STR.waterInfoAct }); }
+    if (def.act === 'cook' && this.isHome()) { out.push({ key: 'boil', label: STR.boilAct }); if ((S.home.boiled || 0) > 0.1) out.push({ key: 'drinkBoiled', label: STR.drinkBoiledAct(S.home.boiled.toFixed(1)) }); }
+    if (def.farm && f.farm) {
+      const ready = f.farm.plots.findIndex((p) => p && !p.dead && p.g >= 1);
+      if (ready >= 0) out.push({ key: 'harvest', label: STR.harvestAct });
+      if (Farm.free(f) >= 0) out.push({ key: 'plant', label: STR.plantAct });
+      if (f.farm.plots.some(Boolean)) out.push({ key: 'waterPlot', label: STR.waterPlotAct });
+      out.push({ key: 'farmInfo', label: STR.farmInfoAct });
+    }
+    if (this.isHome() && Arrange.movable(f)) {
+      out.push({ key: 'move', label: STR.moveAct });
+      const def2 = FURNITURE[f.type];
+      if (def2.fromItem || Object.values(ITEMS).some((d) => d.installs === f.type)) out.push({ key: 'pickup', label: STR.pickUpAct });
+      if (f.crafted) out.push({ key: 'dismantle', label: STR.dismantleAct });
+    }
     out.push({ key: 'walk', label: STR.walkHere });
     return out;
   },
   doAction(f, key, mode = 'walk') {
+    if (key === 'move') { Arrange.start(f); return; }
+    if (key === 'farmInfo') { FarmUI.open('plots', f); return; }
+    if (key === 'waterInfo') { FarmUI.open('water'); return; }
     const ap = this.accessPoint(f);
     if (!ap) { Bus.emit('toast', { kind: 'warn', msg: STR.cannotReach }); return; }
     const after = {
       open: () => InvUI.open(f),
       sleep: () => SleepUI.open(f),
-      drink: () => { Needs.drinkTap(activeChar()); },
+      drink: () => { Water.drink(activeChar(), 'tap'); },
+      fillStores: () => { Water.fillAll(); },
+      drinkStore: () => { Water.drink(activeChar(), f); },
+      boil: () => { Water.boil(activeChar()); },
+      drinkBoiled: () => { Water.drink(activeChar(), 'boiled'); },
+      harvest: () => { const ch = activeChar(); f.farm.plots.forEach((p, i) => { if (p && !p.dead && p.g >= 1) Farm.harvest(ch, f, i); }); },
+      plant: () => { FarmUI.plantMenu(f); },
+      waterPlot: () => { Farm.water(activeChar(), f); },
+      pickup: () => { Arrange.pickUp(f); },
+      dismantle: () => { Arrange.dismantle(f); },
       checkout: () => CheckoutUI.open(),
       delivery: () => DeliveryUI.open(),
       cook: () => CookUI.open('stove'),
@@ -10529,6 +10776,7 @@ const Scene = {
     if (this.W.exitMarker) this.W.exitMarker.material.opacity = 0.45 + Math.sin(performance.now() * 0.004) * 0.25;
     Render.updateCamera(realDt, { x: p.x, z: p.z });
     Render.updateDayNight(S.time.min);
+    Rain.update(realDt);
     Render.updateLights({ x: p.x, z: p.z }, this.isHome() ? S.home.lightsOn : true, this.isHome() ? Appliances.lightsPowered() : Power.gridOn());
   },
 };
@@ -10899,6 +11147,7 @@ const NoiseBus = {
     if (!Scene.W || radius <= 0) return 0;
     const indoor = Scene.W.isIndoor(x, z, floor);
     if (indoor && !outdoorOverride) return 0;
+    radius *= 1 - WEATHER.noiseMask * Weather.rainMask();   // rain drowns outdoor sound
     let n = 0;
     for (const zb of Zombies.list) {
       if (zb.dead) continue;
@@ -10942,6 +11191,7 @@ class Zombie {
     const d0 = S.chars[S.active];
     let range = this.t.sight * (night ? 0.55 : 1) * (d0._moving === 'sneak' ? 0.55 - new Character(d0).skill('stealth') * 0.02 : 1);
     if (Scene.W.isIndoor(px, pz, pfloor) !== Scene.W.isIndoor(this.x, this.z, 0) && Scene.isHome()) range *= 0.35; // walls & windows
+    range *= 1 - WEATHER.sightMask * Weather.rainMask();
     if (d > range) return false;
     if (d < 1.6) return true;
     const ang = Math.atan2(dx, dz) - this.rot;
@@ -11174,7 +11424,8 @@ const Zombies = {
     const nl = Noise.level(ch.d);
     if (nl > 0 && Math.random() < dt * 2) NoiseBus.emit(ch.d.pos.x, ch.d.pos.z, nl, ch.d.pos.floor);
     const gn = Appliances.generatorNoise ? (Scene.isHome() ? Appliances.generatorNoise() : 0) : 0;
-    if (gn && Math.random() < dt * 0.2) NoiseBus.emit(HOME_SLOTS[3].x, HOME_SLOTS[3].z, gn, 0, true);
+    const gen = gn && Appliances.generator();
+    if (gen && Math.random() < dt * 0.2) NoiseBus.emit(gen.x, gen.z, gn, 0, true);
     // Sleep is interrupted by zombies at the barricades or near the player
     if (GameClock.sleepUntil != null && this.list.some((z) => !z.dead && (z.state === 'bash' || z.state === 'attack' || Math.hypot(z.x - ch.d.pos.x, z.z - ch.d.pos.z) < 6))) {
       GameClock.endSleep('zombies'); Toast.show(STR.wokeByZombies, 'bad', 6000);
@@ -11682,6 +11933,296 @@ const AmbushUI = {
   },
 };
 
+/* ===== 44-arrange.js ===== */
+/* ==========================================================================
+   44 · FREE FURNITURE ARRANGEMENT (§9.1, Phase 2B)
+   Move / rotate any home furniture on a 0.25 m grid, or place new pieces
+   (installed items, built furniture). A footprint marker shows green/red;
+   rules: inside one room (or the yard), no overlap, stairs and doorways kept
+   clear, and every storage/appliance plus both stair landings must stay
+   reachable from the gate (checked on the real nav grid before committing).
+   ========================================================================== */
+
+const Arrange = {
+  STEP: 0.25, WALL: 0.09,
+  active: null,          // { f, isNew, orig, onDone, valid, why }
+  marker: null,
+
+  movable(f) { return !!f && Scene.isHome() && !FIXED_FURNITURE.has(f.type) && f.onTop == null; },
+  rect(type, x, z, rot) {
+    let [w, d] = FURNITURE[type].size;
+    if (rot % 2) [w, d] = [d, w];
+    if (type === 'mango_tree') { w = 0.6; d = 0.6; }
+    return { x0: x - w / 2, x1: x + w / 2, z0: z - d / 2, z1: z + d / 2 };
+  },
+  hit(a, b, m = 0) { return a.x0 < b.x1 - m && a.x1 > b.x0 + m && a.z0 < b.z1 - m && a.z1 > b.z0 + m; },
+  within(r, a, m) { return r.x0 >= a.x0 + m - 1e-6 && r.x1 <= a.x1 - m + 1e-6 && r.z0 >= a.z0 + m - 1e-6 && r.z1 <= a.z1 - m + 1e-6; },
+  indoor(floor, x, z) { const b = HOME.bounds; return floor === 1 || (x > b.x0 && x < b.x1 && z > b.z0 && z < b.z1); },
+  /** Is an open water store / plot right next to the outside of the house wall (gutter run-off)? */
+  byWall(f) {
+    if (f.floor !== 0 || this.indoor(0, f.x, f.z)) return false;
+    const b = HOME.bounds, r = this.rect(f.type, f.x, f.z, f.rot), g = WATER.gutterDist;
+    const dx = Math.max(b.x0 - r.x1, r.x0 - b.x1, 0), dz = Math.max(b.z0 - r.z1, r.z0 - b.z1, 0);
+    return Math.hypot(dx, dz) <= g;
+  },
+
+  /** Static placement rules. Returns { ok, why } (why = STR.arr* key). */
+  check(f, x, z, rot, floor) {
+    const def = FURNITURE[f.type], r = this.rect(f.type, x, z, rot);
+    const inside = this.indoor(floor, x, z);
+    if (inside) {
+      if (def.outdoorOnly) return { ok: false, why: 'arrOutdoorOnly' };
+      const room = HomeWorld.roomAt(floor, x, z);
+      if (!room || !this.within(r, room, this.WALL)) return { ok: false, why: 'arrWall' };
+    } else {
+      if (!def.yardOK && !def.outdoor && !def.outdoorOnly) return { ok: false, why: 'arrIndoorOnly' };
+      const lot = HOME.lot, b = HOME.bounds;
+      if (!this.within(r, lot, 0.35)) return { ok: false, why: 'arrLot' };
+      if (this.hit(r, { x0: b.x0 - 0.12, x1: b.x1 + 0.12, z0: b.z0 - 0.12, z1: b.z1 + 0.12 })) return { ok: false, why: 'arrWall' };
+      if (this.hit(r, { x0: HOME.gate.x0 - 0.2, x1: HOME.gate.x1 + 0.2, z0: lot.z1 - 1.4, z1: lot.z1 + 1 })) return { ok: false, why: 'arrGate' };
+    }
+    const s = HOME.stairs;
+    const stair = floor === 0 ? { x0: s.x0 - 0.15, x1: s.x1 + 0.15, z0: s.zBottom - 0.95, z1: s.zTop + 0.05 } : { x0: s.x0 - 0.15, x1: s.x1 + 0.15, z0: s.zBottom - 0.05, z1: s.zTop + 0.95 };
+    if (this.hit(r, stair)) return { ok: false, why: 'arrStairs' };
+    if (!def.walk) {
+      for (const o of HOME.openings) {
+        if (o.floor !== floor || o.kind === 'window') continue;
+        const c = o.axis === 'z' ? { x0: o.a, x1: o.b, z0: o.at - 0.7, z1: o.at + 0.7 } : { x0: o.at - 0.7, x1: o.at + 0.7, z0: o.a, z1: o.b };
+        if (this.hit(r, c)) return { ok: false, why: 'arrDoor' };
+      }
+      for (const g of S.home.furniture) {
+        if (g === f || g.floor !== floor || g.onTop != null || FURNITURE[g.type].walk) continue;
+        if (this.hit(r, this.rect(g.type, g.x, g.z, g.rot), 0.02)) return { ok: false, why: 'arrOverlap' };
+      }
+    }
+    return { ok: true };
+  },
+  /** Flood-fill the nav grid from the gate (crossing the stair link) and test that everything stays reachable. */
+  reachable() {
+    const W = Scene.W, seen = [new Uint8Array(Nav.grids[0].block.length), new Uint8Array(Nav.grids[1].block.length)];
+    const q = [];
+    const push = (floor, x, z) => { const p = Nav.nearestWalkable(floor, x, z, 1.5); if (!p) return; const c = Nav.cellOf(floor, p.x, p.z); if (c && !seen[floor][c.i]) { seen[floor][c.i] = 1; q.push([floor, c.ix, c.iz]); } };
+    push(0, W.exit.x, W.exit.z - 1.0);
+    let linked = false;
+    while (q.length) {
+      const [fl, ix, iz] = q.pop(), g = Nav.grids[fl];
+      for (const [dx, dz] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+        const nx = ix + dx, nz = iz + dz;
+        if (nx < 0 || nz < 0 || nx >= g.nx || nz >= g.nz) continue;
+        const i = nz * g.nx + nx;
+        if (g.block[i] || seen[fl][i]) continue;
+        seen[fl][i] = 1; q.push([fl, nx, nz]);
+      }
+      if (!linked && Nav.stair) {
+        const cb = Nav.cellOf(0, Nav.stair.bottom.x, Nav.stair.bottom.z);
+        if (cb && seen[0][cb.i]) { linked = true; push(1, Nav.stair.top.x, Nav.stair.top.z); }
+      }
+      if (!q.length && !linked && Nav.stair) { const cb = Nav.cellOf(0, Nav.stair.bottom.x, Nav.stair.bottom.z); if (cb && seen[0][cb.i]) { linked = true; push(1, Nav.stair.top.x, Nav.stair.top.z); } }
+    }
+    const ok = (floor, p) => { if (!p) return false; const c = Nav.cellOf(floor, p.x, p.z); return !!c && !!seen[floor][c.i]; };
+    if (!linked) return { ok: false, what: STR.arrStairsName };
+    for (const g of S.home.furniture) {
+      const def = FURNITURE[g.type];
+      if (!(g.inv || def.act || def.store || def.farm) || g.onTop != null) continue;
+      if (!ok(g.floor, Scene.accessPoint(g))) return { ok: false, what: g.label };
+    }
+    return { ok: true };
+  },
+
+  /* ---------- mode ---------- */
+  /** Begin moving an existing piece. */
+  start(f) {
+    if (!this.movable(f)) { Toast.show(STR.arrFixed, 'warn'); return false; }
+    if (this.active) this.cancel();
+    if (InvUI.isOpen) InvUI.close();
+    this.active = { f, isNew: false, orig: { x: f.x, z: f.z, rot: f.rot, floor: f.floor } };
+    this.begin();
+    return true;
+  },
+  /** Place a brand-new piece; onPlaced(f) runs after it is committed (consume items there). */
+  startNew(type, onPlaced, label) {
+    if (!Scene.isHome()) { Toast.show(STR.installHomeOnly, 'warn'); return false; }
+    if (this.active) this.cancel();
+    if (InvUI.isOpen) InvUI.close();
+    Modal.closeAll();
+    const d = S.chars[S.active].pos, def = FURNITURE[type];
+    const f = initFurnState({ uid: U.uid(), type, floor: d.floor, x: d.x, z: d.z, rot: 0, label: label || def.name });
+    if (def.grid) { f.inv = Inv.makeContainer(def.grid[0], def.grid[1], def.limit, f.label, def.temp || 'ambient'); f.inv.cold = 0; }
+    if (def.sub) f.sub = Inv.makeContainer(def.sub.grid[0], def.sub.grid[1], def.sub.limit, def.sub.name, def.sub.temp);
+    if (type === 'generator') f.gen = { on: false, fuel: 0, hours: 0 };
+    Scene.addFurniture(f);
+    this.active = { f, isNew: true, orig: null, onDone: onPlaced };
+    this.begin();
+    return true;
+  },
+  begin() {
+    GameClock.pauseLocks++;
+    Render.showHover(null);
+    if (!this.marker) {
+      this.marker = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ color: 0x5fd35f, transparent: true, opacity: 0.38, depthWrite: false }));
+      this.marker.rotation.x = -Math.PI / 2; this.marker.renderOrder = 5;
+    }
+    Render.scene.add(this.marker);
+    const f = this.active.f;
+    Render.setViewFloor(f.floor);
+    this.preview(f.x, f.z, f.rot, f.floor);
+    HUD.setHint(STR.arrHint);
+    Bus.emit('arrange:start', f);
+  },
+  /** Snap to the grid, then hug a nearby wall so pieces can stand flush against it. */
+  snap(type, x, z, rot, floor) {
+    const st = this.STEP;
+    x = Math.round(x / st) * st; z = Math.round(z / st) * st;
+    const r = this.rect(type, x, z, rot);
+    const room = this.indoor(floor, x, z) ? HomeWorld.roomAt(floor, x, z) : null;
+    if (room) {
+      const m = this.WALL + 0.005;
+      if (r.x0 - (room.x0 + m) < 0.3 && r.x0 - (room.x0 + m) > -0.3) x += room.x0 + m - r.x0;
+      else if ((room.x1 - m) - r.x1 < 0.3 && (room.x1 - m) - r.x1 > -0.3) x += room.x1 - m - r.x1;
+      if (r.z0 - (room.z0 + m) < 0.3 && r.z0 - (room.z0 + m) > -0.3) z += room.z0 + m - r.z0;
+      else if ((room.z1 - m) - r.z1 < 0.3 && (room.z1 - m) - r.z1 > -0.3) z += room.z1 - m - r.z1;
+    }
+    return { x, z };
+  },
+  preview(x, z, rot, floor) {
+    const A = this.active, f = A.f;
+    const p = this.snap(f.type, x, z, rot, floor);
+    A.pos = { x: p.x, z: p.z, rot, floor };
+    const res = this.check(f, p.x, p.z, rot, floor);
+    A.valid = res.ok; A.why = res.why;
+    const obj = Scene.W.furn.get(f.uid);
+    if (obj) {
+      obj.position.set(p.x, this.baseY(f, p.x, p.z, floor), p.z);
+      obj.rotation.y = -rot * Math.PI / 2;
+    }
+    const r = this.rect(f.type, p.x, p.z, rot);
+    this.marker.scale.set(r.x1 - r.x0 + 0.06, r.z1 - r.z0 + 0.06, 1);
+    this.marker.position.set(p.x, this.baseY(f, p.x, p.z, floor) + 0.03, p.z);
+    this.marker.material.color.set(res.ok ? 0x5fd35f : 0xe04a3a);
+    HUD.setHint(res.ok ? STR.arrHint : '⚠ ' + STR[res.why]);
+  },
+  baseY(f, x, z, floor) { return floor * CFG.FLOOR_H + (floor === 0 ? HomeWorld.groundY(x, z, 0) : 0) + (f.onTop || 0); },
+  move(clientX, clientY) {
+    if (!this.active) return;
+    const hit = Render.pick(clientX, clientY);
+    const g = hit && hit.ground; if (!g) return;
+    const A = this.active;
+    this.preview(g.x, g.z, A.pos.rot, g.floor);
+  },
+  rotate() { const A = this.active; if (!A) return; this.preview(A.pos.x, A.pos.z, (A.pos.rot + 1) % 4, A.pos.floor); Snd.play('ui'); },
+  confirm() {
+    const A = this.active; if (!A) return false;
+    if (!A.valid) { Toast.show(STR[A.why] || STR.arrWall, 'warn'); return false; }
+    const f = A.f, prev = A.isNew ? null : { x: f.x, z: f.z, rot: f.rot, floor: f.floor };
+    Object.assign(f, { x: A.pos.x, z: A.pos.z, rot: A.pos.rot, floor: A.pos.floor });
+    if (A.isNew) S.home.furniture.push(f);
+    Nav.build(Scene.W, Scene.furnList());
+    const reach = this.reachable();
+    if (!reach.ok) {
+      if (A.isNew) S.home.furniture.splice(S.home.furniture.indexOf(f), 1);
+      else Object.assign(f, prev);
+      Nav.build(Scene.W, Scene.furnList());
+      Toast.show(STR.arrBlocks(reach.what), 'warn', 4500);
+      return false;
+    }
+    delete f.slot;
+    Scene.refreshFurniture(f);
+    this.finish();
+    Zombies.rebuildGrid();
+    const def = FURNITURE[f.type], ch = activeChar();
+    if (A.isNew) { if (A.onDone) A.onDone(f); }
+    else {
+      const mins = MOVE_MIN[def.slot] || 5;
+      GameClock.advance(mins);
+      Skills.gain(ch, 'strength', mins * 0.4);
+      logEvent(STR.arrMoved(f.label), 'info');
+    }
+    Bus.emit('inv:changed');
+    return true;
+  },
+  cancel() {
+    const A = this.active; if (!A) return;
+    if (A.isNew) Scene.removeFurnitureObj(A.f);
+    else { Object.assign(A.f, A.orig); Scene.refreshFurniture(A.f); }
+    this.finish();
+  },
+  finish() {
+    this.active = null;
+    GameClock.pauseLocks = Math.max(0, GameClock.pauseLocks - 1);
+    if (this.marker && this.marker.parent) this.marker.parent.remove(this.marker);
+    HUD.setHint(null);
+    Bus.emit('arrange:end');
+  },
+
+  /** Put an item-made piece (pot, drum, appliance) back into the inventory. Must be empty. */
+  pickUp(f) {
+    const def = FURNITURE[f.type], item = def.fromItem || Object.keys(ITEMS).find((k) => ITEMS[k].installs === f.type);
+    if (!item) return false;
+    if ((f.inv && f.inv.slots.length) || (f.sub && f.sub.slots.length) || (f.water && f.water.l > 0.5) || (f.farm && f.farm.plots.some(Boolean))) { Toast.show(STR.arrNotEmpty, 'warn'); return false; }
+    const ch = activeChar(), it = Inv.makeItem(item, 1);
+    if (Inv.addToAny(ch.containers(), it) > 0) { const pile = Scene.pileNear(ch.d.pos.floor, ch.d.pos.x, ch.d.pos.z, true); Inv.add(pile.inv, it); Scene.syncPiles(); }
+    S.home.furniture.splice(S.home.furniture.indexOf(f), 1);
+    Scene.removeFurnitureObj(f);
+    Nav.build(Scene.W, Scene.furnList()); Zombies.rebuildGrid();
+    GameClock.advance(def.install || 5);
+    logEvent(STR.arrPicked(f.label), 'info');
+    Bus.emit('inv:changed');
+    return true;
+  },
+  /** Dismantle built furniture: get half the planks back. */
+  dismantle(f) {
+    const recipe = CRAFT_FURN.find((r) => r.type === f.type && f.crafted);
+    if (!recipe) return false;
+    if ((f.inv && f.inv.slots.length) || (f.farm && f.farm.plots.some(Boolean))) { Toast.show(STR.arrNotEmpty, 'warn'); return false; }
+    const ch = activeChar(), pile = Scene.pileNear(ch.d.pos.floor, ch.d.pos.x, ch.d.pos.z, true);
+    for (const [id, n] of recipe.uses) if (id === 'plank' && Math.floor(n / 2) > 0) Inv.add(pile.inv, Inv.makeItem('plank', Math.floor(n / 2)));
+    Scene.syncPiles();
+    S.home.furniture.splice(S.home.furniture.indexOf(f), 1);
+    Scene.removeFurnitureObj(f);
+    Nav.build(Scene.W, Scene.furnList()); Zombies.rebuildGrid();
+    GameClock.advance(Math.round(recipe.min / 3));
+    logEvent(STR.arrDismantled(f.label), 'info');
+    return true;
+  },
+
+  /* ---------- building furniture from materials ---------- */
+  missing(ch, recipe) {
+    const out = [];
+    for (const t of recipe.tools) if (!Health.findItem(ch, [t])) out.push(itemDef(t).name);
+    for (const [id, n] of recipe.uses) { const have = Barricades.countAvail(ch, id); if (have < n) out.push(itemDef(id).name + ' ' + have + '/' + n); }
+    return out;
+  },
+  build(recipe) {
+    const ch = activeChar();
+    const miss = this.missing(ch, recipe);
+    if (miss.length) { Toast.show(STR.arrNeed(miss.join(', ')), 'warn', 4000); return false; }
+    return this.startNew(recipe.type, (f) => {
+      for (const [id, n] of recipe.uses) Barricades.consume(ch, id, n);
+      f.crafted = true;
+      const loud = !this.indoor(f.floor, f.x, f.z) && recipe.tools.includes('hammer');
+      GameClock.advance(recipe.min);
+      if (loud) NoiseBus.emit(f.x, f.z, 14, 0);
+      Skills.gain(ch, recipe.skill, recipe.min * 0.15);
+      logEvent(STR.arrBuilt(f.label), 'good');
+      Toast.show(STR.arrBuilt(f.label), 'good');
+      Scene.syncPiles();
+    });
+  },
+  /** Install an item that becomes furniture (pot, drum, freezer, generator…) wherever the player chooses. */
+  installItem(c, slot) {
+    const d = itemDef(slot.it.id), type = d.installs;
+    if (!type) return false;
+    const ch = activeChar();
+    return this.startNew(type, (f) => {
+      if (c.slots.includes(slot)) { if (slot.it.qty > 1) slot.it.qty -= 1; else Inv.remove(c, slot); }
+      GameClock.advance(FURNITURE[type].install || 30);
+      Skills.gain(ch, type === 'generator' ? 'mechanics' : 'carpentry', 4);
+      logEvent(STR.installed(FURNITURE[type].name), 'good');
+      Toast.show(STR.installed(FURNITURE[type].name), 'good');
+    });
+  },
+};
+
 /* ===== 45-audio.js ===== */
 /* ==========================================================================
    45 · PROCEDURAL AUDIO (§11.3) — Web Audio synthesis, no sound files.
@@ -11842,6 +12383,458 @@ const Snd = {
   },
 };
 
+/* ===== 46-weather-water-farm.js ===== */
+/* ==========================================================================
+   46 · CALENDAR, WEATHER, WATER & FARMING (Phase 2B)
+   Weather is deterministic per world (same seed → same rain, every life):
+   each day rolls from Bangkok monthly normals; rain falls as afternoon /
+   evening convective events with a bell-shaped intensity. Rain fills open
+   water stores outdoors (more when under the roof gutter), waters outdoor
+   plots and masks outdoor noise. Water stores hold litres, part of it raw
+   (untreated rain) that can make you ill unless filtered or boiled.
+   ========================================================================== */
+
+const Calendar = {
+  date(day) { return new Date(CALENDAR.year, CALENDAR.month, CALENDAR.day + day); },
+  /** "20 เม.ย." */
+  label(day) { const d = this.date(day); return d.getDate() + ' ' + MONTHS_TH[d.getMonth()]; },
+  month(day) { return this.date(day).getMonth(); },
+};
+
+const Weather = {
+  memo: new Map(),
+  day(n) {
+    const key = (S ? S.worldSeed : 0) + '|' + n;
+    if (this.memo.has(key)) return this.memo.get(key);
+    const date = Calendar.date(n), C = CLIMATE[date.getMonth()];
+    const dim = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+    const rng = RNG.local('wx|' + key);
+    const wet = C.days >= 10;
+    const out = { events: [], mm: 0, cloud: 0, tmax: 0, tmin: 0 };
+    const rainy = rng() < C.days / dim;
+    if (rainy) {
+      out.mm = C.mm / C.days * (0.35 + rng() * 1.3);
+      const two = rng() < 0.3;
+      let start = (wet ? 13.5 + rng() * 7 : 12 + rng() * 9) * 60;
+      for (let i = 0; i < (two ? 2 : 1); i++) {
+        const dur = (0.6 + rng() * 2.4) * 60;
+        out.events.push({ s: n * 1440 + start, e: n * 1440 + start + dur, mm: out.mm * (two ? (i ? 0.4 : 0.6) : 1) });
+        start += dur + (60 + rng() * 180);
+      }
+    }
+    out.cloud = U.clamp(C.cloud + (rainy ? 0.25 : 0) + (rng() - 0.5) * 0.2, 0.05, 0.95);
+    out.tmax = C.tmax + (rng() - 0.5) * 2 - (rainy ? 1.5 : 0);
+    out.tmin = C.tmin + (rng() - 0.5) * 1.5;
+    if (this.memo.size > 400) this.memo.clear();
+    this.memo.set(key, out);
+    return out;
+  },
+  /** Conditions at an absolute minute: mmh (rain mm/h), cloud 0..1, temp °C, kind label key. */
+  at(min) {
+    const n = Math.floor(min / 1440);
+    let mmh = 0, near = 0;
+    const F = S && S.flags.wxForce;
+    if (F && min < F.until) { mmh = F.mmh; near = 1; }
+    for (const dn of [n - 1, n]) for (const ev of this.day(dn).events) {
+      if (min >= ev.s && min < ev.e) { const t = (min - ev.s) / (ev.e - ev.s); mmh += ev.mm / ((ev.e - ev.s) / 60) * Math.sin(Math.PI * t) * Math.PI / 2; }
+      const d = min < ev.s ? ev.s - min : min > ev.e ? min - ev.e : 0;
+      near = Math.max(near, 1 - d / 90);
+    }
+    const D = this.day(n), h = (min % 1440) / 60;
+    const cloud = U.clamp(Math.max(D.cloud, near * 0.95), 0, 1);
+    const diurnal = h < 6 ? (h + 24 - 14.5) : h - 14.5;   // peak 14:30, trough ~06:00
+    const temp = D.tmin + (D.tmax - D.tmin) * (0.5 + 0.5 * Math.cos(diurnal / 15.5 * Math.PI)) - Math.min(4, mmh * 0.4);
+    const kind = mmh >= WEATHER.storm ? 'storm' : mmh >= WEATHER.heavy ? 'heavy' : mmh >= 0.2 ? 'rain' : cloud > 0.6 ? 'cloudy' : cloud > 0.35 ? 'partly' : 'clear';
+    return { mmh, cloud, temp, kind, storm: mmh >= WEATHER.storm };
+  },
+  now() { return this.at(S.time.min); },
+  /** 0..1 masking of outdoor sound and sight by rain. */
+  rainMask() { return U.clamp(this.now().mmh / WEATHER.heavy, 0, 1); },
+  /** Rain total for a day (forecast panel). */
+  dayRain(n) { return this.day(n).events.reduce((a, e) => a + e.mm, 0); },
+};
+
+/* ---------- Water ---------- */
+const Water = {
+  stores() { return S.home.furniture.filter((f) => FURNITURE[f.type].store && f.water); },
+  /** Rain-catching area in m² for an open store standing outdoors (roof gutter if by the wall). */
+  catchArea(f) {
+    const st = FURNITURE[f.type].store;
+    if (!st || !st.open || Arrange.indoor(f.floor, f.x, f.z)) return 0;
+    return st.open + (Arrange.byWall(f) ? WATER.roofArea : 0);
+  },
+  add(f, l, raw) {
+    const cap = FURNITURE[f.type].store.cap, room = Math.max(0, cap - f.water.l), add = Math.min(room, l);
+    f.water.l += add; if (raw) f.water.raw = Math.min(f.water.l, f.water.raw + add);
+    return add;
+  },
+  /** Take litres; returns { l, raw } where raw is the untreated share taken. */
+  take(f, l) {
+    const w = f.water, got = Math.min(l, w.l), frac = w.l > 0 ? w.raw / w.l : 0;
+    w.l -= got; w.raw = Math.max(0, w.raw - got * frac);
+    if (w.l < 1e-6) { w.l = 0; w.raw = 0; }
+    return { l: got, raw: got * frac };
+  },
+  totals() {
+    let safe = 0, raw = 0;
+    for (const f of this.stores()) { safe += f.water.l - f.water.raw; raw += f.water.raw; }
+    return { safe: safe + (S.home.boiled || 0), raw };
+  },
+  minute() {
+    const wx = Weather.at(S.time.min), on = Power.waterOn();
+    for (const f of this.stores()) {
+      const st = FURNITURE[f.type].store;
+      if (st.mains && on) { f.water.l = st.cap; f.water.raw = 0; continue; }
+      if (wx.mmh > 0) { const a = this.catchArea(f); if (a > 0) this.add(f, wx.mmh / 60 * a, true); }
+    }
+  },
+  hasFilter(ch) { return Health.findItem(ch, ['water_filter']); },
+  /** Drink to full from a store / the boiled pot / the tap. */
+  drink(ch, src) {
+    const d = ch.d, want = Math.max(0.25, (100 - d.needs.hydration) / WATER.ptsPerL);
+    let got = { l: 0, raw: 0 };
+    if (src === 'tap') { if (!Power.waterOn()) { Toast.show(STR.noTapWater, 'warn'); return false; } got = { l: want, raw: 0 }; }
+    else if (src === 'boiled') { const l = Math.min(want, S.home.boiled || 0); S.home.boiled -= l; got = { l, raw: 0 }; }
+    else got = this.take(src, want);
+    if (got.l <= 0.01) { Toast.show(STR.storeEmpty, 'warn'); return false; }
+    let filtered = 0;
+    if (got.raw > 0) {
+      const fl = this.hasFilter(ch);
+      if (fl) { const n = Math.ceil(got.raw); for (let i = 0; i < n && fl.it.uses > 0; i++) Health.spend(fl); filtered = got.raw; }
+    }
+    d.needs.hydration = U.clamp(d.needs.hydration + got.l * WATER.ptsPerL, 0, 100);
+    const rawLeft = got.raw - filtered;
+    logEvent(STR.drankL(got.l.toFixed(1), src === 'tap' ? STR.tapWater : src === 'boiled' ? STR.boiledWater : src.label) + (filtered ? ' · ' + STR.filtered : rawLeft > 0 ? ' · ' + STR.rawWarn : ''), rawLeft > 0 ? 'warn' : 'info');
+    if (rawLeft > 0 && RNG.next('events') < Math.min(0.6, WATER.rawRisk * rawLeft)) Illness.add(d, 'food_poison', 0.3, STR.illWater);
+    Snd.play('eat');
+    return true;
+  },
+  /** While mains water runs: top up every store from the tap (takes time). */
+  fillAll() {
+    if (!Power.waterOn()) { Toast.show(STR.noTapWater, 'warn'); return 0; }
+    let n = 0;
+    for (const f of this.stores()) { const add = this.add(f, FURNITURE[f.type].store.cap, false); if (add > 0) { f.water.raw = Math.max(0, f.water.raw * (1 - add / f.water.l)); n += add; } }
+    if (n > 0) { GameClock.advance(WATER.fillMin + Math.round(n / 40)); logEvent(STR.filledStores(Math.round(n)), 'good'); }
+    else Toast.show(STR.storesFull, 'info');
+    return n;
+  },
+  /** Boil a batch of (raw) water from the nearest store at the stove → safe boiled pot. */
+  boil(ch) {
+    if (S.home.gas < WATER.boilGas) { Toast.show(STR.noGas, 'warn'); return false; }
+    const room = WATER.boiledCap - (S.home.boiled || 0);
+    if (room < 0.5) { Toast.show(STR.boiledFull, 'info'); return false; }
+    const want = Math.min(WATER.boilBatchL, room);
+    let got = 0;
+    if (Power.waterOn()) got = want;
+    else {
+      const p = ch.d.pos;
+      const src = this.stores().filter((f) => f.water.l > 0.1).sort((a, b) => Math.hypot(a.x - p.x, a.z - p.z) - Math.hypot(b.x - p.x, b.z - p.z))[0];
+      if (!src) { Toast.show(STR.noWaterAnywhere, 'warn'); return false; }
+      got = this.take(src, want).l;
+    }
+    S.home.boiled = (S.home.boiled || 0) + got;
+    S.home.gas = Math.max(0, S.home.gas - WATER.boilGas);
+    GameClock.advance(WATER.boilMin);
+    Skills.gain(ch, 'cooking', 1);
+    logEvent(STR.boiled(got.toFixed(1)), 'good');
+    return true;
+  },
+  init() { GameClock.onMinute(() => this.minute()); },
+};
+
+/* ---------- Farming ---------- */
+const Farm = {
+  plots() { return S.home.furniture.filter((f) => f.farm); },
+  kind(f) { return FURNITURE[f.type].farm.kind; },
+  lv(ch) { const s = (ch || activeChar()).d.skills.farming; return s ? s.lv : 0; },
+  /** Light factor: outdoors full sun (less when cloudy); indoors only near a window. */
+  light(f, wx) {
+    if (!Arrange.indoor(f.floor, f.x, f.z)) return FARM.lightOut * (1 - 0.25 * wx.cloud);
+    let best = 99;
+    for (const o of HOME.openings) {
+      if (o.floor !== f.floor || o.kind !== 'window') continue;
+      const mid = (o.a + o.b) / 2, d = o.axis === 'z' ? Math.hypot(f.x - mid, f.z - o.at) : Math.hypot(f.x - o.at, f.z - mid);
+      best = Math.min(best, d);
+    }
+    return best <= FARM.windowDist ? FARM.lightWindow : FARM.lightDark;
+  },
+  stage(p) {
+    if (!p) return -1;
+    if (p.dead) return 5;
+    if (p.g >= 1) return 4;
+    if (p.n > 0) return 3;
+    return p.g < 0.12 ? 0 : p.g < 0.45 ? 1 : p.g < 0.8 ? 2 : 3;
+  },
+  daysLeft(f, p) {
+    const C = CROPS[p.crop], wx = Weather.now();
+    const period = p.n === 0 ? C.days : C.regrow;
+    const rate = this.light(f, wx) * (1 + this.lv() * FARM.skillGrow);
+    return rate > 0 ? (1 - p.g) * period / rate : Infinity;
+  },
+  step(dt) {
+    const wx = Weather.at(S.time.min), lv = this.lv();
+    for (const f of this.plots()) {
+      const fm = f.farm, outdoor = !Arrange.indoor(f.floor, f.x, f.z);
+      const dry = (outdoor ? FARM.dryOut * (1 - wx.cloud * 0.4) : FARM.dryIn) / 1440 * dt;
+      fm.moist = U.clamp(fm.moist - dry + (outdoor ? wx.mmh / 60 * dt * FARM.rainPerMm : 0), 0, 1);
+      const wf = fm.moist >= FARM.wetOk ? 1 : fm.moist >= FARM.wetLow ? 0.5 : 0;
+      const light = this.light(f, wx);
+      fm.plots.forEach((p, i) => {
+        if (!p || p.dead) return;
+        const C = CROPS[p.crop];
+        if (wf === 0) p.hp = Math.max(0, p.hp - dt / (FARM.wiltDays * 1440));
+        else p.hp = Math.min(1, p.hp + FARM.recoverPerDay * dt / 1440 * wf);
+        const old = C.life && S.time.min - p.at > C.life * 1440;
+        if (p.hp <= 0 || old) { p.dead = true; logEvent(STR.cropDied(C.name, old ? STR.cropOld : STR.cropDry), 'bad'); Bus.emit('farm:changed', f); return; }
+        if (p.g < 1) {
+          const period = p.n === 0 ? C.days : C.regrow;
+          const st0 = this.stage(p);
+          p.g = Math.min(1, p.g + dt / (period * 1440) * light * wf * (0.5 + 0.5 * p.hp) * (1 + lv * FARM.skillGrow));
+          if (p.g >= 1) { logEvent(STR.cropReady(C.name), 'good'); Bus.emit('toast', { kind: 'good', msg: STR.cropReady(C.name) }); }
+          if (this.stage(p) !== st0) Bus.emit('farm:changed', f);
+        }
+        void i;
+      });
+    }
+  },
+  seedsHave(ch) {
+    const out = {};
+    for (const id of Object.keys(CROPS)) { const n = Barricades.countAvail(ch, CROPS[id].seed); if (n > 0) out[id] = n; }
+    return out;
+  },
+  plant(ch, f, i, crop) {
+    const C = CROPS[crop];
+    if (!C.beds.includes(this.kind(f))) { Toast.show(STR.cropWrongBed(C.name), 'warn'); return false; }
+    if (f.farm.plots[i]) { Toast.show(STR.plotTaken, 'warn'); return false; }
+    if (Barricades.countAvail(ch, C.seed) < 1) { Toast.show(STR.noSeeds(C.name), 'warn'); return false; }
+    Barricades.consume(ch, C.seed, 1);
+    f.farm.plots[i] = { crop, at: S.time.min, g: 0, hp: 1, n: 0, dead: false };
+    GameClock.advance(FARM.plantMin);
+    Skills.gain(ch, 'farming', 2);
+    logEvent(STR.planted(C.name), 'info');
+    Bus.emit('farm:changed', f);
+    return true;
+  },
+  waterNeed(f) { return FARM.waterL[this.kind(f)] * (1 - f.farm.moist); },
+  /** Water a plot from the tap (if running) or the nearest water store (raw water is fine for plants). */
+  water(ch, f) {
+    const need = this.waterNeed(f);
+    if (need < 0.05) { Toast.show(STR.plotWet, 'info'); return false; }
+    if (!Power.waterOn()) {
+      let left = need;
+      const p = ch.d.pos;
+      const srcs = Water.stores().filter((s) => s.water.l > 0.05).sort((a, b) => Math.hypot(a.x - p.x, a.z - p.z) - Math.hypot(b.x - p.x, b.z - p.z));
+      for (const s of srcs) { if (left <= 0) break; left -= Water.take(s, left).l; }
+      if (left > need - 0.05) { Toast.show(STR.noWaterAnywhere, 'warn'); return false; }
+      f.farm.moist = U.clamp(f.farm.moist + (need - Math.max(0, left)) / FARM.waterL[this.kind(f)], 0, 1);
+    } else f.farm.moist = 1;
+    const can = Health.findItem(ch, ['watering_can', 'bucket']);
+    GameClock.advance(can ? FARM.waterMinCan : FARM.waterMin);
+    Skills.gain(ch, 'farming', 0.5);
+    logEvent(STR.watered(f.label), 'info');
+    Bus.emit('farm:changed', f);
+    return true;
+  },
+  harvest(ch, f, i) {
+    const p = f.farm.plots[i]; if (!p || p.dead || p.g < 1) return false;
+    const C = CROPS[p.crop], rng = RNG.local('harvest|' + f.uid + '|' + i + '|' + p.at + '|' + p.n);
+    const base = C.qty[0] + Math.floor(rng() * (C.qty[1] - C.qty[0] + 1));
+    const qty = Math.max(1, Math.round(base * (p.hp > 0.6 ? 1 : 0.6) * (1 + this.lv(ch) * FARM.skillYield)));
+    const it = Inv.makeItem(C.out, qty);
+    if (Inv.addToAny(ch.containers(), it) > 0) { const pile = Scene.pileNear(ch.d.pos.floor, ch.d.pos.x, ch.d.pos.z, true); Inv.add(pile.inv, it); Scene.syncPiles(); }
+    p.n++;
+    if (C.harvests && p.n >= C.harvests) f.farm.plots[i] = null; else p.g = 0;
+    GameClock.advance(FARM.harvestMin);
+    Skills.gain(ch, 'farming', 4);
+    logEvent(STR.harvested(C.name, qty), 'good');
+    Snd.play('ui');
+    Bus.emit('farm:changed', f); Bus.emit('inv:changed');
+    return qty;
+  },
+  clear(f, i) { f.farm.plots[i] = null; GameClock.advance(1); Bus.emit('farm:changed', f); },
+  /** First free plot index (or -1). */
+  free(f) { return f.farm.plots.findIndex((p) => !p); },
+  init() { GameClock.onMinute((m) => { if (m % 10 === 0) this.step(10); }); },
+};
+
+/* ===== 47-farm-props.js ===== */
+/* ==========================================================================
+   47 · PHASE 2B VISUALS — planters, water drum, wooden shelf, crop growth
+   meshes per plot, and rain (streaks, darker sky, lightning, rain audio).
+   ========================================================================== */
+
+const SOIL = () => Mat.tex('concrete', '#5a3f2a', 0.97, 0, 0.9);
+Object.assign(PROPS, {
+  'prop.plant_pot': (o) => {
+    const pb = new PB(o.seed);
+    pb.cyl(0.21, 0.15, 0.34, Mat.color('#b8582e', 0.85), 0, 0, 0, 18);
+    pb.cyl(0.225, 0.215, 0.04, Mat.color('#a24c28', 0.8), 0, 0.32, 0, 18);
+    pb.cyl(0.19, 0.19, 0.02, SOIL(), 0, 0.31, 0, 16);
+    return pb.build();
+  },
+  'prop.planter_box': (o) => {
+    const pb = new PB(o.seed), w = Mat.tex('wood_floor', '#a8784a', 0.85);
+    for (let i = 0; i < 3; i++) { pb.box(1.25, 0.14, 0.04, w, 0, 0.02 + i * 0.145, -0.23, 0.005); pb.box(1.25, 0.14, 0.04, w, 0, 0.02 + i * 0.145, 0.23, 0.005); }
+    pb.box(0.04, 0.44, 0.5, w, -0.6, 0, 0); pb.box(0.04, 0.44, 0.5, w, 0.6, 0, 0);
+    for (const x of [-0.58, 0.58]) for (const z of [-0.21, 0.21]) pb.box(0.06, 0.47, 0.06, Mat.tex('wood_floor', '#7a5a36', 0.85), x, 0, z);
+    pb.box(1.16, 0.03, 0.42, SOIL(), 0, 0.4, 0);
+    return pb.build();
+  },
+  'prop.garden_bed': (o) => {
+    const pb = new PB(o.seed);
+    pb.box(1.2, 0.14, 2.4, SOIL(), 0, 0, 0, 0.06);
+    for (const x of [-0.3, 0.3]) pb.box(0.32, 0.05, 2.25, Mat.tex('concrete', '#4a3322', 0.98, 0, 0.9), x, 0.13, 0, 0.02);
+    for (let z = -1.15; z <= 1.16; z += 0.46) { pb.box(0.12, 0.1, 0.2, Mat.color('#9a4a32', 0.9), -0.64, 0, z, 0.01); pb.box(0.12, 0.1, 0.2, Mat.color('#9a4a32', 0.9), 0.64, 0, z, 0.01); }
+    return pb.build();
+  },
+  'prop.water_drum': (o) => {
+    const pb = new PB(o.seed), blue = Mat.color('#2f63a8', 0.55);
+    pb.cyl(0.3, 0.29, 0.9, blue, 0, 0, 0, 22);
+    for (const y of [0.22, 0.6]) pb.cyl(0.31, 0.31, 0.04, Mat.color('#2a5794', 0.5), 0, y, 0, 22);
+    pb.cyl(0.24, 0.24, 0.025, Mat.color('#1f3f6a', 0.5), 0, 0.9, 0, 20);
+    pb.cyl(0.16, 0.05, 0.12, Mat.color('#3a3f44', 0.6), 0, 0.915, 0, 14);   // funnel with mesh screen
+    return pb.build();
+  },
+  'prop.wood_shelf': (o) => {
+    const pb = new PB(o.seed), w = Mat.tex('wood_floor', '#b08654', 0.85), post = Mat.tex('wood_floor', '#7a5a36', 0.85);
+    for (const x of [-0.57, 0.57]) for (const z of [-0.17, 0.17]) pb.box(0.06, 1.6, 0.06, post, x, 0, z);
+    for (let i = 0; i < 4; i++) pb.box(1.2, 0.035, 0.4, w, 0, 0.12 + i * 0.47, 0);
+    return pb.build();
+  },
+});
+for (const id of ['prop.plant_pot', 'prop.planter_box', 'prop.garden_bed', 'prop.water_drum', 'prop.wood_shelf']) AssetRegistry.register(id, PROPS[id]);
+
+/** Crop meshes on planters; rebuilt when a plot's stage changes. */
+const FarmView = {
+  sig: new Map(),
+  spots(kind) {
+    if (kind === 'pot') return [[0, 0.33, 0]];
+    if (kind === 'box') return [[-0.4, 0.43, 0], [0, 0.43, 0], [0.4, 0.43, 0]];
+    return [[-0.3, 0.18, -0.8], [0.3, 0.18, -0.8], [-0.3, 0.18, 0], [0.3, 0.18, 0], [-0.3, 0.18, 0.8], [0.3, 0.18, 0.8]];
+  },
+  forget(uid) { this.sig.delete(uid); },
+  attach(f) {
+    const obj = Scene.W && Scene.W.furn.get(f.uid);
+    if (!obj || !f.farm) return;
+    const sig = f.farm.plots.map((p) => p ? p.crop + Farm.stage(p) + (p.hp < 0.5 ? 'w' : '') : '-').join('|');
+    const old = obj.getObjectByName('crops');
+    if (old && this.sig.get(f.uid) === sig) return;
+    if (old) { obj.remove(old); old.traverse((o) => { if (o.isMesh) o.geometry.dispose(); }); }
+    this.sig.set(f.uid, sig);
+    const pb = new PB('crops' + f.uid);
+    let any = false;
+    this.spots(Farm.kind(f)).forEach(([x, y, z], i) => { const p = f.farm.plots[i]; if (p) { any = true; this.plant(pb, p, x, y, z, i); } });
+    if (!any) return;
+    const g = pb.build({ cast: false });
+    g.name = 'crops';
+    obj.add(g);
+  },
+  plant(pb, p, x, y, z, i) {
+    const C = CROPS[p.crop], st = Farm.stage(p), rng = U.makeRng(U.hashSeed(p.crop + i + p.at));
+    const leafCol = new THREE.Color(st === 5 ? '#7a5a2a' : C.leaf);
+    if (p.hp < 0.5 && st !== 5) leafCol.lerp(new THREE.Color('#b59a3a'), (0.5 - p.hp) * 1.6);
+    const leaf = Mat.color('#' + leafCol.getHexString(), 0.75);
+    if (st === 0) { pb.sphere(0.05, SOIL(), x, y + 0.01, z, 1, 0.4, 1, 8); return; }
+    const scale = st === 1 ? 0.18 : st === 2 ? 0.55 : 1, h = C.h * scale * (st === 5 ? 0.5 : 1);
+    const n = st === 1 ? 3 : st === 2 ? 6 : 10;
+    pb.cyl(0.012, 0.018, h * 0.7, Mat.color('#4a6a2a', 0.8), x, y, z, 6);
+    for (let k = 0; k < n; k++) {
+      const a = rng() * Math.PI * 2, r = (0.03 + rng() * 0.09) * Math.max(scale, 0.4), yy = y + h * (0.25 + rng() * 0.75);
+      pb.sphere(0.035 + 0.05 * scale, leaf, x + Math.cos(a) * r, yy, z + Math.sin(a) * r, 1.3, st === 5 ? 0.25 : 0.45, 0.9, 8);
+    }
+    if (st === 4 && C.fruit) {
+      const fr = Mat.color(C.fruit, 0.45);
+      const big = p.crop === 'pumpkin';
+      for (let k = 0; k < (big ? 1 : 5); k++) {
+        const a = rng() * Math.PI * 2, r = big ? 0.12 : 0.04 + rng() * 0.08;
+        const elong = ['long_beans', 'cucumber', 'chili'].includes(p.crop);
+        pb.sphere(big ? 0.11 : 0.022, fr, x + Math.cos(a) * r, big ? y + 0.09 : y + h * (0.3 + rng() * 0.5), z + Math.sin(a) * r, 1, elong ? 2.6 : 1, 1, 8);
+      }
+    } else if (st === 4) pb.sphere(0.07 * 1.3, Mat.color('#' + leafCol.clone().offsetHSL(0, 0.1, 0.08).getHexString(), 0.7), x, y + h * 0.9, z, 1.2, 0.5, 1.2, 10);
+  },
+  refreshAll() { if (Scene.W && Scene.isHome()) for (const f of S.home.furniture) if (f.farm) this.attach(f); },
+  init() { Bus.on('farm:changed', (f) => { if (Scene.isHome()) this.attach(f); }); },
+};
+
+/** Rain streaks around the camera focus + weather-driven sky dimming, lightning and rain sound. */
+const Rain = {
+  mesh: null, n: 0, speed: 15, box: 26, top: 16, flashT: 0, nextBolt: 0, snd: null,
+  build() {
+    this.n = Render.q.key === 'low' ? 600 : Render.q.key === 'high' ? 2200 : 1300;
+    const pos = new Float32Array(this.n * 6);
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    g.setDrawRange(0, 0);
+    this.mesh = new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: 0xaec4d8, transparent: true, opacity: 0.45, depthWrite: false }));
+    this.mesh.frustumCulled = false; this.mesh.renderOrder = 4;
+    for (let i = 0; i < this.n; i++) this.respawn(i, true);
+    Render.scene.add(this.mesh);
+  },
+  covered(x, z) { return Scene.W && Scene.W.isIndoor(x, z, 0); },
+  respawn(i, anyY) {
+    const a = this.mesh.geometry.attributes.position.array, c = Render.cam;
+    let x = 0, z = 0;
+    for (let k = 0; k < 4; k++) { x = c.ctx + (Math.random() - 0.5) * this.box; z = c.ctz + (Math.random() - 0.5) * this.box; if (!this.covered(x, z)) break; }
+    const y = anyY ? Math.random() * this.top : this.top + Math.random() * 3;
+    const hide = this.covered(x, z) ? -50 : 0;
+    a[i * 6] = x; a[i * 6 + 1] = y + hide; a[i * 6 + 2] = z;
+    a[i * 6 + 3] = x + 0.03; a[i * 6 + 4] = y + hide + 0.55; a[i * 6 + 5] = z + 0.02;
+  },
+  update(dt) {
+    if (!S || !Scene.W || !Render.scene) return;
+    if (!this.mesh) this.build();
+    const wx = Weather.now();
+    const want = Math.min(this.n, Math.round(this.n * U.clamp(wx.mmh / 15, 0, 1) + (wx.mmh > 0.2 ? this.n * 0.12 : 0)));
+    const g = this.mesh.geometry;
+    g.setDrawRange(0, want * 2);
+    this.mesh.visible = want > 0;
+    if (want > 0) {
+      const a = g.attributes.position.array, dy = this.speed * Math.min(dt, 0.05), c = Render.cam;
+      for (let i = 0; i < want; i++) {
+        a[i * 6 + 1] -= dy; a[i * 6 + 4] -= dy;
+        if (a[i * 6 + 1] < -0.2 || Math.abs(a[i * 6] - c.ctx) > this.box / 2 + 2 || Math.abs(a[i * 6 + 2] - c.ctz) > this.box / 2 + 2) this.respawn(i, false);
+      }
+      g.attributes.position.needsUpdate = true;
+      this.mesh.material.opacity = 0.25 + 0.3 * U.clamp(wx.mmh / 20, 0, 1);
+    }
+    // Weather dims the scene (applied after Render.updateDayNight each frame).
+    const dim = wx.cloud * 0.55 + U.clamp(wx.mmh / 25, 0, 0.25);
+    Render.sun.intensity *= 1 - dim;
+    Render.hemi.intensity *= 1 - dim * 0.45;
+    Render.scene.fog.density += dim * 0.012;
+    const grey = new THREE.Color(0x5d6670);
+    Render.skyMat.uniforms.top.value.lerp(grey, dim * 0.8);
+    Render.skyMat.uniforms.horizon.value.lerp(grey, dim * 0.7);
+    Render.scene.fog.color.lerp(grey, dim * 0.6);
+    // Lightning during storms
+    const now = performance.now() / 1000;
+    if (wx.storm && !GameClock.paused()) {
+      if (!this.nextBolt) this.nextBolt = now + 4 + Math.random() * 10;
+      if (now > this.nextBolt) { this.flashT = 0.18; this.nextBolt = now + 6 + Math.random() * 14; this.thunder(0.6 + Math.random() * 2); }
+    } else this.nextBolt = 0;
+    if (this.flashT > 0) { this.flashT -= dt; Render.hemi.intensity += 2.5; Render.sun.intensity += 3; }
+    this.sound(wx);
+  },
+  sound(wx) {
+    if (!Snd.ok) return;
+    const c = Snd.ctx;
+    if (!this.snd) {
+      const s = c.createBufferSource(); s.buffer = Snd.noiseBuf; s.loop = true;
+      const f = c.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 1400; f.Q.value = 0.4;
+      const g = c.createGain(); g.gain.value = 0; s.connect(f); f.connect(g); g.connect(Snd.ambBus); s.start();
+      this.snd = g;
+    }
+    const d = S.chars[S.active], indoor = Scene.W.isIndoor(d.pos.x, d.pos.z, d.pos.floor);
+    const v = U.clamp(wx.mmh / 15, 0, 1) * (indoor ? 0.07 : 0.16) + (wx.mmh > 0.2 ? 0.02 : 0);
+    this.snd.gain.setTargetAtTime(v, c.currentTime, 0.8);
+  },
+  thunder(delay) {
+    if (!Snd.ok) return;
+    Snd._out = Snd.sfxBus;
+    Snd.noise(2.6, 'lowpass', 160, 0.7, 0.55, delay, 60);
+    Snd.noise(0.4, 'lowpass', 900, 0.8, 0.25, delay);
+  },
+};
+
 /* ===== 50-ui-core.js ===== */
 /* ==========================================================================
    50 · UI PRIMITIVES — toasts, modal stack (owns time), tooltip, context menu
@@ -11993,7 +12986,8 @@ const HUD = {
     e.floors.appendChild(U.el('button.fl.locked', { disabled: true, title: STR.basementLocked }, STR.basementLocked));
     e.lights = U.el('button.btn.sm', { on: { click: () => { S.home.lightsOn = !S.home.lightsOn; } } });
     e.power = U.el('div.power');
-    const side = U.el('div.panel.side', null, e.place, e.cash, e.floors, U.el('div.row', null, e.lights), e.power);
+    e.wx = U.el('div.wx', { title: STR.wxTitle, on: { click: () => FarmUI.open('weather') } });
+    const side = U.el('div.panel.side', null, e.place, e.cash, e.floors, U.el('div.row', null, e.lights), e.power, e.wx);
     // Bottom bar
     const B = (icon, label, key, fn) => U.el('button.btn.hb', { title: label + (key ? ' (' + key + ')' : ''), on: { click: fn } }, icon, U.el('span', null, ' ' + label));
     const bar = U.el('div.panel.bottombar', null,
@@ -12003,6 +12997,8 @@ const HUD = {
       B('🍳', STR.hbCook, 'C', () => CookUI.open()),
       B('❤', STR.hbHealth, 'H', () => HealthUI.open()),
       B('🔨', STR.hbBuild, 'B', () => BuildUI.open()),
+      B('🛋', STR.hbArrange, 'K', () => ArrangeUI.open()),
+      B('🌱', STR.hbFarm, 'G', () => FarmUI.open()),
       B('🥗', STR.btnNutrition, 'N', () => NutritionUI.open()),
       B('📦', STR.btnStock, '', () => StockUI.open()),
       B('📈', STR.btnSkills, '', () => SkillsUI.open()),
@@ -12036,7 +13032,7 @@ const HUD = {
     const t = U.timeOf(S.time.min);
     const hand = U.$('#dialHand');
     if (hand) hand.setAttribute('transform', `rotate(${(t.dayMin / 1440) * 360} 40 40)`);
-    e.day.textContent = STR.day + ' ' + t.day;
+    e.day.textContent = STR.day + ' ' + t.day + ' · ' + Calendar.label(t.day);
     e.time.textContent = t.hhmm;
     e.phase.textContent = S.flags.outbreak ? STR.outbreakStarted : STR.outbreakIn(U.dur(CFG.OUTBREAK_MINUTE - S.time.min));
     e.phase.className = 'phase ' + (S.flags.outbreak ? 'bad' : 'calm');
@@ -12071,6 +13067,8 @@ const HUD = {
     e.power.textContent = '⚡ ' + (pst === 'failed' ? STR.powerFailed : !pon ? STR.powerOff : pst === 'brownout' ? STR.powerBrownout : STR.powerOk);
     e.power.className = 'power ' + (pst === 'failed' || !pon ? 'bad' : pst === 'brownout' ? 'warn' : '');
     e.lights.textContent = '💡 ' + STR.lights + ': ' + (S.home.lightsOn ? STR.lightsOn : STR.lightsOff);
+    const wx = Weather.now();
+    e.wx.textContent = STR.wxIcon[wx.kind] + ' ' + STR.wxName[wx.kind] + (wx.mmh >= 0.2 ? ' ' + wx.mmh.toFixed(1) + ' มม./ชม.' : '') + ' · ' + Math.round(wx.temp) + '°C';
     e.sleep.hidden = GameClock.sleepUntil == null;
     if (!e.fps.hidden) e.fps.textContent = `${Math.round(Render.fps.value)} FPS · ${Render.fps.ms.toFixed(1)} ms · ${Render.q.key} · calls ${Render.renderer.info.render.calls} · tris ${(Render.renderer.info.render.triangles / 1000).toFixed(0)}k`;
   },
@@ -12319,7 +13317,7 @@ const InvUI = {
       items.push({ label: S.food.exclude.includes(d.id) ? STR.unexclude : STR.exclude, fn: () => { const r = S.food.exclude; const i = r.indexOf(d.id); if (i >= 0) r.splice(i, 1); else r.push(d.id); this.changed(); } });
     }
     if (src.slot && (d.tags.includes('electrolyte') || d.tags.includes('diarrhea')) && !d.per) items.push({ label: STR.use, fn: () => { if (Illness.treat(activeChar().d, it)) { if (it.uses != null) it.uses--; if (it.uses == null || it.uses <= 0) { if (it.qty > 1) { it.qty--; if (d.uses) it.uses = d.uses; } else Inv.remove(src.c, src.slot); } logEvent(STR.usedMed(d.name)); } this.changed(); } });
-    if (src.slot && d.installs) items.push({ label: STR.installAct, fn: () => InstallUI.open(src.c, src.slot) });
+    if (src.slot && d.installs) items.push({ label: STR.installAct, fn: () => { if (S.scene !== 'home') { Toast.show(STR.installHomeOnly, 'warn'); return; } Arrange.installItem(src.c, src.slot); } });
     if (WEAPONS[it.id] && WEAPONS[it.id].mat && d.dura) items.push({ label: STR.repairAct + ' (' + REPAIRS[WEAPONS[it.id].mat].name + ')', fn: () => { if (Durability.repair(activeChar(), it)) Toast.show(STR.repaired(d.name, Math.round(it.cap * 100)), 'good'); this.changed(); } });
     if (it.inv) items.push({ label: STR.openBag, fn: () => this.openBag(it) });
     if (src.slot && d.equip && !ch.d.equip[d.equip]) items.push({ label: STR.equip, fn: () => this.equipFrom(src.c, src.slot, d.equip) });
@@ -12800,6 +13798,11 @@ const DebugUI = {
         U.el('button.btn.sm' + (S.flags.invulnerable ? '.on' : ''), { on: { click: () => { S.flags.invulnerable = !S.flags.invulnerable; Modal.close(); this.open(); } } }, STR.dbgInvuln),
         U.el('button.btn.sm', { on: { click: () => { Health.damage(activeChar().d, 'armL', 12, 'bite'); } } }, STR.dbgBite),
         U.el('button.btn.sm', { on: { click: () => { const ch = activeChar(); for (const k in BODY_PARTS) { ch.d.body[k].hp = BODY_PARTS[k].hp; ch.d.body[k].cond = []; } ch.d.blood = 100; } } }, STR.dbgHeal)),
+      U.el('h4', null, STR.dbgWeather),
+      U.el('div.row', null,
+        U.el('button.btn.sm', { on: { click: () => { S.flags.wxForce = { mmh: 18, until: S.time.min + 120 }; Modal.close(); } } }, STR.dbgRainHeavy),
+        U.el('button.btn.sm', { on: { click: () => { S.flags.wxForce = { mmh: 0, until: S.time.min + 180 }; Modal.close(); } } }, STR.dbgRainStop),
+        U.el('button.btn.sm', { on: { click: () => { for (const f of Farm.plots()) { f.farm.moist = 1; for (const p of f.farm.plots) if (p && !p.dead) { p.g = 1; p.hp = 1; } Bus.emit('farm:changed', f); } } } }, STR.dbgGrowAll)),
       U.el('details', null, U.el('summary', null, STR.dbgAssets + ' (' + AssetRegistry.list().length + ')'), U.el('pre.assets', null, AssetRegistry.list().join('\n'))),
     );
     Modal.open({ title: STR.dbgTitle, body, wide: true, pauseTime: false });
@@ -13123,7 +14126,8 @@ const StockUI = {
       const v = s.kcal / (need * r.f);
       days.appendChild(U.el('div.sday' + (v < 3 ? '.low' : ''), null, U.el('span', null, STR.foodDaysAt(r.name)), U.el('b', null, v.toFixed(1) + ' ' + STR.daysUnit)));
     }
-    const waterDays = s.water / 80 + (Power.waterOn() ? Infinity : 0);
+    const wt = Scene.isHome() || S.home ? Water.totals() : { safe: 0, raw: 0 };
+    const waterDays = (s.water + (wt.safe + wt.raw) * WATER.ptsPerL) / 80 + (Power.waterOn() ? Infinity : 0);
     const fuelH = s.gasoline / 0.55;
     body.append(U.el('h4', null, STR.stockFood + ' (' + Math.round(s.kcal).toLocaleString() + ' kcal · ' + STR.needPerDay(Math.round(need)) + ')'), days,
       U.el('div.sgrid', null,
@@ -13209,7 +14213,7 @@ const GenUI = {
         U.el('div.tt-r', null, U.el('span', null, STR.genFuel), U.el('b', null, st.fuel.toFixed(1) + ' / ' + FURNITURE.generator.tankL + ' ล.')),
         U.el('div.tt-r', null, U.el('span', null, STR.gridState), U.el('b', null, Power.gridOn() ? STR.powerOk : STR.powerOff)),
         U.el('div.tt-r', null, U.el('span', null, STR.genLoad), U.el('b', null, a.watts + ' / ' + a.cap + ' W')),
-        g.slot === 'G1' ? U.el('p.warn', null, STR.genOutdoorNoise) : U.el('p.dim', null, STR.genIndoor),
+        !Arrange.indoor(g.floor, g.x, g.z) ? U.el('p.warn', null, STR.genOutdoorNoise) : U.el('p.dim', null, STR.genIndoor),
         U.el('div.row', null,
           U.el('button.btn' + (st.on ? '' : '.primary'), { on: { click: () => { Appliances.setGen(!st.on); render(); } } }, st.on ? STR.genStop : STR.genStart),
           U.el('button.btn', { on: { click: () => { const l = Appliances.refuel(ch); Toast.show(l ? STR.genRefuel(l.toFixed(1)) : STR.noGasoline, l ? 'good' : 'warn'); render(); } } }, '⛽ ' + STR.genRefuelBtn)),
@@ -13351,6 +14355,7 @@ const BuildUI = {
     const ch = activeChar();
     const body = U.el('div.build');
     body.appendChild(U.el('p.dim', null, STR.buildHint));
+    body.appendChild(U.el('button.btn', { on: { click: () => { Modal.close(); ArrangeUI.open(); } } }, '🛋 ' + STR.arrTitle));
     for (const b of Barricades.list()) {
       const st = Barricades.get(b.key), B = BARRICADE[b.kind];
       const status = st.hp > 0 ? STR.barStatus(st.layers, B.layers, Math.round(st.hp), Math.round(st.max)) : (b.kind === 'window' ? (st.glass > 0 ? STR.barGlassOnly : STR.barBroken) : b.kind === 'door' ? (st.door > 0 ? STR.barDoorOnly : STR.barBroken) : STR.barOpen);
@@ -13367,6 +14372,154 @@ const BuildUI = {
         } } }, st.layers && st.hp < st.max * 0.98 ? STR.barRepairBtn : STR.barBuildBtn)));
     }
     Modal.open({ title: STR.buildTitle, body, wide: true });
+  },
+};
+
+/* ===== 58-home2-ui.js ===== */
+/* ==========================================================================
+   58 · PHASE 2B UI — arrange/build furniture (K), garden · water · weather (G)
+   ========================================================================== */
+
+const ArrangeUI = {
+  open() {
+    if (!Scene.isHome()) { Toast.show(STR.buildHomeOnly, 'warn'); return; }
+    const ch = activeChar();
+    const body = U.el('div.arrange');
+    body.appendChild(U.el('p.dim', null, STR.arrIntro));
+    // Build from materials
+    body.appendChild(U.el('h4', null, STR.arrBuildTitle));
+    for (const r of CRAFT_FURN) {
+      const def = FURNITURE[r.type], miss = Arrange.missing(ch, r);
+      body.appendChild(U.el('div.arow', null,
+        U.el('b', null, def.name),
+        U.el('span.small', null, r.uses.map(([id, n]) => itemDef(id).name + ' ×' + n).join(' + ') + ' · ' + STR.arrTools(r.tools.map((t) => itemDef(t).name).join(', ')) + ' · ' + U.dur(r.min)),
+        U.el('span.small.dim', null, def.farm ? STR.arrFarmInfo(def.farm.beds) : def.grid ? STR.arrStoreInfo(def.grid[0] * def.grid[1], def.limit) : ''),
+        miss.length ? U.el('em.warn.small', null, STR.arrMissing(miss.join(', '))) : null,
+        U.el('button.btn.sm' + (miss.length ? '' : '.primary'), { disabled: !!miss.length, on: { click: () => { Modal.close(); Arrange.build(r); } } }, STR.arrPlaceBtn)));
+    }
+    // Installable items the character carries or keeps at home
+    const inst = [];
+    const seen = new Set();
+    const scan = (c) => Inv.walk(c, (it, cc, slot) => { const d = itemDef(it.id); if (d.installs && !seen.has(it.id)) { seen.add(it.id); inst.push({ c: cc, slot, d }); } });
+    for (const c of ch.containers()) scan(c);
+    for (const f of S.home.furniture) if (f.inv) scan(f.inv);
+    for (const p of S.home.piles) scan(p.inv);
+    body.appendChild(U.el('h4', null, STR.arrInstallTitle));
+    if (!inst.length) body.appendChild(U.el('p.dim', null, STR.arrNoInstall));
+    for (const x of inst) {
+      body.appendChild(U.el('div.arow', null, U.el('img', { src: Icons.get(x.d.id), width: 32, height: 32 }), U.el('b', null, x.d.name),
+        U.el('button.btn.sm.primary', { on: { click: () => { Modal.close(); Arrange.installItem(x.c, x.slot); } } }, STR.arrPlaceBtn)));
+    }
+    body.appendChild(U.el('p.dim', null, STR.arrMoveHelp));
+    Modal.open({ title: STR.arrTitle, body, wide: true });
+  },
+};
+
+const FarmUI = {
+  tab: 'plots',
+  open(tab, focus) {
+    if (tab) this.tab = tab;
+    const body = U.el('div.farm');
+    const tabs = U.el('div.tabs', null, ...[['plots', STR.tabPlots], ['water', STR.tabWater], ['weather', STR.tabWeather]].map(([k, l]) =>
+      U.el('button.tab' + (k === this.tab ? '.on' : ''), { on: { click: () => { this.tab = k; render(); } } }, l)));
+    const pane = U.el('div.fpane');
+    const render = () => {
+      for (const b of tabs.children) b.classList.toggle('on', b.textContent === { plots: STR.tabPlots, water: STR.tabWater, weather: STR.tabWeather }[this.tab]);
+      pane.innerHTML = '';
+      if (this.tab === 'plots') this.plots(pane, focus, render);
+      else if (this.tab === 'water') this.water(pane, render);
+      else this.weather(pane);
+    };
+    body.append(tabs, pane);
+    render();
+    Modal.open({ title: STR.farmTitle, body, wide: true });
+  },
+  bar(v, cls) { return U.el('div.mbar' + (cls ? '.' + cls : ''), null, U.el('i', { style: { width: Math.round(U.clamp(v, 0, 1) * 100) + '%' } })); },
+  plots(pane, focus, render) {
+    const ch = activeChar(), list = Farm.plots();
+    if (!Scene.isHome()) pane.appendChild(U.el('p.warn', null, STR.farmAwayNote));
+    if (!list.length) { pane.appendChild(U.el('p.dim', null, STR.noPlots)); return; }
+    const wx = Weather.now();
+    pane.appendChild(U.el('p.dim', null, STR.farmSkill(Farm.lv(ch), Math.round(Farm.lv(ch) * FARM.skillGrow * 100), Math.round(Farm.lv(ch) * FARM.skillYield * 100))));
+    const sorted = focus ? [focus, ...list.filter((f) => f !== focus)] : list;
+    for (const f of sorted) {
+      const fm = f.farm, light = Farm.light(f, wx), out = !Arrange.indoor(f.floor, f.x, f.z);
+      const card = U.el('div.fcard' + (f === focus ? '.focus' : ''));
+      card.appendChild(U.el('div.fhead', null, U.el('b', null, f.label), U.el('span.dim', null, ' · ' + (out ? STR.plotOutdoor : STR.plotIndoor) + ' · ' + STR.lightLabel(Math.round(light * 100))),
+        Scene.isHome() ? U.el('button.btn.xs', { on: { click: () => { Modal.close(); Scene.doAction(f, 'waterPlot'); } } }, '💧 ' + STR.waterPlotAct + ' (' + Farm.waterNeed(f).toFixed(1) + ' ล.)') : null));
+      card.appendChild(U.el('div.frow', null, U.el('span', null, STR.moisture), this.bar(fm.moist, fm.moist < FARM.wetLow ? 'bad' : fm.moist < FARM.wetOk ? 'warn' : 'ok'), U.el('span.small', null, Math.round(fm.moist * 100) + '%')));
+      if (light < 0.3) card.appendChild(U.el('p.warn.small', null, STR.tooDark));
+      fm.plots.forEach((p, i) => {
+        const row = U.el('div.plot');
+        if (!p) {
+          row.append(U.el('span.dim', null, STR.plotEmpty(i + 1)));
+          if (Scene.isHome()) row.appendChild(U.el('button.btn.xs', { on: { click: () => this.plantMenu(f, i, render) } }, '🌱 ' + STR.plantAct));
+        } else {
+          const C = CROPS[p.crop], st = Farm.stage(p);
+          const left = st === 4 ? STR.readyNow : st === 5 ? STR.cropDead : STR.daysLeft(Farm.daysLeft(f, p));
+          row.append(U.el('b', null, C.name), U.el('span.small', null, ' ' + STR.stageName[st] + ' · ' + left + (p.n ? ' · ' + STR.harvestN(p.n, C.harvests) : '')),
+            U.el('span.small.dim', null, STR.plantHealth), this.bar(p.hp, p.hp < 0.4 ? 'bad' : p.hp < 0.75 ? 'warn' : 'ok'),
+            U.el('span.small.dim', null, STR.growth), this.bar(p.g, 'grow'));
+          if (Scene.isHome() && st === 4) row.appendChild(U.el('button.btn.xs.primary', { on: { click: () => { Modal.close(); Scene.doAction(f, 'harvest'); } } }, '🧺 ' + STR.harvestAct));
+          if (Scene.isHome() && st === 5) row.appendChild(U.el('button.btn.xs', { on: { click: () => { Farm.clear(f, i); render(); } } }, STR.clearPlot));
+        }
+        card.appendChild(row);
+      });
+      pane.appendChild(card);
+    }
+  },
+  /** Choose a seed for a plot (walks there and plants). */
+  plantMenu(f, idx, rerender) {
+    const ch = activeChar(), have = Farm.seedsHave(ch), kind = Farm.kind(f);
+    const i = idx == null ? Farm.free(f) : idx;
+    if (i < 0) { Toast.show(STR.plotTaken, 'warn'); return; }
+    const body = U.el('div.sleepopts');
+    body.appendChild(U.el('p.dim', null, STR.plantHint));
+    for (const [id, C] of Object.entries(CROPS)) {
+      const ok = have[id] > 0 && C.beds.includes(kind);
+      body.appendChild(U.el('button.mbtn' + (ok ? '' : '.dis'), { disabled: !ok, title: C.beds.includes(kind) ? '' : STR.cropWrongBed(C.name), on: { click: () => {
+        Modal.closeAll();
+        const ap = Scene.accessPoint(f);
+        const go = () => { Farm.plant(ch, f, i, id); if (rerender) FarmUI.open('plots', f); };
+        if (!ap || !Scene.avatar.goTo({ x: ap.x, z: ap.z, floor: f.floor }, 'walk', go)) go();
+      } } }, C.name + ' — ' + STR.cropTime(C.days, C.regrow, C.harvests) + ' · ' + STR.seedsLeft(have[id] || 0)));
+    }
+    Modal.open({ title: STR.plantTitle + ' — ' + f.label, body });
+  },
+  water(pane, render) {
+    const t = Water.totals(), ch = activeChar();
+    const pts = (t.safe + t.raw) * WATER.ptsPerL / 80;
+    pane.appendChild(U.el('div.sgrid', null,
+      U.el('div.sday', null, U.el('span', null, STR.waterSafe), U.el('b', null, t.safe.toFixed(0) + ' ล.')),
+      U.el('div.sday' + (t.raw > 0 ? '.warn' : ''), null, U.el('span', null, STR.waterRaw), U.el('b', null, t.raw.toFixed(0) + ' ล.')),
+      U.el('div.sday' + (pts < 5 ? '.low' : ''), null, U.el('span', null, STR.waterDays), U.el('b', null, Power.waterOn() ? STR.tapRunning : pts.toFixed(1) + ' ' + STR.daysUnit)),
+      U.el('div.sday', null, U.el('span', null, STR.tapState), U.el('b', null, Power.waterOn() ? STR.tapOn : STR.tapOff))));
+    pane.appendChild(U.el('p.dim', null, STR.waterExplain(Water.hasFilter(ch) ? STR.haveFilter : STR.noFilter)));
+    for (const f of Water.stores()) {
+      const st = FURNITURE[f.type].store, area = Water.catchArea(f);
+      pane.appendChild(U.el('div.arow', null, U.el('b', null, f.label),
+        this.bar(f.water.l / st.cap, 'water'), U.el('span.small', null, Math.round(f.water.l) + ' / ' + st.cap + ' ล.' + (f.water.raw > 0.5 ? ' · ' + STR.rawShare(Math.round(f.water.raw)) : '')),
+        U.el('span.small.dim', null, st.mains ? STR.mainsFed : area > 1 ? STR.catchGutter(area.toFixed(1)) : area > 0 ? STR.catchOpen(area.toFixed(2)) : STR.catchNone)));
+    }
+    if ((S.home.boiled || 0) > 0) pane.appendChild(U.el('div.arow', null, U.el('b', null, STR.boiledPot), U.el('span.small', null, S.home.boiled.toFixed(1) + ' / ' + WATER.boiledCap + ' ล.')));
+    pane.appendChild(U.el('p.dim', null, STR.gutterTip));
+    if (Scene.isHome() && Power.waterOn()) pane.appendChild(U.el('button.btn.primary', { on: { click: () => { Water.fillAll(); render(); } } }, STR.fillStoresAct));
+  },
+  weather(pane) {
+    const wx = Weather.now(), day = Math.floor(S.time.min / 1440);
+    pane.appendChild(U.el('div.wxnow', null, U.el('span.wxbig', null, STR.wxIcon[wx.kind]), U.el('div', null, U.el('b', null, STR.wxName[wx.kind] + ' · ' + Math.round(wx.temp) + '°C'),
+      U.el('div.dim', null, wx.mmh >= 0.2 ? STR.rainNow(wx.mmh.toFixed(1)) : STR.cloudNow(Math.round(wx.cloud * 100))),
+      U.el('div.dim', null, STR.rainEffects))));
+    const forecast = S.flags.outbreak && !Power.gridOn() ? 1 : 4;   // TV forecast only while the grid is up
+    pane.appendChild(U.el('h4', null, forecast > 1 ? STR.forecastTitle : STR.forecastNone));
+    const tbl = U.el('table.fc');
+    for (let i = 0; i < forecast; i++) {
+      const n = day + i, D = Weather.day(n), mm = Weather.dayRain(n);
+      tbl.appendChild(U.el('tr', null, U.el('td', null, i === 0 ? STR.today : Calendar.label(n)), U.el('td', null, mm > 0.5 ? (mm > 25 ? '⛈' : '🌧') : D.cloud > 0.5 ? '☁' : '☀'),
+        U.el('td', null, Math.round(D.tmin) + '–' + Math.round(D.tmax) + '°C'), U.el('td', null, mm > 0.5 ? STR.rainMm(Math.round(mm)) : STR.noRain)));
+    }
+    pane.appendChild(tbl);
+    pane.appendChild(U.el('p.dim', null, STR.seasonNote(MONTHS_TH[Calendar.month(day)], CLIMATE[Calendar.month(day)].mm, CLIMATE[Calendar.month(day)].days)));
   },
 };
 
@@ -13414,6 +14567,9 @@ const Game = {
     Appliances.init();
     HomeInstall.init();
     Health.initHooks();
+    Water.init();
+    Farm.init();
+    FarmView.init();
     Snd.init();
     Bus.on('death', ({ cause, day }) => { this.mode = 'dead'; GameClock.endSleep('death'); U.$('#hud').hidden = true; setTimeout(() => DeathUI.show(cause, day), 900); });
     Bus.on('player:hit', () => { const v = U.$('#hurt'); v.classList.remove('on'); void v.offsetWidth; v.classList.add('on'); });
@@ -13549,13 +14705,14 @@ const Game = {
   bindInput() {
     const cv = Render.renderer.domElement;
     let lastClick = 0, mDrag = null, hoverT = 0;
-    cv.addEventListener('contextmenu', (e) => { e.preventDefault(); if (this.mode === 'play' && !this.blocked()) Scene.contextMenu(e); });
+    cv.addEventListener('contextmenu', (e) => { e.preventDefault(); if (Arrange.active) { Arrange.cancel(); return; } if (this.mode === 'play' && !this.blocked()) Scene.contextMenu(e); });
     cv.addEventListener('pointerdown', (e) => {
       if (this.mode !== 'play') return;
       ContextMenu.hide();
       if (e.button === 1) { e.preventDefault(); mDrag = { x: e.clientX, y: e.clientY }; cv.setPointerCapture(e.pointerId); return; }
       if (e.button !== 0 || this.blocked()) return;
       if (GameClock.sleepUntil != null) { GameClock.endSleep('manual'); return; }
+      if (Arrange.active) { Arrange.move(e.clientX, e.clientY); Arrange.confirm(); return; }
       const now = performance.now();
       const dbl = now - lastClick < 300; lastClick = now;
       Scene.click(e, dbl);
@@ -13564,6 +14721,7 @@ const Game = {
       this.mouse.x = e.clientX; this.mouse.y = e.clientY; this.mouse.inside = true;
       if (mDrag) { Render.pan(-(e.clientX - mDrag.x) * 0.06, -(e.clientY - mDrag.y) * 0.06); mDrag = { x: e.clientX, y: e.clientY }; return; }
       if (this.mode !== 'play' || this.blocked()) return;
+      if (Arrange.active) { Arrange.move(e.clientX, e.clientY); return; }
       const now = performance.now();
       if (now - hoverT > 70) { hoverT = now; HUD.setHint(Scene.hoverAt(e.clientX, e.clientY)); }
     });
@@ -13576,6 +14734,12 @@ const Game = {
       if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA')) return;
       if (this.mode !== 'play') return;
       if (e.code === 'F9') { e.preventDefault(); DebugUI.open(); return; }
+      if (Arrange.active && !Modal.isOpen()) {
+        if (e.code === 'Escape') { Arrange.cancel(); return; }
+        if (e.code === 'KeyR') { Arrange.rotate(); return; }
+        if (e.code === 'Enter') { Arrange.confirm(); return; }
+        if (!['KeyQ', 'KeyE', 'PageUp', 'PageDown', 'KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) return;
+      }
       if (e.code === 'Escape') {
         if (U.$('#ctxmenu')) ContextMenu.hide();
         else if (Modal.isOpen()) { if (Modal.top().dismissible) Modal.close(); }
@@ -13607,6 +14771,8 @@ const Game = {
         case 'KeyN': NutritionUI.open(); break;
         case 'KeyH': HealthUI.open(); break;
         case 'KeyB': BuildUI.open(); break;
+        case 'KeyG': FarmUI.open(); break;
+        case 'KeyK': ArrangeUI.open(); break;
         case 'KeyV': Combat.shove(); break;
         default: break;
       }
@@ -13621,6 +14787,7 @@ window.HH = {
   Game, GameClock, Render, Scene, HomeScene, HomeWorld, World, Shop, Travel, Power, LOCATIONS, POOLS, Nav, InvUI, Inv, Save, Sanitize, ITEMS, FURNITURE, HOME,
   Icons, AssetRegistry, Character, activeChar, Modal, Toast, Needs, Skills, RNG, createRun, BUILD,
   Zombies, Combat, Health, Durability, Barricades, Encounters, AmbushUI, Snd, NoiseBus, Death, Food, Body, Meal, Cook, Spoil, Appliances, HomeInstall,
+  Arrange, Weather, Water, Farm, CROPS, CLIMATE, Calendar,
 };
 
 Game.boot().catch((e) => { console.error('[boot]', e); Game.fatal(STR.errTitle + ': ' + e.message); });

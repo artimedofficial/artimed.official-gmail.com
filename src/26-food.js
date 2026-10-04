@@ -275,12 +275,12 @@ const Body = {
 
 /** Conditions such as food poisoning (illness system is extended in 1D). */
 const Illness = {
-  add(d, type, sev) {
+  add(d, type, sev, msg = STR.illPoison) {
     const ex = d.ill.find((x) => x.type === type);
     if (ex) { ex.sev = Math.min(1, ex.sev + sev * 0.5); ex.h = Math.max(ex.h, 12 + sev * 24); }
     else d.ill.push({ type, sev: U.clamp(sev, 0.1, 1), h: 12 + sev * 24 });
-    logEvent(STR.illPoison, 'bad');
-    Bus.emit('toast', { kind: 'bad', msg: STR.illPoison });
+    logEvent(msg, 'bad');
+    Bus.emit('toast', { kind: 'bad', msg });
   },
   minute(d) {
     for (const x of d.ill) {

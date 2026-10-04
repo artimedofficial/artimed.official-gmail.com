@@ -165,7 +165,8 @@ const StockUI = {
       const v = s.kcal / (need * r.f);
       days.appendChild(U.el('div.sday' + (v < 3 ? '.low' : ''), null, U.el('span', null, STR.foodDaysAt(r.name)), U.el('b', null, v.toFixed(1) + ' ' + STR.daysUnit)));
     }
-    const waterDays = s.water / 80 + (Power.waterOn() ? Infinity : 0);
+    const wt = Scene.isHome() || S.home ? Water.totals() : { safe: 0, raw: 0 };
+    const waterDays = (s.water + (wt.safe + wt.raw) * WATER.ptsPerL) / 80 + (Power.waterOn() ? Infinity : 0);
     const fuelH = s.gasoline / 0.55;
     body.append(U.el('h4', null, STR.stockFood + ' (' + Math.round(s.kcal).toLocaleString() + ' kcal · ' + STR.needPerDay(Math.round(need)) + ')'), days,
       U.el('div.sgrid', null,
@@ -251,7 +252,7 @@ const GenUI = {
         U.el('div.tt-r', null, U.el('span', null, STR.genFuel), U.el('b', null, st.fuel.toFixed(1) + ' / ' + FURNITURE.generator.tankL + ' ล.')),
         U.el('div.tt-r', null, U.el('span', null, STR.gridState), U.el('b', null, Power.gridOn() ? STR.powerOk : STR.powerOff)),
         U.el('div.tt-r', null, U.el('span', null, STR.genLoad), U.el('b', null, a.watts + ' / ' + a.cap + ' W')),
-        g.slot === 'G1' ? U.el('p.warn', null, STR.genOutdoorNoise) : U.el('p.dim', null, STR.genIndoor),
+        !Arrange.indoor(g.floor, g.x, g.z) ? U.el('p.warn', null, STR.genOutdoorNoise) : U.el('p.dim', null, STR.genIndoor),
         U.el('div.row', null,
           U.el('button.btn' + (st.on ? '' : '.primary'), { on: { click: () => { Appliances.setGen(!st.on); render(); } } }, st.on ? STR.genStop : STR.genStart),
           U.el('button.btn', { on: { click: () => { const l = Appliances.refuel(ch); Toast.show(l ? STR.genRefuel(l.toFixed(1)) : STR.noGasoline, l ? 'good' : 'warn'); render(); } } }, '⛽ ' + STR.genRefuelBtn)),

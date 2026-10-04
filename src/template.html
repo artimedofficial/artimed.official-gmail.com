@@ -238,6 +238,20 @@ button, input, select { font-family: inherit; font-size: inherit; }
 .slider { display: grid; grid-template-columns: 90px 1fr; gap: 8px; align-items: center; margin: 4px 0; }
 .invhint { grid-column: 1 / 3; color: var(--dim); font-size: 12px; text-align: center; }
 @media (max-width: 1100px) { .needs { left: 10px; top: 128px; } .bgcards { grid-template-columns: repeat(2, 1fr); } }
+/* Phase 2B */
+.wx { font-size: 12px; color: #bcd4e6; cursor: pointer; margin-top: 3px; } .wx:hover { color: #fff; }
+.arow { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; padding: 7px 0; border-bottom: 1px solid #2c241a; font-size: 13px; }
+.arow b { min-width: 150px; } .arow .small { font-size: 11px; color: var(--dim); } .arow .warn { color: var(--warn); } .arow button { margin-left: auto; }
+.arow .mbar { flex: 0 0 160px; }
+.farm .tabs { display: flex; gap: 6px; margin-bottom: 10px; }
+.fcard { border: 1px solid #3a3022; border-radius: 8px; padding: 8px 10px; margin-bottom: 10px; background: #1a1612; } .fcard.focus { border-color: var(--amber); }
+.fhead { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; } .fhead button { margin-left: auto; }
+.frow { display: flex; align-items: center; gap: 8px; font-size: 12px; margin-bottom: 4px; } .frow .mbar { flex: 0 0 180px; }
+.plot { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; padding: 5px 0; border-top: 1px dashed #2c241a; font-size: 12px; } .plot .mbar { flex: 0 0 80px; } .plot button { margin-left: auto; }
+.mbar { height: 7px; background: #2a231a; border-radius: 4px; overflow: hidden; } .mbar i { display: block; height: 100%; background: var(--good); }
+.mbar.warn i { background: var(--warn); } .mbar.bad i { background: var(--bad); } .mbar.grow i { background: #8fd16a; } .mbar.water i { background: #4fa3d1; }
+.wxnow { display: flex; gap: 14px; align-items: center; margin-bottom: 8px; } .wxbig { font-size: 44px; }
+table.fc { border-collapse: collapse; margin: 6px 0; } table.fc td { padding: 4px 12px; border-bottom: 1px solid #2c241a; font-size: 13px; }
 </style>
 </head>
 <body>

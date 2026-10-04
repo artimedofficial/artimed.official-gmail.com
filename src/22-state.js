@@ -48,6 +48,10 @@ function createRun({ bg, difficulty, name }) {
   st.home.gas = 70;
   st.home.loads = {};
   st.home.furniture = buildHomeFurniture(st.worldSeed);
+  for (const [type, id, qty] of BG_START_STOCK[bg] || []) {
+    const f = st.home.furniture.find((x) => x.type === type && x.inv);
+    if (f) Inv.add(f.inv, Inv.makeItem(id, qty));
+  }
   return st;
 }
 
@@ -59,6 +63,7 @@ function buildHomeFurniture(worldSeed) {
     if (opts && opts.onTop != null) f.onTop = opts.onTop;
     if (def.grid) f.inv = Inv.makeContainer(def.grid[0], def.grid[1], def.limit, f.label, def.temp || 'ambient');
     if (def.sub) f.sub = Inv.makeContainer(def.sub.grid[0], def.sub.grid[1], def.sub.limit, def.sub.name, def.sub.temp);
+    initFurnState(f);
     return f;
   });
   const rng = RNG.local('homestock|' + worldSeed);
@@ -79,6 +84,14 @@ function buildHomeFurniture(worldSeed) {
   }
   for (const f of list) { if (f.sub && f.sub.temp === 'freezer') Spoil.freezeContents(f.sub); if (f.inv && f.inv.temp === 'freezer') Spoil.freezeContents(f.inv); }
   return list;
+}
+
+/** Per-type runtime state: water stores (litres, of which raw/untreated) and farm plots. */
+function initFurnState(f) {
+  const def = FURNITURE[f.type];
+  if (def.store && !f.water) f.water = { l: def.store.start || 0, raw: 0 };
+  if (def.farm && !f.farm) f.farm = { plots: new Array(def.farm.beds).fill(null), moist: 0.6 };
+  return f;
 }
 
 /* ---------- Lifetime profile helpers ---------- */
@@ -241,6 +254,7 @@ const Sanitize = {
         };
         if (def.grid) f.inv = fixC(f.inv, def, def.temp || 'ambient', f.label); else delete f.inv;
         if (def.sub) f.sub = fixC(f.sub, def.sub, def.sub.temp, def.sub.name); else delete f.sub;
+        Sanitize.furnState(f, def);
         return f;
       });
     }
@@ -258,6 +272,8 @@ const Sanitize = {
     if (st.travel && (typeof st.travel !== 'object' || !LOCATIONS[st.travel.to])) st.travel = null;
     if (st.travel) st.travel.left = U.num(st.travel.left, 10, 0, 1000);
     st.flags.invulnerable = !!st.flags.invulnerable;
+    if (st.flags.wxForce && !(typeof st.flags.wxForce === 'object' && isFinite(st.flags.wxForce.mmh) && isFinite(st.flags.wxForce.until))) delete st.flags.wxForce;
+    st.home.boiled = U.num(st.home.boiled, 0, 0, WATER.boiledCap);
     if (!st.home.loads || typeof st.home.loads !== 'object' || Array.isArray(st.home.loads)) st.home.loads = {};
     st.food.reserve = Array.isArray(st.food.reserve) ? st.food.reserve.filter((x) => ITEMS[x]) : [];
     st.food.exclude = Array.isArray(st.food.exclude) ? st.food.exclude.filter((x) => ITEMS[x]) : [];
@@ -268,6 +284,27 @@ const Sanitize = {
     st.schema = CFG.SCHEMA_RUN;
     st.build = BUILD;
     return st;
+  },
+  /** Water store and farm plot state (Phase 2B). */
+  furnState(f, def) {
+    if (def.store) {
+      const w = f.water && typeof f.water === 'object' ? f.water : { l: def.store.start || 0, raw: 0 };
+      w.l = U.num(w.l, 0, 0, def.store.cap); w.raw = U.num(w.raw, 0, 0, w.l);
+      f.water = w;
+    } else delete f.water;
+    if (def.farm) {
+      const fm = f.farm && typeof f.farm === 'object' ? f.farm : {};
+      const old = Array.isArray(fm.plots) ? fm.plots : [];
+      fm.plots = [];
+      for (let i = 0; i < def.farm.beds; i++) {
+        const p = old[i];
+        if (!p || typeof p !== 'object' || !CROPS[p.crop]) { fm.plots.push(null); continue; }
+        fm.plots.push({ crop: p.crop, at: U.num(p.at, 0, 0, 1e9), g: U.num(p.g, 0, 0, 1), hp: U.num(p.hp, 1, 0, 1), n: U.num(p.n, 0, 0, 99) | 0, dead: !!p.dead });
+      }
+      fm.moist = U.num(fm.moist, 0.6, 0, 1);
+      f.farm = fm;
+    } else delete f.farm;
+    if (f.onTop != null) f.onTop = U.num(f.onTop, 0, 0, 3);
   },
   profile(p) {
     if (!p || typeof p !== 'object') return createProfile();

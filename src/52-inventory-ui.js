@@ -238,7 +238,7 @@ const InvUI = {
       items.push({ label: S.food.exclude.includes(d.id) ? STR.unexclude : STR.exclude, fn: () => { const r = S.food.exclude; const i = r.indexOf(d.id); if (i >= 0) r.splice(i, 1); else r.push(d.id); this.changed(); } });
     }
     if (src.slot && (d.tags.includes('electrolyte') || d.tags.includes('diarrhea')) && !d.per) items.push({ label: STR.use, fn: () => { if (Illness.treat(activeChar().d, it)) { if (it.uses != null) it.uses--; if (it.uses == null || it.uses <= 0) { if (it.qty > 1) { it.qty--; if (d.uses) it.uses = d.uses; } else Inv.remove(src.c, src.slot); } logEvent(STR.usedMed(d.name)); } this.changed(); } });
-    if (src.slot && d.installs) items.push({ label: STR.installAct, fn: () => InstallUI.open(src.c, src.slot) });
+    if (src.slot && d.installs) items.push({ label: STR.installAct, fn: () => { if (S.scene !== 'home') { Toast.show(STR.installHomeOnly, 'warn'); return; } Arrange.installItem(src.c, src.slot); } });
     if (WEAPONS[it.id] && WEAPONS[it.id].mat && d.dura) items.push({ label: STR.repairAct + ' (' + REPAIRS[WEAPONS[it.id].mat].name + ')', fn: () => { if (Durability.repair(activeChar(), it)) Toast.show(STR.repaired(d.name, Math.round(it.cap * 100)), 'good'); this.changed(); } });
     if (it.inv) items.push({ label: STR.openBag, fn: () => this.openBag(it) });
     if (src.slot && d.equip && !ch.d.equip[d.equip]) items.push({ label: STR.equip, fn: () => this.equipFrom(src.c, src.slot, d.equip) });

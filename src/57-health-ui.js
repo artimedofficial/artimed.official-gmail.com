@@ -71,6 +71,7 @@ const BuildUI = {
     const ch = activeChar();
     const body = U.el('div.build');
     body.appendChild(U.el('p.dim', null, STR.buildHint));
+    body.appendChild(U.el('button.btn', { on: { click: () => { Modal.close(); ArrangeUI.open(); } } }, '🛋 ' + STR.arrTitle));
     for (const b of Barricades.list()) {
       const st = Barricades.get(b.key), B = BARRICADE[b.kind];
       const status = st.hp > 0 ? STR.barStatus(st.layers, B.layers, Math.round(st.hp), Math.round(st.max)) : (b.kind === 'window' ? (st.glass > 0 ? STR.barGlassOnly : STR.barBroken) : b.kind === 'door' ? (st.door > 0 ? STR.barDoorOnly : STR.barBroken) : STR.barOpen);

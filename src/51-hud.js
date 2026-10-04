@@ -54,7 +54,8 @@ const HUD = {
     e.floors.appendChild(U.el('button.fl.locked', { disabled: true, title: STR.basementLocked }, STR.basementLocked));
     e.lights = U.el('button.btn.sm', { on: { click: () => { S.home.lightsOn = !S.home.lightsOn; } } });
     e.power = U.el('div.power');
-    const side = U.el('div.panel.side', null, e.place, e.cash, e.floors, U.el('div.row', null, e.lights), e.power);
+    e.wx = U.el('div.wx', { title: STR.wxTitle, on: { click: () => FarmUI.open('weather') } });
+    const side = U.el('div.panel.side', null, e.place, e.cash, e.floors, U.el('div.row', null, e.lights), e.power, e.wx);
     // Bottom bar
     const B = (icon, label, key, fn) => U.el('button.btn.hb', { title: label + (key ? ' (' + key + ')' : ''), on: { click: fn } }, icon, U.el('span', null, ' ' + label));
     const bar = U.el('div.panel.bottombar', null,
@@ -64,6 +65,8 @@ const HUD = {
       B('🍳', STR.hbCook, 'C', () => CookUI.open()),
       B('❤', STR.hbHealth, 'H', () => HealthUI.open()),
       B('🔨', STR.hbBuild, 'B', () => BuildUI.open()),
+      B('🛋', STR.hbArrange, 'K', () => ArrangeUI.open()),
+      B('🌱', STR.hbFarm, 'G', () => FarmUI.open()),
       B('🥗', STR.btnNutrition, 'N', () => NutritionUI.open()),
       B('📦', STR.btnStock, '', () => StockUI.open()),
       B('📈', STR.btnSkills, '', () => SkillsUI.open()),
@@ -97,7 +100,7 @@ const HUD = {
     const t = U.timeOf(S.time.min);
     const hand = U.$('#dialHand');
     if (hand) hand.setAttribute('transform', `rotate(${(t.dayMin / 1440) * 360} 40 40)`);
-    e.day.textContent = STR.day + ' ' + t.day;
+    e.day.textContent = STR.day + ' ' + t.day + ' · ' + Calendar.label(t.day);
     e.time.textContent = t.hhmm;
     e.phase.textContent = S.flags.outbreak ? STR.outbreakStarted : STR.outbreakIn(U.dur(CFG.OUTBREAK_MINUTE - S.time.min));
     e.phase.className = 'phase ' + (S.flags.outbreak ? 'bad' : 'calm');
@@ -132,6 +135,8 @@ const HUD = {
     e.power.textContent = '⚡ ' + (pst === 'failed' ? STR.powerFailed : !pon ? STR.powerOff : pst === 'brownout' ? STR.powerBrownout : STR.powerOk);
     e.power.className = 'power ' + (pst === 'failed' || !pon ? 'bad' : pst === 'brownout' ? 'warn' : '');
     e.lights.textContent = '💡 ' + STR.lights + ': ' + (S.home.lightsOn ? STR.lightsOn : STR.lightsOff);
+    const wx = Weather.now();
+    e.wx.textContent = STR.wxIcon[wx.kind] + ' ' + STR.wxName[wx.kind] + (wx.mmh >= 0.2 ? ' ' + wx.mmh.toFixed(1) + ' มม./ชม.' : '') + ' · ' + Math.round(wx.temp) + '°C';
     e.sleep.hidden = GameClock.sleepUntil == null;
     if (!e.fps.hidden) e.fps.textContent = `${Math.round(Render.fps.value)} FPS · ${Render.fps.ms.toFixed(1)} ms · ${Render.q.key} · calls ${Render.renderer.info.render.calls} · tris ${(Render.renderer.info.render.triangles / 1000).toFixed(0)}k`;
   },

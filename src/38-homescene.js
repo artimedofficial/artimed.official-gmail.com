@@ -64,19 +64,33 @@ const Scene = {
   addFurniture(f) {
     const def = FURNITURE[f.type];
     const obj = AssetRegistry.create(def.asset, { seed: f.uid });
-    obj.position.set(f.x, f.floor * CFG.FLOOR_H + (f.onTop || 0) + (def.outdoor ? HomeWorld.YARD_Y : 0), f.z);
+    // Home: anything may stand in the yard (free arrangement) → ground height and group by position.
+    const out = this.isHome() ? !Arrange.indoor(f.floor, f.x, f.z) : !!def.outdoor;
+    const gy = this.isHome() ? (f.floor === 0 ? HomeWorld.groundY(f.x, f.z, 0) : 0) : (def.outdoor ? HomeWorld.YARD_Y : 0);
+    obj.position.set(f.x, f.floor * CFG.FLOOR_H + (f.onTop || 0) + gy, f.z);
     obj.rotation.y = -f.rot * Math.PI / 2;
     obj.userData.furnUid = f.uid; obj.userData.floor = f.floor;
-    (def.outdoor ? this.W.outdoor : this.W.floors[f.floor].group).add(obj);
+    (out ? this.W.outdoor : this.W.floors[f.floor].group).add(obj);
     this.W.furn.set(f.uid, obj);
     if (def.stock) this.refreshStock(f);
     if (def.light) {
       const p = new THREE.Vector3(0, def.light.y, 0).applyMatrix4(obj.matrixWorld.compose(obj.position, obj.quaternion, obj.scale));
       let lampMat = null;
       obj.traverse((o) => { if (o.isMesh && o.material.emissive && o.material.side === THREE.DoubleSide) lampMat = o.material; });
-      this.W.lights.push({ kind: 'lamp', floor: f.floor, room: (HomeWorld.roomAt(f.floor, f.x, f.z) || {}).id, pos: p, color: def.light.color, intensity: def.light.intensity, dist: def.light.dist, lampMat });
+      this.W.lights.push({ kind: 'lamp', uid: f.uid, floor: f.floor, room: (HomeWorld.roomAt(f.floor, f.x, f.z) || {}).id, pos: p, color: def.light.color, intensity: def.light.intensity, dist: def.light.dist, lampMat });
     }
+    if (f.farm) { FarmView.forget(f.uid); FarmView.attach(f); }
   },
+  /** Remove a piece's mesh (and its lamp light) from the scene. */
+  removeFurnitureObj(f) {
+    const obj = this.W && this.W.furn.get(f.uid);
+    if (obj) { if (obj.parent) obj.parent.remove(obj); obj.traverse((o) => { if (o.isMesh) o.geometry.dispose(); }); this.W.furn.delete(f.uid); }
+    if (this.W) this.W.lights = this.W.lights.filter((L) => L.uid !== f.uid);
+    this.stockObjs.delete(f.uid);
+    if (typeof FarmView !== 'undefined') FarmView.forget(f.uid);
+  },
+  /** Rebuild a piece after it moved (group, height, lamp position, crops). */
+  refreshFurniture(f) { this.removeFurnitureObj(f); this.addFurniture(f); },
   /** Rebuild product meshes for a stocked fixture when its contents changed. */
   refreshStock(f) {
     const def = FURNITURE[f.type], obj = this.W && this.W.furn.get(f.uid);
@@ -146,17 +160,44 @@ const Scene = {
     if (f.type === 'car') out.push({ key: 'siphon', label: STR.siphonAct });
     if (f.inv) out.push({ key: 'open', label: STR.open + ' ' + f.label });
     if (def.act === 'sleep') out.push({ key: 'sleep', label: STR.sleepHere });
-    if (def.act === 'water') out.push({ key: 'drink', label: STR.drinkTap });
+    if (def.act === 'tap') { out.push({ key: 'drink', label: STR.drinkTap }); if (this.isHome() && Water.stores().length) out.push({ key: 'fillStores', label: STR.fillStoresAct }); }
+    if (def.store && f.water) { out.push({ key: 'drinkStore', label: STR.drinkStoreAct(Math.round(f.water.l)) }); out.push({ key: 'waterInfo', label: STR.waterInfoAct }); }
+    if (def.act === 'cook' && this.isHome()) { out.push({ key: 'boil', label: STR.boilAct }); if ((S.home.boiled || 0) > 0.1) out.push({ key: 'drinkBoiled', label: STR.drinkBoiledAct(S.home.boiled.toFixed(1)) }); }
+    if (def.farm && f.farm) {
+      const ready = f.farm.plots.findIndex((p) => p && !p.dead && p.g >= 1);
+      if (ready >= 0) out.push({ key: 'harvest', label: STR.harvestAct });
+      if (Farm.free(f) >= 0) out.push({ key: 'plant', label: STR.plantAct });
+      if (f.farm.plots.some(Boolean)) out.push({ key: 'waterPlot', label: STR.waterPlotAct });
+      out.push({ key: 'farmInfo', label: STR.farmInfoAct });
+    }
+    if (this.isHome() && Arrange.movable(f)) {
+      out.push({ key: 'move', label: STR.moveAct });
+      const def2 = FURNITURE[f.type];
+      if (def2.fromItem || Object.values(ITEMS).some((d) => d.installs === f.type)) out.push({ key: 'pickup', label: STR.pickUpAct });
+      if (f.crafted) out.push({ key: 'dismantle', label: STR.dismantleAct });
+    }
     out.push({ key: 'walk', label: STR.walkHere });
     return out;
   },
   doAction(f, key, mode = 'walk') {
+    if (key === 'move') { Arrange.start(f); return; }
+    if (key === 'farmInfo') { FarmUI.open('plots', f); return; }
+    if (key === 'waterInfo') { FarmUI.open('water'); return; }
     const ap = this.accessPoint(f);
     if (!ap) { Bus.emit('toast', { kind: 'warn', msg: STR.cannotReach }); return; }
     const after = {
       open: () => InvUI.open(f),
       sleep: () => SleepUI.open(f),
-      drink: () => { Needs.drinkTap(activeChar()); },
+      drink: () => { Water.drink(activeChar(), 'tap'); },
+      fillStores: () => { Water.fillAll(); },
+      drinkStore: () => { Water.drink(activeChar(), f); },
+      boil: () => { Water.boil(activeChar()); },
+      drinkBoiled: () => { Water.drink(activeChar(), 'boiled'); },
+      harvest: () => { const ch = activeChar(); f.farm.plots.forEach((p, i) => { if (p && !p.dead && p.g >= 1) Farm.harvest(ch, f, i); }); },
+      plant: () => { FarmUI.plantMenu(f); },
+      waterPlot: () => { Farm.water(activeChar(), f); },
+      pickup: () => { Arrange.pickUp(f); },
+      dismantle: () => { Arrange.dismantle(f); },
       checkout: () => CheckoutUI.open(),
       delivery: () => DeliveryUI.open(),
       cook: () => CookUI.open('stove'),
@@ -288,6 +329,7 @@ const Scene = {
     if (this.W.exitMarker) this.W.exitMarker.material.opacity = 0.45 + Math.sin(performance.now() * 0.004) * 0.25;
     Render.updateCamera(realDt, { x: p.x, z: p.z });
     Render.updateDayNight(S.time.min);
+    Rain.update(realDt);
     Render.updateLights({ x: p.x, z: p.z }, this.isHome() ? S.home.lightsOn : true, this.isHome() ? Appliances.lightsPowered() : Power.gridOn());
   },
 };

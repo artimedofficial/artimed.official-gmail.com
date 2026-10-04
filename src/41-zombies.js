@@ -12,6 +12,7 @@ const NoiseBus = {
     if (!Scene.W || radius <= 0) return 0;
     const indoor = Scene.W.isIndoor(x, z, floor);
     if (indoor && !outdoorOverride) return 0;
+    radius *= 1 - WEATHER.noiseMask * Weather.rainMask();   // rain drowns outdoor sound
     let n = 0;
     for (const zb of Zombies.list) {
       if (zb.dead) continue;
@@ -55,6 +56,7 @@ class Zombie {
     const d0 = S.chars[S.active];
     let range = this.t.sight * (night ? 0.55 : 1) * (d0._moving === 'sneak' ? 0.55 - new Character(d0).skill('stealth') * 0.02 : 1);
     if (Scene.W.isIndoor(px, pz, pfloor) !== Scene.W.isIndoor(this.x, this.z, 0) && Scene.isHome()) range *= 0.35; // walls & windows
+    range *= 1 - WEATHER.sightMask * Weather.rainMask();
     if (d > range) return false;
     if (d < 1.6) return true;
     const ang = Math.atan2(dx, dz) - this.rot;
@@ -287,7 +289,8 @@ const Zombies = {
     const nl = Noise.level(ch.d);
     if (nl > 0 && Math.random() < dt * 2) NoiseBus.emit(ch.d.pos.x, ch.d.pos.z, nl, ch.d.pos.floor);
     const gn = Appliances.generatorNoise ? (Scene.isHome() ? Appliances.generatorNoise() : 0) : 0;
-    if (gn && Math.random() < dt * 0.2) NoiseBus.emit(HOME_SLOTS[3].x, HOME_SLOTS[3].z, gn, 0, true);
+    const gen = gn && Appliances.generator();
+    if (gen && Math.random() < dt * 0.2) NoiseBus.emit(gen.x, gen.z, gn, 0, true);
     // Sleep is interrupted by zombies at the barricades or near the player
     if (GameClock.sleepUntil != null && this.list.some((z) => !z.dead && (z.state === 'bash' || z.state === 'attack' || Math.hypot(z.x - ch.d.pos.x, z.z - ch.d.pos.z) < 6))) {
       GameClock.endSleep('zombies'); Toast.show(STR.wokeByZombies, 'bad', 6000);

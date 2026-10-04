@@ -116,10 +116,7 @@ const Needs = {
     check('hyd', d.needs.hydration, 25, STR.thirsty);
     check('en', d.needs.energy, 20, STR.tired);
   },
-  drinkTap(ch) {
-    ch.d.needs.hydration = U.clamp(ch.d.needs.hydration + 35, 0, 100);
-    logEvent(STR.drank(STR.tapWater));
-  },
+  drinkTap(ch) { return Water.drink(ch, 'tap'); },
 };
 
 /* ---------- Outbreak milestone ---------- */

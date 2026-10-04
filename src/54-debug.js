@@ -55,6 +55,11 @@ const DebugUI = {
         U.el('button.btn.sm' + (S.flags.invulnerable ? '.on' : ''), { on: { click: () => { S.flags.invulnerable = !S.flags.invulnerable; Modal.close(); this.open(); } } }, STR.dbgInvuln),
         U.el('button.btn.sm', { on: { click: () => { Health.damage(activeChar().d, 'armL', 12, 'bite'); } } }, STR.dbgBite),
         U.el('button.btn.sm', { on: { click: () => { const ch = activeChar(); for (const k in BODY_PARTS) { ch.d.body[k].hp = BODY_PARTS[k].hp; ch.d.body[k].cond = []; } ch.d.blood = 100; } } }, STR.dbgHeal)),
+      U.el('h4', null, STR.dbgWeather),
+      U.el('div.row', null,
+        U.el('button.btn.sm', { on: { click: () => { S.flags.wxForce = { mmh: 18, until: S.time.min + 120 }; Modal.close(); } } }, STR.dbgRainHeavy),
+        U.el('button.btn.sm', { on: { click: () => { S.flags.wxForce = { mmh: 0, until: S.time.min + 180 }; Modal.close(); } } }, STR.dbgRainStop),
+        U.el('button.btn.sm', { on: { click: () => { for (const f of Farm.plots()) { f.farm.moist = 1; for (const p of f.farm.plots) if (p && !p.dead) { p.g = 1; p.hp = 1; } Bus.emit('farm:changed', f); } } } }, STR.dbgGrowAll)),
       U.el('details', null, U.el('summary', null, STR.dbgAssets + ' (' + AssetRegistry.list().length + ')'), U.el('pre.assets', null, AssetRegistry.list().join('\n'))),
     );
     Modal.open({ title: STR.dbgTitle, body, wide: true, pauseTime: false });

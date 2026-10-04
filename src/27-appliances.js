@@ -43,7 +43,7 @@ const Appliances = {
   generatorNoise() {
     const g = this.generator(); if (!g) return 0;
     const st = this.genState(g);
-    return st.on && st.fuel > 0 && g.slot === 'G1' ? 25 : 0;
+    return st.on && st.fuel > 0 && !Arrange.indoor(g.floor, g.x, g.z) ? 25 : 0;
   },
   setGen(on) {
     const g = this.generator(); if (!g) return;

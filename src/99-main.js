@@ -41,6 +41,9 @@ const Game = {
     Appliances.init();
     HomeInstall.init();
     Health.initHooks();
+    Water.init();
+    Farm.init();
+    FarmView.init();
     Snd.init();
     Bus.on('death', ({ cause, day }) => { this.mode = 'dead'; GameClock.endSleep('death'); U.$('#hud').hidden = true; setTimeout(() => DeathUI.show(cause, day), 900); });
     Bus.on('player:hit', () => { const v = U.$('#hurt'); v.classList.remove('on'); void v.offsetWidth; v.classList.add('on'); });
@@ -176,13 +179,14 @@ const Game = {
   bindInput() {
     const cv = Render.renderer.domElement;
     let lastClick = 0, mDrag = null, hoverT = 0;
-    cv.addEventListener('contextmenu', (e) => { e.preventDefault(); if (this.mode === 'play' && !this.blocked()) Scene.contextMenu(e); });
+    cv.addEventListener('contextmenu', (e) => { e.preventDefault(); if (Arrange.active) { Arrange.cancel(); return; } if (this.mode === 'play' && !this.blocked()) Scene.contextMenu(e); });
     cv.addEventListener('pointerdown', (e) => {
       if (this.mode !== 'play') return;
       ContextMenu.hide();
       if (e.button === 1) { e.preventDefault(); mDrag = { x: e.clientX, y: e.clientY }; cv.setPointerCapture(e.pointerId); return; }
       if (e.button !== 0 || this.blocked()) return;
       if (GameClock.sleepUntil != null) { GameClock.endSleep('manual'); return; }
+      if (Arrange.active) { Arrange.move(e.clientX, e.clientY); Arrange.confirm(); return; }
       const now = performance.now();
       const dbl = now - lastClick < 300; lastClick = now;
       Scene.click(e, dbl);
@@ -191,6 +195,7 @@ const Game = {
       this.mouse.x = e.clientX; this.mouse.y = e.clientY; this.mouse.inside = true;
       if (mDrag) { Render.pan(-(e.clientX - mDrag.x) * 0.06, -(e.clientY - mDrag.y) * 0.06); mDrag = { x: e.clientX, y: e.clientY }; return; }
       if (this.mode !== 'play' || this.blocked()) return;
+      if (Arrange.active) { Arrange.move(e.clientX, e.clientY); return; }
       const now = performance.now();
       if (now - hoverT > 70) { hoverT = now; HUD.setHint(Scene.hoverAt(e.clientX, e.clientY)); }
     });
@@ -203,6 +208,12 @@ const Game = {
       if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA')) return;
       if (this.mode !== 'play') return;
       if (e.code === 'F9') { e.preventDefault(); DebugUI.open(); return; }
+      if (Arrange.active && !Modal.isOpen()) {
+        if (e.code === 'Escape') { Arrange.cancel(); return; }
+        if (e.code === 'KeyR') { Arrange.rotate(); return; }
+        if (e.code === 'Enter') { Arrange.confirm(); return; }
+        if (!['KeyQ', 'KeyE', 'PageUp', 'PageDown', 'KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) return;
+      }
       if (e.code === 'Escape') {
         if (U.$('#ctxmenu')) ContextMenu.hide();
         else if (Modal.isOpen()) { if (Modal.top().dismissible) Modal.close(); }
@@ -234,6 +245,8 @@ const Game = {
         case 'KeyN': NutritionUI.open(); break;
         case 'KeyH': HealthUI.open(); break;
         case 'KeyB': BuildUI.open(); break;
+        case 'KeyG': FarmUI.open(); break;
+        case 'KeyK': ArrangeUI.open(); break;
         case 'KeyV': Combat.shove(); break;
         default: break;
       }
@@ -248,6 +261,7 @@ window.HH = {
   Game, GameClock, Render, Scene, HomeScene, HomeWorld, World, Shop, Travel, Power, LOCATIONS, POOLS, Nav, InvUI, Inv, Save, Sanitize, ITEMS, FURNITURE, HOME,
   Icons, AssetRegistry, Character, activeChar, Modal, Toast, Needs, Skills, RNG, createRun, BUILD,
   Zombies, Combat, Health, Durability, Barricades, Encounters, AmbushUI, Snd, NoiseBus, Death, Food, Body, Meal, Cook, Spoil, Appliances, HomeInstall,
+  Arrange, Weather, Water, Farm, CROPS, CLIMATE, Calendar,
 };
 
 Game.boot().catch((e) => { console.error('[boot]', e); Game.fatal(STR.errTitle + ': ' + e.message); });
