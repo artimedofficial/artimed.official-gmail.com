@@ -15,9 +15,9 @@ out('setup', await page.evaluate(() => {
   add(fridge.inv, 'pork_1kg', 2); add(fridge.inv, 'fish_tilapia', 2); add(fridge.inv, 'cucumber', 2); add(fridge.inv, 'egg', 6);
   add(pantry.inv, 'salt', 4); add(pantry.inv, 'vinegar', 1); add(pantry.inv, 'charcoal', 1);
   const pile = HH.Scene.pileNear(0, 2.8, 9.8, true);
-  add(pile.inv, 'ferment_jar_item', 2); add(pile.inv, 'plank', 5); add(pile.inv, 'nails_1kg', 1); add(pile.inv, 'steel_sheet', 1);
-  const ch = HH.activeChar(); ch.d.equip.back = ch.d.equip.back || HH.Inv.makeItem('backpack_medium');
-  for (const s of [...pile.inv.slots]) if (['plank', 'nails_1kg', 'steel_sheet'].includes(s.it.id)) { HH.Inv.add(ch.d.equip.back.inv, s.it); HH.Inv.remove(pile.inv, s); }
+  add(pile.inv, 'ferment_jar_item', 2);
+  const rack = F.find((f) => f.type === 'big_rack'); add(rack.inv, 'plank', 5); add(rack.inv, 'steel_sheet', 1);
+  const ch = HH.activeChar();
   const R = (t) => CRAFT_FURN.find((r) => r.type === t);
   HH.Arrange.build(R('drying_tray')); HH.Arrange.preview(-4.5, 5.0, 0, 0); const t1 = HH.Arrange.confirm();
   HH.Arrange.build(R('smoker')); HH.Arrange.preview(-8.5, 1.5, 0, 0); const t2 = HH.Arrange.confirm();
