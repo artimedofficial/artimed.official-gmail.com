@@ -44,6 +44,8 @@ const Game = {
     Water.init();
     Farm.init();
     FarmView.init();
+    Preserve.init();
+    PreserveView.init();
     Snd.init();
     Bus.on('death', ({ cause, day }) => { this.mode = 'dead'; GameClock.endSleep('death'); U.$('#hud').hidden = true; setTimeout(() => DeathUI.show(cause, day), 900); });
     Bus.on('player:hit', () => { const v = U.$('#hurt'); v.classList.remove('on'); void v.offsetWidth; v.classList.add('on'); });
@@ -261,7 +263,7 @@ window.HH = {
   Game, GameClock, Render, Scene, HomeScene, HomeWorld, World, Shop, Travel, Power, LOCATIONS, POOLS, Nav, InvUI, Inv, Save, Sanitize, ITEMS, FURNITURE, HOME,
   Icons, AssetRegistry, Character, activeChar, Modal, Toast, Needs, Skills, RNG, createRun, BUILD,
   Zombies, Combat, Health, Durability, Barricades, Encounters, AmbushUI, Snd, NoiseBus, Death, Food, Body, Meal, Cook, Spoil, Appliances, HomeInstall,
-  Arrange, Weather, Water, Farm, CROPS, CLIMATE, Calendar,
+  Arrange, Weather, Water, Farm, CROPS, CLIMATE, Calendar, Preserve, Bottles, PRESERVE,
 };
 
 Game.boot().catch((e) => { console.error('[boot]', e); Game.fatal(STR.errTitle + ': ' + e.message); });

@@ -42,14 +42,15 @@ const FarmUI = {
   open(tab, focus) {
     if (tab) this.tab = tab;
     const body = U.el('div.farm');
-    const tabs = U.el('div.tabs', null, ...[['plots', STR.tabPlots], ['water', STR.tabWater], ['weather', STR.tabWeather]].map(([k, l]) =>
+    const tabs = U.el('div.tabs', null, ...[['plots', STR.tabPlots], ['preserve', STR.tabPreserve], ['water', STR.tabWater], ['weather', STR.tabWeather]].map(([k, l]) =>
       U.el('button.tab' + (k === this.tab ? '.on' : ''), { on: { click: () => { this.tab = k; render(); } } }, l)));
     const pane = U.el('div.fpane');
     const render = () => {
-      for (const b of tabs.children) b.classList.toggle('on', b.textContent === { plots: STR.tabPlots, water: STR.tabWater, weather: STR.tabWeather }[this.tab]);
+      for (const b of tabs.children) b.classList.toggle('on', b.textContent === { plots: STR.tabPlots, preserve: STR.tabPreserve, water: STR.tabWater, weather: STR.tabWeather }[this.tab]);
       pane.innerHTML = '';
       if (this.tab === 'plots') this.plots(pane, focus, render);
       else if (this.tab === 'water') this.water(pane, render);
+      else if (this.tab === 'preserve') PreserveUI.overview(pane);
       else this.weather(pane);
     };
     body.append(tabs, pane);
@@ -143,5 +144,69 @@ const FarmUI = {
     }
     pane.appendChild(tbl);
     pane.appendChild(U.el('p.dim', null, STR.seasonNote(MONTHS_TH[Calendar.month(day)], CLIMATE[Calendar.month(day)].mm, CLIMATE[Calendar.month(day)].days)));
+  },
+};
+
+/** Start / watch / collect a preservation batch at a station. */
+const PreserveUI = {
+  open(f) {
+    const ch = activeChar(), spec = Preserve.spec(f);
+    const body = U.el('div.preserve');
+    if (f.batch) {
+      const b = f.batch, P = PRESERVE[b.m], cond = Preserve.condition(f);
+      body.append(U.el('p', null, U.el('b', null, P.icon + ' ' + P.name + ': '), b.items.map((x) => itemDef(x.id).name + ' ×' + x.n).join(', ')),
+        U.el('div.frow', null, U.el('span', null, STR.presProgress), FarmUI.bar(b.prog / b.need, 'grow'), U.el('span.small', null, b.done ? STR.presReady : STR.presHoursLeft(Preserve.hoursLeft(f).toFixed(1), P.sun))),
+        U.el('div.frow', null, U.el('span', null, STR.presQuality), FarmUI.bar(b.q, b.q < PRES.qLow ? 'bad' : b.q < 0.85 ? 'warn' : 'ok'), U.el('span.small', null, Math.round(b.q * 100) + '%')),
+        U.el('p.small' + (cond === 'ok' ? '.dim' : '.warn'), null, STR.presCond[cond]),
+        U.el('p.dim', null, STR.presOut(b.outs.map((o) => itemDef(o.id).name + ' ×' + o.n).join(', '))),
+        U.el('div.row', null,
+          b.done ? U.el('button.btn.primary', { on: { click: () => { Modal.close(); Scene.doAction(f, 'preserve'); } } }, STR.presCollectAct) : null,
+          U.el('button.btn', { on: { click: () => Modal.confirm(STR.presDiscardTitle, STR.presDiscardMsg, () => { Preserve.discard(f); Modal.closeAll(); }, STR.presDiscardBtn, true) } }, STR.presDiscardBtn)));
+      Modal.open({ title: f.label, body, wide: true });
+      return;
+    }
+    const methods = spec.methods;
+    let m = methods[0];
+    const sel = {};
+    const pane = U.el('div');
+    const render = () => {
+      pane.innerHTML = '';
+      const P = PRESERVE[m];
+      if (methods.length > 1) pane.appendChild(U.el('div.tabs', null, ...methods.map((k) => U.el('button.tab' + (k === m ? '.on' : ''), { on: { click: () => { m = k; for (const id in sel) delete sel[id]; render(); } } }, PRESERVE[k].icon + ' ' + PRESERVE[k].name))));
+      pane.appendChild(U.el('p.dim', null, STR.presIntro[m] + ' ' + STR.presCap(spec.cap)));
+      for (const [id, r] of Object.entries(P.recipes)) {
+        const have = Preserve.available(ch, id), n = sel[id] || 0;
+        const step = r.per || 1;
+        const set = (v) => { sel[id] = U.clamp(v, 0, have - (have % step)); render(); };
+        pane.appendChild(U.el('div.arow' + (have ? '' : '.dis'), null,
+          U.el('img', { src: Icons.get(id), width: 28, height: 28 }), U.el('b', null, itemDef(id).name),
+          U.el('span.small', null, '→ ' + itemDef(r.out).name + ' ×' + r.n + (r.per ? ' / ' + r.per : '') + ' · ' + STR.presH(r.h, P.sun) + (r.extras.length ? ' · ' + r.extras.map(([x, k]) => itemDef(x).name + ' ×' + k).join(', ') : '')),
+          U.el('span.small.dim', null, STR.presHave(have)),
+          U.el('button.btn.xs', { disabled: n <= 0, on: { click: () => set(n - step) } }, '−'), U.el('b', null, String(n)),
+          U.el('button.btn.xs', { disabled: n + step > have, on: { click: () => set(n + step) } }, '+')));
+      }
+      const probs = Preserve.check(ch, f, m, sel);
+      if (P.fuel) pane.appendChild(U.el('p.small.dim', null, STR.presFuelNote(P.fuel.map((x) => itemDef(x).name).join(' / '), P.smokeNoise)));
+      pane.appendChild(U.el('p.small' + (probs.length ? '.warn' : '.dim'), null, probs.length ? probs.join(' · ') : STR.presReadyToStart(Preserve.hoursFor(m, sel), P.sun)));
+      pane.appendChild(U.el('button.btn.primary', { disabled: !!probs.length, on: { click: () => { Modal.close(); Preserve.start(ch, f, m, sel); } } }, STR.presStartBtn));
+    };
+    render();
+    body.appendChild(pane);
+    Modal.open({ title: f.label + ' — ' + STR.presTitle, body, wide: true });
+  },
+  /** Overview tab in the garden panel. */
+  overview(pane) {
+    const list = Preserve.stations();
+    pane.appendChild(U.el('p.dim', null, STR.presOverviewIntro));
+    if (!list.length) { pane.appendChild(U.el('p.dim', null, STR.presNoStations)); return; }
+    for (const f of list) {
+      const b = f.batch;
+      pane.appendChild(U.el('div.arow', null, U.el('b', null, f.label),
+        b ? FarmUI.bar(b.prog / b.need, 'grow') : null,
+        U.el('span.small', null, !b ? STR.presIdle : b.done ? STR.presReady : PRESERVE[b.m].name + ' · ' + STR.presHoursLeft(Preserve.hoursLeft(f).toFixed(1), PRESERVE[b.m].sun) + ' · ' + STR.presCond[Preserve.condition(f)]),
+        Scene.isHome() ? U.el('button.btn.xs', { on: { click: () => { Modal.close(); Scene.doAction(f, 'preserve'); } } }, b ? (b.done ? STR.presCollectAct : STR.presViewAct) : STR.presStartAct) : null));
+    }
+    const ch = activeChar(), L = Bottles.litresEmpty(ch);
+    pane.appendChild(U.el('p.dim', null, L > 0 ? STR.bottlesCarry(L.toFixed(1)) : STR.bottlesNone));
   },
 };

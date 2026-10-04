@@ -80,6 +80,7 @@ const Scene = {
       this.W.lights.push({ kind: 'lamp', uid: f.uid, floor: f.floor, room: (HomeWorld.roomAt(f.floor, f.x, f.z) || {}).id, pos: p, color: def.light.color, intensity: def.light.intensity, dist: def.light.dist, lampMat });
     }
     if (f.farm) { FarmView.forget(f.uid); FarmView.attach(f); }
+    if (def.preserve) { PreserveView.forget(f.uid); PreserveView.attach(f); }
   },
   /** Remove a piece's mesh (and its lamp light) from the scene. */
   removeFurnitureObj(f) {
@@ -161,8 +162,13 @@ const Scene = {
     if (f.inv) out.push({ key: 'open', label: STR.open + ' ' + f.label });
     if (def.act === 'sleep') out.push({ key: 'sleep', label: STR.sleepHere });
     if (def.act === 'tap') { out.push({ key: 'drink', label: STR.drinkTap }); if (this.isHome() && Water.stores().length) out.push({ key: 'fillStores', label: STR.fillStoresAct }); }
-    if (def.store && f.water) { out.push({ key: 'drinkStore', label: STR.drinkStoreAct(Math.round(f.water.l)) }); out.push({ key: 'waterInfo', label: STR.waterInfoAct }); }
-    if (def.act === 'cook' && this.isHome()) { out.push({ key: 'boil', label: STR.boilAct }); if ((S.home.boiled || 0) > 0.1) out.push({ key: 'drinkBoiled', label: STR.drinkBoiledAct(S.home.boiled.toFixed(1)) }); }
+    if (def.store && f.water) { out.push({ key: 'drinkStore', label: STR.drinkStoreAct(Math.round(f.water.l)) }); if (this.isHome() && Bottles.empties(activeChar()).length) out.push({ key: 'fillStore', label: STR.fillBottlesAct }); out.push({ key: 'waterInfo', label: STR.waterInfoAct }); }
+    if (def.act === 'tap' && this.isHome() && Power.waterOn() && Bottles.empties(activeChar()).length) out.push({ key: 'fillTap', label: STR.fillBottlesAct });
+    if (def.preserve && this.isHome()) {
+      const b = f.batch;
+      out.push({ key: 'preserve', label: b ? (b.done ? STR.presCollectAct : STR.presViewAct) : STR.presStartAct });
+    }
+    if (def.act === 'cook' && this.isHome()) { out.push({ key: 'boil', label: STR.boilAct }); if ((S.home.boiled || 0) > 0.1) { out.push({ key: 'drinkBoiled', label: STR.drinkBoiledAct(S.home.boiled.toFixed(1)) }); if (Bottles.empties(activeChar()).length) out.push({ key: 'fillBoiled', label: STR.fillBottlesBoiledAct }); } }
     if (def.farm && f.farm) {
       const ready = f.farm.plots.findIndex((p) => p && !p.dead && p.g >= 1);
       if (ready >= 0) out.push({ key: 'harvest', label: STR.harvestAct });
@@ -197,6 +203,10 @@ const Scene = {
       plant: () => { FarmUI.plantMenu(f); },
       waterPlot: () => { Farm.water(activeChar(), f); },
       pickup: () => { Arrange.pickUp(f); },
+      fillStore: () => { Bottles.fill(activeChar(), f); },
+      fillTap: () => { Bottles.fill(activeChar(), 'tap'); },
+      fillBoiled: () => { Bottles.fill(activeChar(), 'boiled'); },
+      preserve: () => { if (f.batch && f.batch.done) Preserve.collect(activeChar(), f); else PreserveUI.open(f); },
       dismantle: () => { Arrange.dismantle(f); },
       checkout: () => CheckoutUI.open(),
       delivery: () => DeliveryUI.open(),

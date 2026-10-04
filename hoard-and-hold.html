@@ -251,6 +251,7 @@ button, input, select { font-family: inherit; font-size: inherit; }
 .mbar { height: 7px; background: #2a231a; border-radius: 4px; overflow: hidden; } .mbar i { display: block; height: 100%; background: var(--good); }
 .mbar.warn i { background: var(--warn); } .mbar.bad i { background: var(--bad); } .mbar.grow i { background: #8fd16a; } .mbar.water i { background: #4fa3d1; }
 .wxnow { display: flex; gap: 14px; align-items: center; margin-bottom: 8px; } .wxbig { font-size: 44px; }
+.arow.dis { opacity: .45; } .preserve .tabs { display: flex; gap: 6px; margin-bottom: 8px; }
 table.fc { border-collapse: collapse; margin: 6px 0; } table.fc td { padding: 4px 12px; border-bottom: 1px solid #2c241a; font-size: 13px; }
 </style>
 </head>
@@ -4551,6 +4552,31 @@ const STR = {
   forecastTitle: 'พยากรณ์อากาศ (จากทีวี/วิทยุ)', forecastNone: 'ไม่มีพยากรณ์อากาศ (ไฟดับ ทีวีดูไม่ได้)', today: 'วันนี้', rainMm: (m) => 'ฝน ~' + m + ' มม.', noRain: 'ไม่มีฝน',
   seasonNote: (m, mm, d) => 'เดือน ' + m + ' ปกติฝนตกราว ' + d + ' วัน รวม ~' + mm + ' มม. (ค่าเฉลี่ยกรุงเทพฯ)',
   dbgWeather: 'สภาพอากาศ / สวน', dbgRainHeavy: 'ให้ฝนตกหนัก 2 ชม.', dbgRainStop: 'หยุดฝน', dbgGrowAll: 'เร่งผักทุกแปลงให้พร้อมเก็บ',
+  // Phase 2C — preservation & bottles
+  tabPreserve: '🫙 ถนอมอาหาร', presTitle: 'ถนอมอาหาร', presStartAct: 'ถนอมอาหาร…', presViewAct: 'ดูความคืบหน้า', presCollectAct: 'เก็บของที่ถนอมเสร็จแล้ว',
+  presStartBtn: 'เริ่มทำ', presPickSome: 'เลือกวัตถุดิบก่อน', presTooMany: (n) => 'ใส่ได้สูงสุด ' + n + ' หน่วย', presNotFor: (n, m) => n + 'ใช้กับวิธี' + m + 'ไม่ได้',
+  presNotEnough: (n) => n + 'ไม่พอ (ต้องเป็นของสด ยังไม่เปิด ไม่แช่แข็ง)', presMultiple: (n, k) => n + 'ต้องใส่ทีละ ' + k + ' หน่วย', presNeedExtra: (n, k) => 'ต้องมี' + n + ' ×' + k,
+  presNeedFuel: (l) => 'ต้องมีเชื้อเพลิง: ' + l, presNeedsOutdoor: 'ต้องตั้งไว้กลางแจ้ง (ย้ายออกไปในสนามก่อน)', presBusy: 'มีของทำค้างอยู่แล้ว',
+  presStarted: (m, l) => 'เริ่ม' + m + ': ' + l, presWet: (n) => 'ฝนตก! ของที่ตากบน' + n + 'กำลังเปียก — ย้ายเข้าร่มหรือรีบเก็บ', presLost: (n) => 'ของบน' + n + 'เปียกฝนนานเกินไป เสียทั้งชุด',
+  presDone: (m, n) => m + 'บน' + n + 'เสร็จแล้ว!', presCollected: (l) => 'เก็บของถนอมได้: ' + l, presDiscarded: (n) => 'ทิ้งของบน' + n,
+  presProgress: 'ความคืบหน้า', presQuality: 'คุณภาพ', presReady: 'เสร็จแล้ว เก็บได้เลย',
+  presHoursLeft: (h, sun) => 'เหลือ ~' + h + (sun ? ' ชม. ที่มีแดด' : ' ชม.'), presH: (h, sun) => (h >= 48 ? (h / 24).toFixed(1) + ' วัน' : h + ' ชม.') + (sun ? 'แดด' : ''),
+  presCond: { ok: 'กำลังดำเนินไปตามปกติ', night: 'กลางคืน — หยุดรอแดดพรุ่งนี้', rain: 'ฝนตก — ไม่คืบหน้าและของเปียก (คุณภาพลดลง) ย้ายเข้าร่มได้', indoor: 'อยู่ในร่ม — ต้องย้ายออกกลางแจ้งจึงจะคืบหน้า', storm: 'ฝนหนัก ไฟดับ — หยุดรอฝนซา' },
+  presOut: (l) => 'จะได้: ' + l, presDiscardTitle: 'ทิ้งของที่ทำค้างอยู่?', presDiscardMsg: 'วัตถุดิบทั้งหมดในชุดนี้จะหายไป', presDiscardBtn: 'ทิ้งทั้งชุด',
+  presIntro: {
+    dry: 'ตากแดด: คืบหน้าเฉพาะกลางวันที่ไม่มีฝน (มีเมฆช้าลง) ถ้าฝนตกใส่ของจะเปียกและคุณภาพลด — ย้ายตะแกรงเข้าบ้านได้ด้วยโหมดจัดบ้าน',
+    salt: 'หมักเกลือในโหล: ทำได้ทั้งในบ้านและนอกบ้าน ไม่ขึ้นกับสภาพอากาศ หมูเค็มต้องทำให้สุกก่อนกิน',
+    pickle: 'ดอง/หมัก: ผักดองกินได้เลย ปลาส้มต้องทอดก่อนกิน แหนมกินได้เลย',
+    smoke: 'รมควัน: ใช้ถ่าน/เศษไม้ 1 หน่วยต่อชุด หยุดเมื่อฝนหนัก ควันลอยไกล — ดึงดูดซอมบี้รอบบ้าน',
+  },
+  presCap: (n) => '(ใส่ได้ ' + n + ' หน่วยต่อชุด)', presHave: (n) => 'มี ' + n, presFuelNote: (l, r) => 'เชื้อเพลิง: ' + l + ' · ควันดึงดูดซอมบี้ในระยะ ~' + r + ' ม.',
+  presReadyToStart: (h, sun) => 'พร้อมเริ่ม — ใช้เวลา ~' + (h >= 48 ? (h / 24).toFixed(1) + ' วัน' : h + ' ชม.') + (sun ? ' ที่มีแดด' : ''),
+  presOverviewIntro: 'ตะแกรงตาก ราวตาก โหลหมักดอง และตู้รมควัน — ของสดจากสวน/ตลาดที่เน่าเร็ว เก็บได้นานหลายสัปดาห์ถึงหลายเดือน',
+  presNoStations: 'ยังไม่มีอุปกรณ์ถนอมอาหาร — สร้างตะแกรงตาก/ตู้รมควันจากเมนูจัดบ้าน (K) หรือซื้อโหลหมักดองที่ตลาด', presIdle: 'ว่าง',
+  suffixRaw: '(น้ำดิบ)', fillBottlesAct: 'กรอกน้ำใส่ขวดเปล่าที่พกอยู่', fillBottlesBoiledAct: 'กรอกน้ำต้มสุกใส่ขวดเปล่า', noEmpties: 'ไม่มีขวดเปล่าติดตัว',
+  bottlesFilled: (n, l) => 'กรอกน้ำ ' + n + ' ขวด (' + l + ' ล.)', bottlesRaw: (n) => n + ' ขวดเป็นน้ำดิบ ต้องกรอง/ต้มก่อนดื่ม',
+  bottlesCarry: (l) => 'พกขวดเปล่าอยู่ ความจุรวม ' + l + ' ล. — คลิกขวาที่โอ่ง/ถัง/ก๊อก/เตา เพื่อกรอกน้ำ', bottlesNone: 'ขวดน้ำที่ดื่มหมดจะเหลือขวดเปล่าไว้กรอกน้ำใหม่ได้',
+  dbgPresDone: 'ถนอมอาหารทุกชุดให้เสร็จ',
 };
 
 /* ===== 02-util.js ===== */
@@ -5922,6 +5948,119 @@ POOLS.mk_veg.push(['seed_morning_glory', 1, 3], ['seed_basil', 1, 3], ['seed_chi
 /** Farmer background starts with a few seed packs in the storage room. */
 const BG_START_STOCK = { farmer: [['metal_shelf', 'seed_morning_glory', 1], ['metal_shelf', 'seed_chili', 1], ['metal_shelf', 'seed_basil', 1], ['metal_shelf', 'potting_soil', 2]] };
 
+/* ===== 18-data-preserve.js ===== */
+/* ==========================================================================
+   18 · PHASE 2C DATA — food preservation (§6.5.7: drying, salting,
+   pickling/fermenting, smoking) and refillable water bottles.
+   Times are real Thai home-preservation times × 0.5 (owner decision, same as farming).
+   ========================================================================== */
+
+/* ---------- Preserved products ---------- */
+const L_PRES = {
+  jerky:   { shelf: 60, opened: { ambientH: 24 * 14, fridgeD: 60 }, freeze: 'good' },
+  dryfood: { shelf: 120, opened: { ambientH: 24 * 30, fridgeD: 90 }, freeze: 'good' },
+  pickle:  { shelf: 60, opened: { ambientH: 24 * 5, fridgeD: 30 }, freeze: 'no' },
+  salted:  { shelf: 30, opened: { ambientH: 24 * 3, fridgeD: 14 }, freeze: 'good' },
+  smoked:  { shelf: 21, opened: { ambientH: 24 * 2, fridgeD: 10 }, freeze: 'good' },
+};
+F('jerky_pork', 'หมูแห้งทำเอง (~200 ก.)', 1, 1, 0.2, 6, 0, 4, [160, 22, 3, 6, 2, 12, 0], L_PRES.jerky, ['meat', 'pork', 'protein', 'dried', 'homemade'], ic('pack', '#8a3a22', '#c9733a', '#5a2a1a'));
+F('jerky_beef', 'เนื้อแห้งทำเอง (~100 ก.)', 1, 1, 0.1, 6, 0, 2, [150, 25, 2, 4, 2, 12, 0], L_PRES.jerky, ['meat', 'beef', 'protein', 'dried', 'homemade'], ic('pack', '#5a2a1a', '#8a3a22', '#3a1a10'));
+F('dried_squid', 'ปลาหมึกแห้งทำเอง (~120 ก.)', 1, 1, 0.12, 6, 0, 3, [130, 25, 2, 2, 2, 10, 0], L_PRES.dryfood, ['seafood', 'protein', 'dried', 'homemade'], ic('pack', '#e9d8b8', '#c9a46a', '#8a6a42'));
+F('dried_banana', 'กล้วยตากทำเอง (~250 ก.)', 1, 1, 0.25, 6, 0, 5, [150, 1.5, 38, 0.5, 2, 8, 0], L_PRES.dryfood, ['fruit', 'sweet', 'dried', 'homemade'], ic('pack', '#8a5a22', '#e0b23c', '#5a3a1a'));
+F('salted_pork', 'หมูเค็มทำเอง (~800 ก.) ต้องทำให้สุก', 2, 1, 0.8, 4, 0, 6, [170, 17, 0, 10, 0.5, 9, 2], L_PRES.salted, ['meat', 'pork', 'protein', 'raw', 'salty', 'homemade'], ic('tray', '#c96a5a', '#ffffff', '#8a3a22'));
+F('pickled_cabbage', 'กะหล่ำปลีดองทำเอง (โหล)', 1, 2, 0.8, 4, 0, 6, [25, 1, 5, 0, 3, 3, 10], L_PRES.pickle, ['veg', 'pickled', 'sour', 'homemade'], ic('jar', '#c9d8a5', '#e9e6dc', '#6a8a3a'));
+F('pickled_greens', 'ผักดองทำเอง (โหล)', 1, 2, 0.6, 4, 0, 5, [20, 1.2, 3, 0, 3, 3, 10], L_PRES.pickle, ['veg', 'leafy', 'pickled', 'sour', 'homemade'], ic('jar', '#8aa04a', '#e9e6dc', '#4a6a2a'));
+F('pickled_cucumber', 'แตงกวาดองทำเอง (โหล)', 1, 2, 0.6, 4, 0, 5, [18, 0.6, 3.5, 0, 2, 3, 12], L_PRES.pickle, ['veg', 'pickled', 'sour', 'homemade'], ic('jar', '#7fbf4a', '#e9e6dc', '#3a6a2a'));
+F('naem', 'แหนมทำเอง (~500 ก.)', 1, 1, 0.5, 6, 0, 5, [150, 15, 4, 8, 1, 10, 3], L_PRES.pickle, ['meat', 'pork', 'protein', 'fermented', 'sour', 'homemade'], ic('pack', '#e88a8a', '#f2dcb8', '#c94b4b'));
+F('pla_som', 'ปลาส้มทำเอง (ตัว) ต้องทำให้สุก', 2, 1, 0.65, 4, 0, 4, [120, 20, 3, 3, 1, 9, 4], L_PRES.salted, ['fish', 'protein', 'raw', 'seafood', 'fermented', 'sour', 'homemade'], ic('tray', '#e0a07a', '#ffffff', '#c9733a'));
+F('smoked_fish', 'ปลารมควันทำเอง', 2, 1, 0.45, 4, 0, 4, [140, 22, 0, 5, 1, 10, 2], L_PRES.smoked, ['fish', 'seafood', 'protein', 'smoked', 'homemade'], ic('tray', '#8a5a2a', '#e0b23c', '#5a3a1a'));
+F('smoked_pork', 'หมูรมควันทำเอง (~400 ก.)', 2, 1, 0.4, 4, 0, 4, [190, 20, 0, 12, 0.5, 11, 2], L_PRES.smoked, ['meat', 'pork', 'protein', 'smoked', 'homemade'], ic('tray', '#8a3a22', '#e0b23c', '#5a2a1a'));
+F('smoked_chicken', 'ไก่รมควันทำเอง (~400 ก.)', 2, 1, 0.4, 4, 0, 4, [170, 24, 0, 8, 0.5, 11, 2], L_PRES.smoked, ['poultry', 'protein', 'smoked', 'homemade'], ic('tray', '#c9733a', '#e0b23c', '#8a5a2a'));
+
+/**
+ * Methods. station: furniture types; outdoor: needs open sky; sun: progresses only in daylight without rain
+ * (rain wets the batch: −wetLoss quality/hour); fuel: consumed per batch (any of); smokeNoise: zombie lure radius (m).
+ * recipes: input item → { out, n (outputs per input unit), per (inputs per output), h (hours), extras: [[id, n]] per batch }.
+ */
+const PRESERVE = {
+  dry: {
+    name: 'ตากแห้ง', icon: '☀', station: ['drying_rack', 'drying_tray'], outdoor: true, sun: true, wetLoss: 0.08,
+    recipes: {
+      pork_1kg: { out: 'jerky_pork', n: 2, h: 8, extras: [['salt', 1]] },
+      pork_chop: { out: 'jerky_pork', n: 1, h: 8, extras: [['salt', 1]] },
+      beef_steak: { out: 'jerky_beef', n: 1, h: 8, extras: [['salt', 1]] },
+      beef_ribeye: { out: 'jerky_beef', n: 1, h: 8, extras: [['salt', 1]] },
+      fish_tilapia: { out: 'dried_fish', n: 1, h: 8, extras: [['salt', 1]] },
+      fish_mackerel_fresh: { out: 'dried_fish', n: 1, h: 8, extras: [['salt', 1]] },
+      shrimp_500: { out: 'dried_shrimp', n: 1, h: 8, extras: [['salt', 1]] },
+      squid: { out: 'dried_squid', n: 1, h: 8, extras: [] },
+      mango: { out: 'dried_mango', n: 1, h: 12, extras: [] },
+      banana: { out: 'dried_banana', n: 1, h: 16, extras: [] },
+      chili_fresh: { out: 'dried_chili', n: 1, per: 3, h: 20, extras: [] },
+    },
+  },
+  salt: {
+    name: 'หมักเกลือ', icon: '🧂', station: ['ferment_jar'], outdoor: false,
+    recipes: {
+      egg: { out: 'salted_egg', n: 1, h: 252, extras: [['salt', 1]] },
+      duck_egg: { out: 'salted_egg', n: 1, h: 252, extras: [['salt', 1]] },
+      pork_1kg: { out: 'salted_pork', n: 1, h: 12, extras: [['salt', 1]] },
+    },
+  },
+  pickle: {
+    name: 'ดอง/หมัก', icon: '🫙', station: ['ferment_jar'], outdoor: false,
+    recipes: {
+      cabbage: { out: 'pickled_cabbage', n: 1, h: 36, extras: [['salt', 1]] },
+      chinese_kale: { out: 'pickled_greens', n: 1, h: 36, extras: [['salt', 1]] },
+      morning_glory: { out: 'pickled_greens', n: 1, per: 2, h: 36, extras: [['salt', 1]] },
+      cucumber: { out: 'pickled_cucumber', n: 1, h: 24, extras: [['vinegar', 1]] },
+      pork_minced: { out: 'naem', n: 1, h: 36, extras: [['salt', 1], ['garlic', 1]] },
+      fish_tilapia: { out: 'pla_som', n: 1, h: 36, extras: [['salt', 1], ['garlic', 1]] },
+    },
+  },
+  smoke: {
+    name: 'รมควัน', icon: '💨', station: ['smoker'], outdoor: true, fuel: ['charcoal', 'scrap_wood'], smokeNoise: 16, rainStop: 10,
+    recipes: {
+      fish_tilapia: { out: 'smoked_fish', n: 1, h: 4, extras: [] },
+      fish_mackerel_fresh: { out: 'smoked_fish', n: 1, h: 4, extras: [] },
+      pork_1kg: { out: 'smoked_pork', n: 2, h: 5, extras: [] },
+      pork_belly: { out: 'smoked_pork', n: 1, h: 5, extras: [] },
+      pork_chop: { out: 'smoked_pork', n: 1, h: 5, extras: [] },
+      chicken_breast: { out: 'smoked_chicken', n: 2, h: 5, extras: [] },
+      chicken_thigh: { out: 'smoked_chicken', n: 2, h: 5, extras: [] },
+      chicken_whole: { out: 'smoked_chicken', n: 3, h: 6, extras: [] },
+    },
+  },
+};
+/** Batch quality threshold below which the whole batch is lost; outputs × 0.7 under qLow. */
+const PRES = { qLost: 0.35, qLow: 0.7, startMin: 10, perUnitMin: 3, collectMin: 3 };
+
+/* ---------- Stations ---------- */
+FURNITURE.drying_rack.preserve = { methods: ['dry'], cap: 6 };
+Object.assign(FURNITURE, {
+  drying_tray: { name: 'ตะแกรงตากอาหาร', size: [1.0, 0.7, 0.85], slot: 'small', asset: 'prop.drying_tray', preserve: { methods: ['dry'], cap: 4 }, yardOK: true },
+  ferment_jar: { name: 'โหลหมักดอง 10 ลิตร', size: [0.32, 0.32, 0.42], slot: 'small', asset: 'prop.ferment_jar', preserve: { methods: ['salt', 'pickle'], cap: 8 }, fromItem: 'ferment_jar_item', yardOK: true, install: 2 },
+  smoker: { name: 'ตู้รมควันทำเอง', size: [0.8, 0.7, 1.3], slot: 'medium', asset: 'prop.smoker', preserve: { methods: ['smoke'], cap: 4 }, outdoorOnly: true },
+});
+CRAFT_FURN.push(
+  { type: 'drying_tray', uses: [['plank', 2], ['nails_1kg', 6]], tools: ['hammer'], min: 25, skill: 'carpentry' },
+  { type: 'smoker', uses: [['plank', 3], ['steel_sheet', 1], ['nails_1kg', 10]], tools: ['hammer'], min: 60, skill: 'carpentry' },
+);
+defItem('ferment_jar_item', 'โหลแก้วหมักดอง 10 ลิตร (มีฝา)', 'misc', 2, 2, 2.2, 2, 159, { installs: 'ferment_jar', tags: ['container', 'kitchen'], icon: ic('jar', '#d8ecf7', '#e9e6dc', '#c9a46a') });
+
+/* ---------- Refillable water containers ---------- */
+defItem('bottle_empty_600', 'ขวดน้ำเปล่า 600 มล. (ว่าง)', 'misc', 1, 1, 0.02, 12, 0, { fills: 'water_600', litres: 0.6, tags: ['empty_bottle'], icon: ic('bottle', '#eef6fb', '#9ac4dc', '#e9eef2') });
+defItem('bottle_empty_1500', 'ขวดน้ำเปล่า 1.5 ลิตร (ว่าง)', 'misc', 1, 2, 0.04, 6, 0, { fills: 'water_1500', litres: 1.5, tags: ['empty_bottle'], icon: ic('bottle', '#eef6fb', '#9ac4dc', '#e9eef2') });
+defItem('jug_empty_6l', 'แกลลอนน้ำ 6 ลิตร (ว่าง)', 'misc', 2, 2, 0.15, 2, 0, { fills: 'water_6l', litres: 6, tags: ['empty_bottle'], icon: ic('jug', '#eef6fb', '#9ac4dc', '#e9eef2') });
+defItem('water_can_20_empty', 'แกลลอนน้ำพลาสติก 20 ลิตร (ว่าง)', 'misc', 2, 3, 1.0, 1, 129, { fills: 'water_20l', litres: 20, tags: ['empty_bottle'], icon: ic('jug', '#2f8ac4', '#1f5a8a', '#2f8ac4') });
+defDrink('water_20l', 'น้ำในแกลลอน 20 ลิตร', 2, 3, 21, 1, 0, 66, [0, 0, 0, 0, 0, 1, 30], L.water, { tags: ['water'], icon: ic('jug', '#2f8ac4', '#1f5a8a', '#2f8ac4') });
+ITEMS.water_600.empty = 'bottle_empty_600'; ITEMS.water_1500.empty = 'bottle_empty_1500'; ITEMS.water_6l.empty = 'jug_empty_6l'; ITEMS.water_20l.empty = 'water_can_20_empty';
+
+/* ---------- Shop stock for 2C ---------- */
+POOLS.hw_misc.push(['water_can_20_empty', 2, 2], ['ferment_jar_item', 2, 3]);
+POOLS.mk_veg.push(['ferment_jar_item', 1, 2]);
+POOLS.sm_cookware.push(['ferment_jar_item', 1, 2]);
+
 /* ===== 20-inventory.js ===== */
 /* ==========================================================================
    20 · INVENTORY MODEL — grid containers, item instances, transfers
@@ -6579,6 +6718,14 @@ const Sanitize = {
       f.farm = fm;
     } else delete f.farm;
     if (f.onTop != null) f.onTop = U.num(f.onTop, 0, 0, 3);
+    const b = f.batch;
+    if (b && (!def.preserve || typeof b !== 'object' || !PRESERVE[b.m] || !def.preserve.methods.includes(b.m))) delete f.batch;
+    else if (b) {
+      const list = (a) => (Array.isArray(a) ? a : []).filter((x) => x && ITEMS[x.id]).map((x) => ({ id: x.id, n: U.num(x.n, 1, 1, 99) | 0 }));
+      b.items = list(b.items); b.outs = list(b.outs);
+      b.need = U.num(b.need, 1, 0.1, 1000); b.prog = U.num(b.prog, 0, 0, b.need); b.q = U.num(b.q, 1, 0, 1); b.at = U.num(b.at, 0, 0, 1e9); b.done = !!b.done;
+      if (!b.outs.length) delete f.batch;
+    }
   },
   profile(p) {
     if (!p || typeof p !== 'object') return createProfile();
@@ -7168,9 +7315,18 @@ const Food = {
     const it = slot.it, d = itemDef(it.id);
     const why = this.blockReason(it);
     if (why) { Bus.emit('toast', { kind: 'warn', msg: why }); return false; }
-    const risk = this.risk(it);
+    let risk = this.risk(it);
+    const raw = !!(it.st && it.st.raw);
     const res = this.takePortions(ch, c, slot, n);
     if (!res || !res.taken) { Bus.emit('toast', { kind: 'warn', msg: STR.containerFull }); return false; }
+    // Untreated rain water in a refilled bottle (§9.2): risk per litre unless a filter is carried.
+    if (raw) {
+      const litres = (res.per.water || 0) * res.taken / WATER.ptsPerL;
+      const fl = Water.hasFilter(ch);
+      if (fl) { for (let i = 0; i < Math.ceil(litres) && fl.it.uses > 0; i++) Health.spend(fl); }
+      else if (RNG.next('events') < Math.min(0.6, WATER.rawRisk * litres)) Illness.add(ch.d, 'food_poison', 0.3, STR.illWater);
+    }
+    if (d.empty && res.unit.st && res.unit.st.portionsLeft <= 0) Bottles.emptied(ch, c, d);
     Body.intake(ch.d, res.per, res.taken);
     if (!opts.noTime) GameClock.advance(Math.round(res.taken * (d.cat === 'drink' ? 1.5 : 3.5)));
     if (risk > 0 && RNG.next('events') < risk) Illness.add(ch.d, 'food_poison', 0.4 + risk * 0.6);
@@ -7182,6 +7338,7 @@ const Food = {
   label(it) {
     const d = itemDef(it.id);
     let n = d.name;
+    if (it.st && it.st.raw) n += ' ' + STR.suffixRaw;
     if (it.st && it.st.ruined) n += ' ' + STR.suffixRuined;
     else if (it.st && it.st.opened) n += ' ' + STR.suffixOpened;
     return n;
@@ -10529,6 +10686,7 @@ const Scene = {
       this.W.lights.push({ kind: 'lamp', uid: f.uid, floor: f.floor, room: (HomeWorld.roomAt(f.floor, f.x, f.z) || {}).id, pos: p, color: def.light.color, intensity: def.light.intensity, dist: def.light.dist, lampMat });
     }
     if (f.farm) { FarmView.forget(f.uid); FarmView.attach(f); }
+    if (def.preserve) { PreserveView.forget(f.uid); PreserveView.attach(f); }
   },
   /** Remove a piece's mesh (and its lamp light) from the scene. */
   removeFurnitureObj(f) {
@@ -10610,8 +10768,13 @@ const Scene = {
     if (f.inv) out.push({ key: 'open', label: STR.open + ' ' + f.label });
     if (def.act === 'sleep') out.push({ key: 'sleep', label: STR.sleepHere });
     if (def.act === 'tap') { out.push({ key: 'drink', label: STR.drinkTap }); if (this.isHome() && Water.stores().length) out.push({ key: 'fillStores', label: STR.fillStoresAct }); }
-    if (def.store && f.water) { out.push({ key: 'drinkStore', label: STR.drinkStoreAct(Math.round(f.water.l)) }); out.push({ key: 'waterInfo', label: STR.waterInfoAct }); }
-    if (def.act === 'cook' && this.isHome()) { out.push({ key: 'boil', label: STR.boilAct }); if ((S.home.boiled || 0) > 0.1) out.push({ key: 'drinkBoiled', label: STR.drinkBoiledAct(S.home.boiled.toFixed(1)) }); }
+    if (def.store && f.water) { out.push({ key: 'drinkStore', label: STR.drinkStoreAct(Math.round(f.water.l)) }); if (this.isHome() && Bottles.empties(activeChar()).length) out.push({ key: 'fillStore', label: STR.fillBottlesAct }); out.push({ key: 'waterInfo', label: STR.waterInfoAct }); }
+    if (def.act === 'tap' && this.isHome() && Power.waterOn() && Bottles.empties(activeChar()).length) out.push({ key: 'fillTap', label: STR.fillBottlesAct });
+    if (def.preserve && this.isHome()) {
+      const b = f.batch;
+      out.push({ key: 'preserve', label: b ? (b.done ? STR.presCollectAct : STR.presViewAct) : STR.presStartAct });
+    }
+    if (def.act === 'cook' && this.isHome()) { out.push({ key: 'boil', label: STR.boilAct }); if ((S.home.boiled || 0) > 0.1) { out.push({ key: 'drinkBoiled', label: STR.drinkBoiledAct(S.home.boiled.toFixed(1)) }); if (Bottles.empties(activeChar()).length) out.push({ key: 'fillBoiled', label: STR.fillBottlesBoiledAct }); } }
     if (def.farm && f.farm) {
       const ready = f.farm.plots.findIndex((p) => p && !p.dead && p.g >= 1);
       if (ready >= 0) out.push({ key: 'harvest', label: STR.harvestAct });
@@ -10646,6 +10809,10 @@ const Scene = {
       plant: () => { FarmUI.plantMenu(f); },
       waterPlot: () => { Farm.water(activeChar(), f); },
       pickup: () => { Arrange.pickUp(f); },
+      fillStore: () => { Bottles.fill(activeChar(), f); },
+      fillTap: () => { Bottles.fill(activeChar(), 'tap'); },
+      fillBoiled: () => { Bottles.fill(activeChar(), 'boiled'); },
+      preserve: () => { if (f.batch && f.batch.done) Preserve.collect(activeChar(), f); else PreserveUI.open(f); },
       dismantle: () => { Arrange.dismantle(f); },
       checkout: () => CheckoutUI.open(),
       delivery: () => DeliveryUI.open(),
@@ -12863,6 +13030,290 @@ const Rain = {
   },
 };
 
+/* ===== 48-preserve.js ===== */
+/* ==========================================================================
+   48 · FOOD PRESERVATION & WATER BOTTLES (Phase 2C, §6.5.7)
+   A station (drying rack/tray, ferment jar, smoker) holds one batch:
+   { m: method, items: [{id, n}], outs: [{id, n}], need: hours, prog: hours, q: quality, at, done }.
+   Drying needs open sky, daylight and no rain (rain soaks the batch → quality loss);
+   jars work anywhere; smoking burns one fuel per batch, stops in heavy rain and
+   its smoke lures zombies outdoors. Emptied water bottles are kept and can be
+   refilled from a store, the tap or the boiled-water pot (raw water is remembered).
+   ========================================================================== */
+
+const Preserve = {
+  stations() { return S.home.furniture.filter((f) => FURNITURE[f.type].preserve); },
+  spec(f) { return FURNITURE[f.type].preserve; },
+  sources(ch) {
+    const out = [...ch.containers()];
+    if (Scene.isHome()) for (const f of S.home.furniture) { if (f.inv) out.push(f.inv); if (f.sub) out.push(f.sub); }
+    return out;
+  },
+  /** Whole, sealed, usable units of an item id available to the character (home storage included). */
+  usable(it) {
+    if (it.unpaid || Food.ruined(it) || Food.isOpened(it)) return false;
+    if ((it.frz || 0) > 0.3) return false;
+    const st = Food.stage(it);
+    return st === 'fresh' || st === 'aging';
+  },
+  available(ch, id) {
+    let n = 0;
+    for (const c of this.sources(ch)) Inv.walk(c, (it) => { if (it.id === id && this.usable(it)) n += it.qty; });
+    return n;
+  },
+  /** Remove n usable units; returns how many were aging (for quality). */
+  takeUnits(ch, id, n) {
+    let aging = 0;
+    for (const c of this.sources(ch)) {
+      for (const s of [...c.slots]) {
+        if (n <= 0) return aging;
+        const it = s.it;
+        if (it.id !== id || !this.usable(it)) continue;
+        const k = Math.min(n, it.qty);
+        if (Food.stage(it) === 'aging') aging += k;
+        it.qty -= k; n -= k;
+        if (it.qty <= 0) Inv.remove(c, s);
+      }
+    }
+    return aging;
+  },
+  /** Recipes this station can run, with what the character has. */
+  options(ch, f) {
+    const out = [];
+    for (const m of this.spec(f).methods) for (const [id, r] of Object.entries(PRESERVE[m].recipes)) {
+      out.push({ m, id, r, have: this.available(ch, id) });
+    }
+    return out;
+  },
+  /** Problems that stop a batch from starting (array of strings). */
+  check(ch, f, m, sel) {
+    const P = PRESERVE[m], probs = [];
+    const units = Object.values(sel).reduce((a, b) => a + b, 0);
+    if (!units) probs.push(STR.presPickSome);
+    if (units > this.spec(f).cap) probs.push(STR.presTooMany(this.spec(f).cap));
+    for (const [id, n] of Object.entries(sel)) {
+      const r = P.recipes[id];
+      if (!r) { probs.push(STR.presNotFor(itemDef(id).name, P.name)); continue; }
+      if (this.available(ch, id) < n) probs.push(STR.presNotEnough(itemDef(id).name));
+      if (r.per && n % r.per) probs.push(STR.presMultiple(itemDef(id).name, r.per));
+    }
+    const ex = this.extras(m, sel);
+    for (const [id, n] of ex) if (Barricades.countAvail(ch, id) < n && this.available(ch, id) < n) probs.push(STR.presNeedExtra(itemDef(id).name, n));
+    if (P.fuel && !P.fuel.some((id) => Barricades.countAvail(ch, id) > 0)) probs.push(STR.presNeedFuel(P.fuel.map((id) => itemDef(id).name).join(' / ')));
+    if (P.outdoor && Arrange.indoor(f.floor, f.x, f.z)) probs.push(STR.presNeedsOutdoor);
+    return probs;
+  },
+  /** Extras (salt, garlic, vinegar) needed for the whole batch: the largest single requirement per id. */
+  extras(m, sel) {
+    const need = {};
+    for (const id of Object.keys(sel)) if (sel[id] > 0) for (const [x, n] of PRESERVE[m].recipes[id].extras) need[x] = Math.max(need[x] || 0, n);
+    return Object.entries(need);
+  },
+  hoursFor(m, sel) { return Math.max(0, ...Object.keys(sel).filter((id) => sel[id] > 0).map((id) => PRESERVE[m].recipes[id].h)); },
+  start(ch, f, m, sel) {
+    if (f.batch) { Toast.show(STR.presBusy, 'warn'); return false; }
+    const probs = this.check(ch, f, m, sel);
+    if (probs.length) { Toast.show(probs[0], 'warn', 4000); return false; }
+    const P = PRESERVE[m];
+    let units = 0, aging = 0;
+    const items = [], outs = {};
+    for (const [id, n] of Object.entries(sel)) {
+      if (!n) continue;
+      aging += this.takeUnits(ch, id, n); units += n;
+      items.push({ id, n });
+      const r = P.recipes[id];
+      outs[r.out] = (outs[r.out] || 0) + Math.floor(n / (r.per || 1)) * r.n;
+    }
+    for (const [id, n] of this.extras(m, sel)) { if (Barricades.countAvail(ch, id) >= n) Barricades.consume(ch, id, n); else this.takeUnits(ch, id, n); }
+    if (P.fuel) { const fuel = P.fuel.find((id) => Barricades.countAvail(ch, id) > 0); Barricades.consume(ch, fuel, 1); }
+    f.batch = { m, items, outs: Object.entries(outs).map(([id, n]) => ({ id, n })), need: this.hoursFor(m, sel), prog: 0, q: U.clamp(1 - 0.25 * aging / Math.max(1, units), 0.5, 1), at: S.time.min, done: false };
+    GameClock.advance(PRES.startMin + PRES.perUnitMin * units);
+    Skills.gain(ch, 'cooking', 2 + units * 0.5);
+    logEvent(STR.presStarted(P.name, items.map((x) => itemDef(x.id).name + ' ×' + x.n).join(', ')), 'info');
+    Bus.emit('preserve:changed', f); Bus.emit('inv:changed');
+    return true;
+  },
+  /** Why a batch is (not) progressing right now: 'ok' | 'night' | 'rain' | 'indoor' | 'storm'. */
+  condition(f, wx = Weather.now()) {
+    const b = f.batch, P = b && PRESERVE[b.m];
+    if (!P) return 'ok';
+    if (P.outdoor && Arrange.indoor(f.floor, f.x, f.z)) return 'indoor';
+    if (P.sun) { if (wx.mmh >= 0.2) return 'rain'; if (Render.nightAt(S.time.min) > 0.5) return 'night'; }
+    if (P.rainStop && wx.mmh >= P.rainStop) return 'storm';
+    return 'ok';
+  },
+  rate(f, wx) { const P = PRESERVE[f.batch.m]; return P.sun ? 1 - 0.5 * wx.cloud : 1; },
+  hoursLeft(f) { const b = f.batch; return b ? Math.max(0, b.need - b.prog) : 0; },
+  step(dt) {
+    const wx = Weather.at(S.time.min);
+    for (const f of this.stations()) {
+      const b = f.batch; if (!b || b.done) continue;
+      const P = PRESERVE[b.m], cond = this.condition(f, wx);
+      if (cond === 'rain' && !Arrange.indoor(f.floor, f.x, f.z)) {
+        const was = b.q;
+        b.q -= P.wetLoss * dt / 60;
+        if (was >= 0.85 && b.q < 0.85) { logEvent(STR.presWet(f.label), 'warn'); Bus.emit('toast', { kind: 'warn', msg: STR.presWet(f.label) }); }
+        if (b.q < PRES.qLost) { logEvent(STR.presLost(f.label), 'bad'); Bus.emit('toast', { kind: 'bad', msg: STR.presLost(f.label) }); f.batch = null; Bus.emit('preserve:changed', f); continue; }
+      }
+      if (cond !== 'ok') continue;
+      b.prog += dt / 60 * this.rate(f, wx);
+      if (P.smokeNoise && Scene.isHome() && S.time.min % 30 === 0) NoiseBus.emit(f.x, f.z, P.smokeNoise, 0, true);
+      if (b.prog >= b.need) {
+        b.done = true;
+        logEvent(STR.presDone(P.name, f.label), 'good');
+        Bus.emit('toast', { kind: 'good', msg: STR.presDone(P.name, f.label) });
+        Bus.emit('preserve:changed', f);
+      }
+    }
+  },
+  collect(ch, f) {
+    const b = f.batch; if (!b || !b.done) return false;
+    const mul = b.q < PRES.qLow ? 0.7 : 1;
+    const got = [];
+    for (const o of b.outs) {
+      const n = Math.max(1, Math.round(o.n * mul));
+      const it = Inv.makeItem(o.id, n);
+      if (Inv.addToAny(ch.containers(), it) > 0) { const pile = Scene.pileNear(ch.d.pos.floor, ch.d.pos.x, ch.d.pos.z, true); Inv.add(pile.inv, it); }
+      got.push(itemDef(o.id).name + ' ×' + n);
+    }
+    Scene.syncPiles();
+    f.batch = null;
+    GameClock.advance(PRES.collectMin);
+    Skills.gain(ch, 'cooking', 3);
+    logEvent(STR.presCollected(got.join(', ')), 'good');
+    Bus.emit('preserve:changed', f); Bus.emit('inv:changed');
+    return got;
+  },
+  discard(f) { if (!f.batch) return; logEvent(STR.presDiscarded(f.label), 'warn'); f.batch = null; Bus.emit('preserve:changed', f); },
+  init() { GameClock.onMinute((m) => { if (m % 10 === 0) this.step(10); }); },
+};
+
+/* ---------- Water bottles ---------- */
+const Bottles = {
+  empties(ch) {
+    const out = [];
+    for (const c of ch.containers()) Inv.walk(c, (it, cc, slot) => { if (itemDef(it.id).fills) out.push({ c: cc, slot }); });
+    return out;
+  },
+  litresEmpty(ch) { return this.empties(ch).reduce((a, e) => a + itemDef(e.slot.it.id).litres * e.slot.it.qty, 0); },
+  /** Give back the empty container after the last sip. */
+  emptied(ch, c, d) {
+    const it = Inv.makeItem(d.empty, 1);
+    if (!(c && Inv.add(c, it) === 0) && Inv.addToAny(ch.containers(), it) > 0) {
+      const pile = Scene.pileNear(ch.d.pos.floor, ch.d.pos.x, ch.d.pos.z, true); Inv.add(pile.inv, it); Scene.syncPiles();
+    }
+  },
+  /** Fill every empty bottle the character carries from a source: a water store, 'tap' or 'boiled'. */
+  fill(ch, src) {
+    const list = this.empties(ch);
+    if (!list.length) { Toast.show(STR.noEmpties, 'warn'); return 0; }
+    if (src === 'tap' && !Power.waterOn()) { Toast.show(STR.noTapWater, 'warn'); return 0; }
+    let filled = 0, litres = 0, rawN = 0;
+    for (const e of list) {
+      const d = itemDef(e.slot.it.id);
+      while (e.c.slots.includes(e.slot) && e.slot.it.qty > 0) {
+        let got;
+        if (src === 'tap') got = { l: d.litres, raw: 0 };
+        else if (src === 'boiled') { if ((S.home.boiled || 0) < d.litres - 1e-6) break; S.home.boiled -= d.litres; got = { l: d.litres, raw: 0 }; }
+        else { if (src.water.l < d.litres - 1e-6) break; got = Water.take(src, d.litres); }
+        const full = Inv.makeItem(d.fills, 1);
+        if (got.raw > 0.01) { full.st = { raw: true }; rawN++; }
+        if (e.slot.it.qty > 1) e.slot.it.qty -= 1; else Inv.remove(e.c, e.slot);
+        if (Inv.add(e.c, full) > 0 && Inv.addToAny(ch.containers(), full) > 0) { const pile = Scene.pileNear(ch.d.pos.floor, ch.d.pos.x, ch.d.pos.z, true); Inv.add(pile.inv, full); }
+        filled++; litres += got.l;
+      }
+    }
+    Scene.syncPiles();
+    if (!filled) { Toast.show(STR.storeEmpty, 'warn'); return 0; }
+    GameClock.advance(Math.max(1, Math.round(litres / 2)));
+    logEvent(STR.bottlesFilled(filled, litres.toFixed(1)) + (rawN ? ' · ' + STR.bottlesRaw(rawN) : ''), rawN ? 'warn' : 'good');
+    Bus.emit('inv:changed');
+    return filled;
+  },
+};
+
+/* ===== 49-preserve-view.js ===== */
+/* ==========================================================================
+   49 · PRESERVATION VISUALS — drying tray, ferment jar, smoker props and
+   the batch shown on each station (strips on the rack, contents in the jar,
+   a smoke plume while the smoker burns).
+   ========================================================================== */
+
+Object.assign(PROPS, {
+  'prop.drying_tray': (o) => {
+    const pb = new PB(o.seed), w = Mat.tex('wood_floor', '#a8784a', 0.85);
+    for (const x of [-0.47, 0.47]) for (const z of [-0.32, 0.32]) pb.box(0.05, 0.8, 0.05, w, x, 0, z);
+    pb.box(1.0, 0.04, 0.05, w, 0, 0.78, -0.33); pb.box(1.0, 0.04, 0.05, w, 0, 0.78, 0.33);
+    pb.box(0.05, 0.04, 0.7, w, -0.48, 0.78, 0); pb.box(0.05, 0.04, 0.7, w, 0.48, 0.78, 0);
+    pb.box(0.94, 0.01, 0.62, Mat.get('traynet', () => new THREE.MeshStandardMaterial({ color: 0xd8d4c4, roughness: 0.9, transparent: true, opacity: 0.75, side: THREE.DoubleSide })), 0, 0.79, 0);
+    return pb.build();
+  },
+  'prop.ferment_jar': (o) => {
+    const pb = new PB(o.seed);
+    pb.cyl(0.15, 0.15, 0.34, Mat.get('jarglass', () => new THREE.MeshStandardMaterial({ color: 0xdff0f7, roughness: 0.05, metalness: 0.1, transparent: true, opacity: 0.35, depthWrite: false })), 0, 0, 0, 20);
+    pb.cyl(0.1, 0.15, 0.05, Mat.get('jarglass', null), 0, 0.34, 0, 20);
+    pb.cyl(0.105, 0.105, 0.04, Mat.color('#c9a46a', 0.6), 0, 0.39, 0, 20);
+    return pb.build({ cast: false });
+  },
+  'prop.smoker': (o) => {
+    const pb = new PB(o.seed), m = Mat.color('#3a3f44', 0.55, 0.6), w = Mat.tex('wood_floor', '#7a5a36', 0.85);
+    for (const x of [-0.36, 0.36]) for (const z of [-0.31, 0.31]) pb.box(0.06, 0.35, 0.06, w, x, 0, z);
+    pb.box(0.8, 0.8, 0.7, m, 0, 0.35, 0, 0.02);
+    pb.box(0.6, 0.5, 0.02, Mat.color('#2a2e32', 0.5, 0.6), 0, 0.5, 0.36);
+    pb.box(0.06, 0.06, 0.04, Mat.color('#c9a46a', 0.5), 0.22, 0.72, 0.38);
+    pb.cyl(0.06, 0.06, 0.25, m, 0.25, 1.15, -0.2, 10);
+    pb.box(0.7, 0.12, 0.6, Mat.color('#2b2018', 0.95), 0, 0.02, 0);   // fire box
+    return pb.build();
+  },
+});
+for (const id of ['prop.drying_tray', 'prop.ferment_jar', 'prop.smoker']) AssetRegistry.register(id, PROPS[id]);
+
+const PreserveView = {
+  sig: new Map(),
+  colour(id) {
+    const t = itemDef(id).tags || [];
+    if (t.includes('fruit')) return '#d89a3a';
+    if (t.includes('veg')) return '#7fa04a';
+    if (t.includes('seafood') || t.includes('fish')) return '#b8b0a0';
+    if (t.includes('egg')) return '#f2ead8';
+    if (id.startsWith('chili') || id === 'dried_chili') return '#c4202a';
+    return '#a4503a';
+  },
+  forget(uid) { this.sig.delete(uid); },
+  attach(f) {
+    const obj = Scene.W && Scene.W.furn.get(f.uid);
+    if (!obj) return;
+    const b = f.batch;
+    const sig = b ? b.m + b.items.map((x) => x.id + x.n).join() + (b.done ? 'd' : '') + (Math.round(b.prog / b.need * 4)) : '-';
+    const old = obj.getObjectByName('batch');
+    if (old && this.sig.get(f.uid) === sig) return;
+    if (old) { obj.remove(old); old.traverse((o) => { if (o.isMesh) o.geometry.dispose(); }); }
+    this.sig.set(f.uid, sig);
+    if (!b) return;
+    const pb = new PB('batch' + f.uid), t = b.prog / b.need;
+    const units = [];
+    for (const x of b.items) for (let i = 0; i < x.n; i++) units.push(x.id);
+    const darken = (hex) => '#' + new THREE.Color(hex).lerp(new THREE.Color('#3a2414'), Math.min(0.55, t * 0.55)).getHexString();
+    if (f.type === 'ferment_jar') {
+      pb.cyl(0.13, 0.13, 0.26, Mat.color(darken(this.colour(units[0] || 'cabbage')), 0.8), 0, 0.02, 0, 16);
+    } else if (f.type === 'smoker') {
+      if (!b.done && Preserve.condition(f) === 'ok') for (let i = 0; i < 4; i++) pb.sphere(0.09 + i * 0.05, Mat.get('smokepuff', () => new THREE.MeshStandardMaterial({ color: 0x9a9a9a, transparent: true, opacity: 0.35, depthWrite: false })), 0.25 + i * 0.05, 1.5 + i * 0.25, -0.2 - i * 0.03, 1, 0.8, 1, 8);
+    } else {
+      const y = f.type === 'drying_rack' ? 1.2 : 0.8, span = f.type === 'drying_rack' ? 1.3 : 0.8;
+      units.slice(0, 8).forEach((id, i) => {
+        const x = -span / 2 + (i + 0.5) * span / Math.min(8, units.length);
+        pb.box(0.09, f.type === 'drying_rack' ? 0.22 : 0.015, f.type === 'drying_rack' ? 0.03 : 0.16, Mat.color(darken(this.colour(id)), 0.8), x, f.type === 'drying_rack' ? y - 0.22 : y, 0);
+      });
+    }
+    if (!pb.parts.length) return;
+    const g = pb.build({ cast: false }); g.name = 'batch'; obj.add(g);
+  },
+  init() {
+    Bus.on('preserve:changed', (f) => { if (Scene.isHome()) this.attach(f); });
+    GameClock.onHour(() => { if (Scene.W && Scene.isHome()) for (const f of Preserve.stations()) this.attach(f); });
+  },
+};
+
 /* ===== 50-ui-core.js ===== */
 /* ==========================================================================
    50 · UI PRIMITIVES — toasts, modal stack (owns time), tooltip, context menu
@@ -13830,7 +14281,8 @@ const DebugUI = {
       U.el('div.row', null,
         U.el('button.btn.sm', { on: { click: () => { S.flags.wxForce = { mmh: 18, until: S.time.min + 120 }; Modal.close(); } } }, STR.dbgRainHeavy),
         U.el('button.btn.sm', { on: { click: () => { S.flags.wxForce = { mmh: 0, until: S.time.min + 180 }; Modal.close(); } } }, STR.dbgRainStop),
-        U.el('button.btn.sm', { on: { click: () => { for (const f of Farm.plots()) { f.farm.moist = 1; for (const p of f.farm.plots) if (p && !p.dead) { p.g = 1; p.hp = 1; } Bus.emit('farm:changed', f); } } } }, STR.dbgGrowAll)),
+        U.el('button.btn.sm', { on: { click: () => { for (const f of Farm.plots()) { f.farm.moist = 1; for (const p of f.farm.plots) if (p && !p.dead) { p.g = 1; p.hp = 1; } Bus.emit('farm:changed', f); } } } }, STR.dbgGrowAll),
+        U.el('button.btn.sm', { on: { click: () => { for (const f of Preserve.stations()) if (f.batch && !f.batch.done) { f.batch.prog = f.batch.need; f.batch.done = true; Bus.emit('preserve:changed', f); } } } }, STR.dbgPresDone)),
       U.el('details', null, U.el('summary', null, STR.dbgAssets + ' (' + AssetRegistry.list().length + ')'), U.el('pre.assets', null, AssetRegistry.list().join('\n'))),
     );
     Modal.open({ title: STR.dbgTitle, body, wide: true, pauseTime: false });
@@ -14448,14 +14900,15 @@ const FarmUI = {
   open(tab, focus) {
     if (tab) this.tab = tab;
     const body = U.el('div.farm');
-    const tabs = U.el('div.tabs', null, ...[['plots', STR.tabPlots], ['water', STR.tabWater], ['weather', STR.tabWeather]].map(([k, l]) =>
+    const tabs = U.el('div.tabs', null, ...[['plots', STR.tabPlots], ['preserve', STR.tabPreserve], ['water', STR.tabWater], ['weather', STR.tabWeather]].map(([k, l]) =>
       U.el('button.tab' + (k === this.tab ? '.on' : ''), { on: { click: () => { this.tab = k; render(); } } }, l)));
     const pane = U.el('div.fpane');
     const render = () => {
-      for (const b of tabs.children) b.classList.toggle('on', b.textContent === { plots: STR.tabPlots, water: STR.tabWater, weather: STR.tabWeather }[this.tab]);
+      for (const b of tabs.children) b.classList.toggle('on', b.textContent === { plots: STR.tabPlots, preserve: STR.tabPreserve, water: STR.tabWater, weather: STR.tabWeather }[this.tab]);
       pane.innerHTML = '';
       if (this.tab === 'plots') this.plots(pane, focus, render);
       else if (this.tab === 'water') this.water(pane, render);
+      else if (this.tab === 'preserve') PreserveUI.overview(pane);
       else this.weather(pane);
     };
     body.append(tabs, pane);
@@ -14552,6 +15005,70 @@ const FarmUI = {
   },
 };
 
+/** Start / watch / collect a preservation batch at a station. */
+const PreserveUI = {
+  open(f) {
+    const ch = activeChar(), spec = Preserve.spec(f);
+    const body = U.el('div.preserve');
+    if (f.batch) {
+      const b = f.batch, P = PRESERVE[b.m], cond = Preserve.condition(f);
+      body.append(U.el('p', null, U.el('b', null, P.icon + ' ' + P.name + ': '), b.items.map((x) => itemDef(x.id).name + ' ×' + x.n).join(', ')),
+        U.el('div.frow', null, U.el('span', null, STR.presProgress), FarmUI.bar(b.prog / b.need, 'grow'), U.el('span.small', null, b.done ? STR.presReady : STR.presHoursLeft(Preserve.hoursLeft(f).toFixed(1), P.sun))),
+        U.el('div.frow', null, U.el('span', null, STR.presQuality), FarmUI.bar(b.q, b.q < PRES.qLow ? 'bad' : b.q < 0.85 ? 'warn' : 'ok'), U.el('span.small', null, Math.round(b.q * 100) + '%')),
+        U.el('p.small' + (cond === 'ok' ? '.dim' : '.warn'), null, STR.presCond[cond]),
+        U.el('p.dim', null, STR.presOut(b.outs.map((o) => itemDef(o.id).name + ' ×' + o.n).join(', '))),
+        U.el('div.row', null,
+          b.done ? U.el('button.btn.primary', { on: { click: () => { Modal.close(); Scene.doAction(f, 'preserve'); } } }, STR.presCollectAct) : null,
+          U.el('button.btn', { on: { click: () => Modal.confirm(STR.presDiscardTitle, STR.presDiscardMsg, () => { Preserve.discard(f); Modal.closeAll(); }, STR.presDiscardBtn, true) } }, STR.presDiscardBtn)));
+      Modal.open({ title: f.label, body, wide: true });
+      return;
+    }
+    const methods = spec.methods;
+    let m = methods[0];
+    const sel = {};
+    const pane = U.el('div');
+    const render = () => {
+      pane.innerHTML = '';
+      const P = PRESERVE[m];
+      if (methods.length > 1) pane.appendChild(U.el('div.tabs', null, ...methods.map((k) => U.el('button.tab' + (k === m ? '.on' : ''), { on: { click: () => { m = k; for (const id in sel) delete sel[id]; render(); } } }, PRESERVE[k].icon + ' ' + PRESERVE[k].name))));
+      pane.appendChild(U.el('p.dim', null, STR.presIntro[m] + ' ' + STR.presCap(spec.cap)));
+      for (const [id, r] of Object.entries(P.recipes)) {
+        const have = Preserve.available(ch, id), n = sel[id] || 0;
+        const step = r.per || 1;
+        const set = (v) => { sel[id] = U.clamp(v, 0, have - (have % step)); render(); };
+        pane.appendChild(U.el('div.arow' + (have ? '' : '.dis'), null,
+          U.el('img', { src: Icons.get(id), width: 28, height: 28 }), U.el('b', null, itemDef(id).name),
+          U.el('span.small', null, '→ ' + itemDef(r.out).name + ' ×' + r.n + (r.per ? ' / ' + r.per : '') + ' · ' + STR.presH(r.h, P.sun) + (r.extras.length ? ' · ' + r.extras.map(([x, k]) => itemDef(x).name + ' ×' + k).join(', ') : '')),
+          U.el('span.small.dim', null, STR.presHave(have)),
+          U.el('button.btn.xs', { disabled: n <= 0, on: { click: () => set(n - step) } }, '−'), U.el('b', null, String(n)),
+          U.el('button.btn.xs', { disabled: n + step > have, on: { click: () => set(n + step) } }, '+')));
+      }
+      const probs = Preserve.check(ch, f, m, sel);
+      if (P.fuel) pane.appendChild(U.el('p.small.dim', null, STR.presFuelNote(P.fuel.map((x) => itemDef(x).name).join(' / '), P.smokeNoise)));
+      pane.appendChild(U.el('p.small' + (probs.length ? '.warn' : '.dim'), null, probs.length ? probs.join(' · ') : STR.presReadyToStart(Preserve.hoursFor(m, sel), P.sun)));
+      pane.appendChild(U.el('button.btn.primary', { disabled: !!probs.length, on: { click: () => { Modal.close(); Preserve.start(ch, f, m, sel); } } }, STR.presStartBtn));
+    };
+    render();
+    body.appendChild(pane);
+    Modal.open({ title: f.label + ' — ' + STR.presTitle, body, wide: true });
+  },
+  /** Overview tab in the garden panel. */
+  overview(pane) {
+    const list = Preserve.stations();
+    pane.appendChild(U.el('p.dim', null, STR.presOverviewIntro));
+    if (!list.length) { pane.appendChild(U.el('p.dim', null, STR.presNoStations)); return; }
+    for (const f of list) {
+      const b = f.batch;
+      pane.appendChild(U.el('div.arow', null, U.el('b', null, f.label),
+        b ? FarmUI.bar(b.prog / b.need, 'grow') : null,
+        U.el('span.small', null, !b ? STR.presIdle : b.done ? STR.presReady : PRESERVE[b.m].name + ' · ' + STR.presHoursLeft(Preserve.hoursLeft(f).toFixed(1), PRESERVE[b.m].sun) + ' · ' + STR.presCond[Preserve.condition(f)]),
+        Scene.isHome() ? U.el('button.btn.xs', { on: { click: () => { Modal.close(); Scene.doAction(f, 'preserve'); } } }, b ? (b.done ? STR.presCollectAct : STR.presViewAct) : STR.presStartAct) : null));
+    }
+    const ch = activeChar(), L = Bottles.litresEmpty(ch);
+    pane.appendChild(U.el('p.dim', null, L > 0 ? STR.bottlesCarry(L.toFixed(1)) : STR.bottlesNone));
+  },
+};
+
 /* ===== 99-main.js ===== */
 /* ==========================================================================
    99 · GAME — boot, state machine (MainMenu → CharacterSelect → Home),
@@ -14599,6 +15116,8 @@ const Game = {
     Water.init();
     Farm.init();
     FarmView.init();
+    Preserve.init();
+    PreserveView.init();
     Snd.init();
     Bus.on('death', ({ cause, day }) => { this.mode = 'dead'; GameClock.endSleep('death'); U.$('#hud').hidden = true; setTimeout(() => DeathUI.show(cause, day), 900); });
     Bus.on('player:hit', () => { const v = U.$('#hurt'); v.classList.remove('on'); void v.offsetWidth; v.classList.add('on'); });
@@ -14816,7 +15335,7 @@ window.HH = {
   Game, GameClock, Render, Scene, HomeScene, HomeWorld, World, Shop, Travel, Power, LOCATIONS, POOLS, Nav, InvUI, Inv, Save, Sanitize, ITEMS, FURNITURE, HOME,
   Icons, AssetRegistry, Character, activeChar, Modal, Toast, Needs, Skills, RNG, createRun, BUILD,
   Zombies, Combat, Health, Durability, Barricades, Encounters, AmbushUI, Snd, NoiseBus, Death, Food, Body, Meal, Cook, Spoil, Appliances, HomeInstall,
-  Arrange, Weather, Water, Farm, CROPS, CLIMATE, Calendar,
+  Arrange, Weather, Water, Farm, CROPS, CLIMATE, Calendar, Preserve, Bottles, PRESERVE,
 };
 
 Game.boot().catch((e) => { console.error('[boot]', e); Game.fatal(STR.errTitle + ': ' + e.message); });

@@ -87,9 +87,18 @@ const Food = {
     const it = slot.it, d = itemDef(it.id);
     const why = this.blockReason(it);
     if (why) { Bus.emit('toast', { kind: 'warn', msg: why }); return false; }
-    const risk = this.risk(it);
+    let risk = this.risk(it);
+    const raw = !!(it.st && it.st.raw);
     const res = this.takePortions(ch, c, slot, n);
     if (!res || !res.taken) { Bus.emit('toast', { kind: 'warn', msg: STR.containerFull }); return false; }
+    // Untreated rain water in a refilled bottle (§9.2): risk per litre unless a filter is carried.
+    if (raw) {
+      const litres = (res.per.water || 0) * res.taken / WATER.ptsPerL;
+      const fl = Water.hasFilter(ch);
+      if (fl) { for (let i = 0; i < Math.ceil(litres) && fl.it.uses > 0; i++) Health.spend(fl); }
+      else if (RNG.next('events') < Math.min(0.6, WATER.rawRisk * litres)) Illness.add(ch.d, 'food_poison', 0.3, STR.illWater);
+    }
+    if (d.empty && res.unit.st && res.unit.st.portionsLeft <= 0) Bottles.emptied(ch, c, d);
     Body.intake(ch.d, res.per, res.taken);
     if (!opts.noTime) GameClock.advance(Math.round(res.taken * (d.cat === 'drink' ? 1.5 : 3.5)));
     if (risk > 0 && RNG.next('events') < risk) Illness.add(ch.d, 'food_poison', 0.4 + risk * 0.6);
@@ -101,6 +110,7 @@ const Food = {
   label(it) {
     const d = itemDef(it.id);
     let n = d.name;
+    if (it.st && it.st.raw) n += ' ' + STR.suffixRaw;
     if (it.st && it.st.ruined) n += ' ' + STR.suffixRuined;
     else if (it.st && it.st.opened) n += ' ' + STR.suffixOpened;
     return n;

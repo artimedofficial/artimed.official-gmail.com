@@ -305,6 +305,14 @@ const Sanitize = {
       f.farm = fm;
     } else delete f.farm;
     if (f.onTop != null) f.onTop = U.num(f.onTop, 0, 0, 3);
+    const b = f.batch;
+    if (b && (!def.preserve || typeof b !== 'object' || !PRESERVE[b.m] || !def.preserve.methods.includes(b.m))) delete f.batch;
+    else if (b) {
+      const list = (a) => (Array.isArray(a) ? a : []).filter((x) => x && ITEMS[x.id]).map((x) => ({ id: x.id, n: U.num(x.n, 1, 1, 99) | 0 }));
+      b.items = list(b.items); b.outs = list(b.outs);
+      b.need = U.num(b.need, 1, 0.1, 1000); b.prog = U.num(b.prog, 0, 0, b.need); b.q = U.num(b.q, 1, 0, 1); b.at = U.num(b.at, 0, 0, 1e9); b.done = !!b.done;
+      if (!b.outs.length) delete f.batch;
+    }
   },
   profile(p) {
     if (!p || typeof p !== 'object') return createProfile();

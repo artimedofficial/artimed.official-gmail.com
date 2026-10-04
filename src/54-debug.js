@@ -59,7 +59,8 @@ const DebugUI = {
       U.el('div.row', null,
         U.el('button.btn.sm', { on: { click: () => { S.flags.wxForce = { mmh: 18, until: S.time.min + 120 }; Modal.close(); } } }, STR.dbgRainHeavy),
         U.el('button.btn.sm', { on: { click: () => { S.flags.wxForce = { mmh: 0, until: S.time.min + 180 }; Modal.close(); } } }, STR.dbgRainStop),
-        U.el('button.btn.sm', { on: { click: () => { for (const f of Farm.plots()) { f.farm.moist = 1; for (const p of f.farm.plots) if (p && !p.dead) { p.g = 1; p.hp = 1; } Bus.emit('farm:changed', f); } } } }, STR.dbgGrowAll)),
+        U.el('button.btn.sm', { on: { click: () => { for (const f of Farm.plots()) { f.farm.moist = 1; for (const p of f.farm.plots) if (p && !p.dead) { p.g = 1; p.hp = 1; } Bus.emit('farm:changed', f); } } } }, STR.dbgGrowAll),
+        U.el('button.btn.sm', { on: { click: () => { for (const f of Preserve.stations()) if (f.batch && !f.batch.done) { f.batch.prog = f.batch.need; f.batch.done = true; Bus.emit('preserve:changed', f); } } } }, STR.dbgPresDone)),
       U.el('details', null, U.el('summary', null, STR.dbgAssets + ' (' + AssetRegistry.list().length + ')'), U.el('pre.assets', null, AssetRegistry.list().join('\n'))),
     );
     Modal.open({ title: STR.dbgTitle, body, wide: true, pauseTime: false });
