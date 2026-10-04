@@ -110,13 +110,14 @@ const FarmUI = {
   },
   water(pane, render) {
     const t = Water.totals(), ch = activeChar();
-    const pts = (t.safe + t.raw) * WATER.ptsPerL / 80;
+    const pts = Water.daysLeft();
     pane.appendChild(U.el('div.sgrid', null,
       U.el('div.sday', null, U.el('span', null, STR.waterSafe), U.el('b', null, t.safe.toFixed(0) + ' ล.')),
       U.el('div.sday' + (t.raw > 0 ? '.warn' : ''), null, U.el('span', null, STR.waterRaw), U.el('b', null, t.raw.toFixed(0) + ' ล.')),
       U.el('div.sday' + (pts < 5 ? '.low' : ''), null, U.el('span', null, STR.waterDays), U.el('b', null, Power.waterOn() ? STR.tapRunning : pts.toFixed(1) + ' ' + STR.daysUnit)),
       U.el('div.sday', null, U.el('span', null, STR.tapState), U.el('b', null, Power.waterOn() ? STR.tapOn : STR.tapOff))));
     pane.appendChild(U.el('p.dim', null, STR.waterExplain(Water.hasFilter(ch) ? STR.haveFilter : STR.noFilter)));
+    pane.appendChild(U.el('p.dim', null, STR.houseUse(WATER.houseL, (80 / WATER.ptsPerL).toFixed(1))));
     for (const f of Water.stores()) {
       const st = FURNITURE[f.type].store, area = Water.catchArea(f);
       pane.appendChild(U.el('div.arow', null, U.el('b', null, f.label),

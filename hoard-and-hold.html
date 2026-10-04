@@ -4104,7 +4104,7 @@ void main() {
    Everything here is plain data so the owner can tweak without touching logic.
    ========================================================================== */
 
-const BUILD = '1D.0.1';
+const BUILD = '2B.0.1';
 
 /**
  * ASSET_OVERRIDES — swap any procedural asset for an external file.
@@ -4542,6 +4542,7 @@ const STR = {
   waterExplain: (f) => 'น้ำฝนดิบดื่มได้แต่เสี่ยงท้องเสีย — ต้มที่เตาแก๊ส หรือพกเครื่องกรองน้ำ (' + f + ') ก่อนดื่ม · พืชใช้น้ำดิบได้เลย',
   haveFilter: 'มีเครื่องกรองแล้ว ✓', noFilter: 'ยังไม่มีเครื่องกรอง', rawShare: (n) => 'น้ำดิบ ' + n + ' ล.', mainsFed: 'ต่อประปา (เติมเองตอนน้ำยังไหล)',
   catchGutter: (a) => 'รับน้ำจากรางหลังคา ✓ (' + a + ' ตร.ม.)', catchOpen: (a) => 'รับน้ำฝนจากปากถังเท่านั้น (' + a + ' ตร.ม.)', catchNone: 'อยู่ในร่ม ไม่ได้รับน้ำฝน', boiledPot: 'หม้อน้ำต้มสุก',
+  houseUse: (h, d) => 'เมื่อประปาหยุดจ่าย บ้านจะใช้น้ำล้าง/ชักโครก/ทำครัว ~' + h + ' ล./วัน (ดึงน้ำดิบก่อน) + ดื่ม ~' + d + ' ล./วัน',
   gutterTip: 'ฝน 10 มม. บนพื้นที่ 1 ตร.ม. = น้ำ 10 ลิตร · ถังที่ตั้งชิดผนังนอกบ้านรับน้ำจากรางหลังคา ~10 ตร.ม.',
   // Phase 2B — weather
   wxTitle: 'สภาพอากาศ — คลิกเพื่อดูพยากรณ์', wxIcon: { clear: '☀', partly: '⛅', cloudy: '☁', rain: '🌦', heavy: '🌧', storm: '⛈' },
@@ -5848,6 +5849,7 @@ const WATER = {
   rawRisk: 0.3,           // chance of gut illness per litre of untreated rain water
   boilBatchL: 5, boilMin: 15, boilGas: 1.2, boiledCap: 10,
   fillMin: 10,            // filling all stores from the tap (water on)
+  houseL: 12,             // litres/day for washing, cooking and flushing once mains water stops (raw water first)
 };
 Object.assign(FURNITURE.water_jar, { store: { cap: 200, open: 0.35, start: 160 }, act: null, yardOK: true });
 Object.assign(FURNITURE.water_tank, { store: { cap: 1000, mains: true, start: 1000 }, act: null });
@@ -12493,8 +12495,21 @@ const Water = {
     for (const f of this.stores()) { safe += f.water.l - f.water.raw; raw += f.water.raw; }
     return { safe: safe + (S.home.boiled || 0), raw };
   },
+  /** Household use (washing, flushing) once the mains stop: hourly, untreated water first. */
+  household() {
+    let need = WATER.houseL / 24;
+    const list = this.stores().filter((f) => f.water.l > 0.01).sort((a, b) => (b.water.raw / b.water.l) - (a.water.raw / a.water.l));
+    for (const f of list) { if (need <= 0) break; need -= this.take(f, need).l; }
+    S.home.dry = need > 0.01;
+  },
+  /** Days of water left: drinking + household use. */
+  daysLeft(extraDrinkL = 0) {
+    const t = this.totals();
+    return (t.safe + t.raw + extraDrinkL) / (80 / WATER.ptsPerL + WATER.houseL);
+  },
   minute() {
     const wx = Weather.at(S.time.min), on = Power.waterOn();
+    if (!on && S.time.min % 60 === 0) this.household();
     for (const f of this.stores()) {
       const st = FURNITURE[f.type].store;
       if (st.mains && on) { f.water.l = st.cap; f.water.raw = 0; continue; }
@@ -12773,11 +12788,11 @@ const FarmView = {
 const Rain = {
   mesh: null, n: 0, speed: 15, box: 26, top: 16, flashT: 0, nextBolt: 0, snd: null,
   build() {
-    this.n = Render.q.key === 'low' ? 600 : Render.q.key === 'high' ? 2200 : 1300;
+    this.n = Render.q.key === 'low' ? 900 : Render.q.key === 'high' ? 3000 : 1800;
     const pos = new Float32Array(this.n * 6);
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
     g.setDrawRange(0, 0);
-    this.mesh = new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: 0xaec4d8, transparent: true, opacity: 0.45, depthWrite: false }));
+    this.mesh = new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: 0xd4e2ee, transparent: true, opacity: 0.55, depthWrite: false }));
     this.mesh.frustumCulled = false; this.mesh.renderOrder = 4;
     for (let i = 0; i < this.n; i++) this.respawn(i, true);
     Render.scene.add(this.mesh);
@@ -12790,7 +12805,7 @@ const Rain = {
     const y = anyY ? Math.random() * this.top : this.top + Math.random() * 3;
     const hide = this.covered(x, z) ? -50 : 0;
     a[i * 6] = x; a[i * 6 + 1] = y + hide; a[i * 6 + 2] = z;
-    a[i * 6 + 3] = x + 0.03; a[i * 6 + 4] = y + hide + 0.55; a[i * 6 + 5] = z + 0.02;
+    a[i * 6 + 3] = x + 0.04; a[i * 6 + 4] = y + hide + 0.85; a[i * 6 + 5] = z + 0.03;
   },
   update(dt) {
     if (!S || !Scene.W || !Render.scene) return;
@@ -12807,7 +12822,7 @@ const Rain = {
         if (a[i * 6 + 1] < -0.2 || Math.abs(a[i * 6] - c.ctx) > this.box / 2 + 2 || Math.abs(a[i * 6 + 2] - c.ctz) > this.box / 2 + 2) this.respawn(i, false);
       }
       g.attributes.position.needsUpdate = true;
-      this.mesh.material.opacity = 0.25 + 0.3 * U.clamp(wx.mmh / 20, 0, 1);
+      this.mesh.material.opacity = 0.35 + 0.35 * U.clamp(wx.mmh / 20, 0, 1);
     }
     // Weather dims the scene (applied after Render.updateDayNight each frame).
     const dim = wx.cloud * 0.55 + U.clamp(wx.mmh / 25, 0, 0.25);
@@ -14140,7 +14155,7 @@ const StockUI = {
       days.appendChild(U.el('div.sday' + (v < 3 ? '.low' : ''), null, U.el('span', null, STR.foodDaysAt(r.name)), U.el('b', null, v.toFixed(1) + ' ' + STR.daysUnit)));
     }
     const wt = Scene.isHome() || S.home ? Water.totals() : { safe: 0, raw: 0 };
-    const waterDays = (s.water + (wt.safe + wt.raw) * WATER.ptsPerL) / 80 + (Power.waterOn() ? Infinity : 0);
+    const waterDays = Water.daysLeft(s.water / WATER.ptsPerL) + (Power.waterOn() ? Infinity : 0);
     const fuelH = s.gasoline / 0.55;
     body.append(U.el('h4', null, STR.stockFood + ' (' + Math.round(s.kcal).toLocaleString() + ' kcal · ' + STR.needPerDay(Math.round(need)) + ')'), days,
       U.el('div.sgrid', null,
@@ -14501,13 +14516,14 @@ const FarmUI = {
   },
   water(pane, render) {
     const t = Water.totals(), ch = activeChar();
-    const pts = (t.safe + t.raw) * WATER.ptsPerL / 80;
+    const pts = Water.daysLeft();
     pane.appendChild(U.el('div.sgrid', null,
       U.el('div.sday', null, U.el('span', null, STR.waterSafe), U.el('b', null, t.safe.toFixed(0) + ' ล.')),
       U.el('div.sday' + (t.raw > 0 ? '.warn' : ''), null, U.el('span', null, STR.waterRaw), U.el('b', null, t.raw.toFixed(0) + ' ล.')),
       U.el('div.sday' + (pts < 5 ? '.low' : ''), null, U.el('span', null, STR.waterDays), U.el('b', null, Power.waterOn() ? STR.tapRunning : pts.toFixed(1) + ' ' + STR.daysUnit)),
       U.el('div.sday', null, U.el('span', null, STR.tapState), U.el('b', null, Power.waterOn() ? STR.tapOn : STR.tapOff))));
     pane.appendChild(U.el('p.dim', null, STR.waterExplain(Water.hasFilter(ch) ? STR.haveFilter : STR.noFilter)));
+    pane.appendChild(U.el('p.dim', null, STR.houseUse(WATER.houseL, (80 / WATER.ptsPerL).toFixed(1))));
     for (const f of Water.stores()) {
       const st = FURNITURE[f.type].store, area = Water.catchArea(f);
       pane.appendChild(U.el('div.arow', null, U.el('b', null, f.label),

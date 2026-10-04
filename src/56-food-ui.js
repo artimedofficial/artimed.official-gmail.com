@@ -166,7 +166,7 @@ const StockUI = {
       days.appendChild(U.el('div.sday' + (v < 3 ? '.low' : ''), null, U.el('span', null, STR.foodDaysAt(r.name)), U.el('b', null, v.toFixed(1) + ' ' + STR.daysUnit)));
     }
     const wt = Scene.isHome() || S.home ? Water.totals() : { safe: 0, raw: 0 };
-    const waterDays = (s.water + (wt.safe + wt.raw) * WATER.ptsPerL) / 80 + (Power.waterOn() ? Infinity : 0);
+    const waterDays = Water.daysLeft(s.water / WATER.ptsPerL) + (Power.waterOn() ? Infinity : 0);
     const fuelH = s.gasoline / 0.55;
     body.append(U.el('h4', null, STR.stockFood + ' (' + Math.round(s.kcal).toLocaleString() + ' kcal · ' + STR.needPerDay(Math.round(need)) + ')'), days,
       U.el('div.sgrid', null,

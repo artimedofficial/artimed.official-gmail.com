@@ -100,11 +100,11 @@ const FarmView = {
 const Rain = {
   mesh: null, n: 0, speed: 15, box: 26, top: 16, flashT: 0, nextBolt: 0, snd: null,
   build() {
-    this.n = Render.q.key === 'low' ? 600 : Render.q.key === 'high' ? 2200 : 1300;
+    this.n = Render.q.key === 'low' ? 900 : Render.q.key === 'high' ? 3000 : 1800;
     const pos = new Float32Array(this.n * 6);
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
     g.setDrawRange(0, 0);
-    this.mesh = new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: 0xaec4d8, transparent: true, opacity: 0.45, depthWrite: false }));
+    this.mesh = new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: 0xd4e2ee, transparent: true, opacity: 0.55, depthWrite: false }));
     this.mesh.frustumCulled = false; this.mesh.renderOrder = 4;
     for (let i = 0; i < this.n; i++) this.respawn(i, true);
     Render.scene.add(this.mesh);
@@ -117,7 +117,7 @@ const Rain = {
     const y = anyY ? Math.random() * this.top : this.top + Math.random() * 3;
     const hide = this.covered(x, z) ? -50 : 0;
     a[i * 6] = x; a[i * 6 + 1] = y + hide; a[i * 6 + 2] = z;
-    a[i * 6 + 3] = x + 0.03; a[i * 6 + 4] = y + hide + 0.55; a[i * 6 + 5] = z + 0.02;
+    a[i * 6 + 3] = x + 0.04; a[i * 6 + 4] = y + hide + 0.85; a[i * 6 + 5] = z + 0.03;
   },
   update(dt) {
     if (!S || !Scene.W || !Render.scene) return;
@@ -134,7 +134,7 @@ const Rain = {
         if (a[i * 6 + 1] < -0.2 || Math.abs(a[i * 6] - c.ctx) > this.box / 2 + 2 || Math.abs(a[i * 6 + 2] - c.ctz) > this.box / 2 + 2) this.respawn(i, false);
       }
       g.attributes.position.needsUpdate = true;
-      this.mesh.material.opacity = 0.25 + 0.3 * U.clamp(wx.mmh / 20, 0, 1);
+      this.mesh.material.opacity = 0.35 + 0.35 * U.clamp(wx.mmh / 20, 0, 1);
     }
     // Weather dims the scene (applied after Render.updateDayNight each frame).
     const dim = wx.cloud * 0.55 + U.clamp(wx.mmh / 25, 0, 0.25);

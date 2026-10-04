@@ -40,6 +40,7 @@ const WATER = {
   rawRisk: 0.3,           // chance of gut illness per litre of untreated rain water
   boilBatchL: 5, boilMin: 15, boilGas: 1.2, boiledCap: 10,
   fillMin: 10,            // filling all stores from the tap (water on)
+  houseL: 12,             // litres/day for washing, cooking and flushing once mains water stops (raw water first)
 };
 Object.assign(FURNITURE.water_jar, { store: { cap: 200, open: 0.35, start: 160 }, act: null, yardOK: true });
 Object.assign(FURNITURE.water_tank, { store: { cap: 1000, mains: true, start: 1000 }, act: null });

@@ -94,8 +94,21 @@ const Water = {
     for (const f of this.stores()) { safe += f.water.l - f.water.raw; raw += f.water.raw; }
     return { safe: safe + (S.home.boiled || 0), raw };
   },
+  /** Household use (washing, flushing) once the mains stop: hourly, untreated water first. */
+  household() {
+    let need = WATER.houseL / 24;
+    const list = this.stores().filter((f) => f.water.l > 0.01).sort((a, b) => (b.water.raw / b.water.l) - (a.water.raw / a.water.l));
+    for (const f of list) { if (need <= 0) break; need -= this.take(f, need).l; }
+    S.home.dry = need > 0.01;
+  },
+  /** Days of water left: drinking + household use. */
+  daysLeft(extraDrinkL = 0) {
+    const t = this.totals();
+    return (t.safe + t.raw + extraDrinkL) / (80 / WATER.ptsPerL + WATER.houseL);
+  },
   minute() {
     const wx = Weather.at(S.time.min), on = Power.waterOn();
+    if (!on && S.time.min % 60 === 0) this.household();
     for (const f of this.stores()) {
       const st = FURNITURE[f.type].store;
       if (st.mains && on) { f.water.l = st.cap; f.water.raw = 0; continue; }

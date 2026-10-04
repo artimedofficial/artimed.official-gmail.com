@@ -38,6 +38,7 @@ await page.mouse.move(t.x, t.y); await page.waitForTimeout(300);
 await page.keyboard.press('KeyR'); await page.waitForTimeout(400);
 await page.screenshot({ path: 'shots/arrange-ghost.png' });
 const before = await page.evaluate(() => HH.S.time.min);
+out('preview before click', await page.evaluate(() => HH.Arrange.active && { pos: HH.Arrange.active.pos, valid: HH.Arrange.active.valid, why: HH.Arrange.active.why }));
 await page.mouse.click(t.x, t.y); await page.waitForTimeout(400);
 out('moved pantry', await page.evaluate((b) => { const p = HH.S.home.furniture.find((f) => f.type === 'pantry'); return { x: p.x, z: p.z, rot: p.rot, mins: HH.S.time.min - b, active: !!HH.Arrange.active, reach: HH.Arrange.reachable().ok }; }, before));
 // A placement that would block a doorway path must be refused (big rack into the storage-room doorway corridor)
