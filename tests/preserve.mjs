@@ -120,7 +120,7 @@ out('bottles', await page.evaluate(() => {
   HH.Inv.add(c, HH.Inv.makeItem('bottle_empty_1500', 1));
   HH.S.home.boiled = 5;
   const n2 = HH.Bottles.fill(ch, 'boiled');
-  let safe = null; for (const cc of ch.containers()) HH.Inv.walk(cc, (it) => { if (it.id === 'water_1500') safe = !(it.st && it.st.raw); });
+  let safe = null; for (const cc of [...ch.containers(), ...HH.S.home.piles.map((p) => p.inv)]) HH.Inv.walk(cc, (it) => { if (it.id === 'water_1500') safe = !(it.st && it.st.raw); });
   return { empties, filledFromDrum: n1, rawFlag: raw, label, drumLeft: drum.water.l, illnessIn40RawDrinks: ill, filledBoiled: n2, boiledLeft: HH.S.home.boiled, boiledBottleSafe: safe };
 }));
 // UI

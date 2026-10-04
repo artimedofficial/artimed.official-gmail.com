@@ -35,7 +35,7 @@ const WEATHER = { light: 2, heavy: 10, storm: 20, noiseMask: 0.4, sightMask: 0.3
  * catches the roof run-off (WATER.roofArea m²).
  */
 const WATER = {
-  ptsPerL: 32,            // hydration points per litre (100 = full; ≈ 2.5 L/day)
+  ptsPerL: 100,           // hydration points per litre — same scale as Phase 1 bottled water (600 ml = 60 pts; need ≈ 80 pts/day)
   gutterDist: 0.9, roofArea: 10,
   rawRisk: 0.3,           // chance of gut illness per litre of untreated rain water
   boilBatchL: 5, boilMin: 15, boilGas: 1.2, boiledCap: 10,
