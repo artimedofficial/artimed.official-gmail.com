@@ -12072,7 +12072,7 @@ const Arrange = {
     GameClock.pauseLocks++;
     Render.showHover(null);
     if (!this.marker) {
-      this.marker = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ color: 0x5fd35f, transparent: true, opacity: 0.38, depthWrite: false }));
+      this.marker = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ color: 0x5fd35f, transparent: true, opacity: 0.42, depthWrite: false, depthTest: false }));
       this.marker.rotation.x = -Math.PI / 2; this.marker.renderOrder = 5;
     }
     Render.scene.add(this.marker);
@@ -12109,7 +12109,7 @@ const Arrange = {
       obj.rotation.y = -rot * Math.PI / 2;
     }
     const r = this.rect(f.type, p.x, p.z, rot);
-    this.marker.scale.set(r.x1 - r.x0 + 0.06, r.z1 - r.z0 + 0.06, 1);
+    this.marker.scale.set(r.x1 - r.x0 + 0.24, r.z1 - r.z0 + 0.24, 1);
     this.marker.position.set(p.x, this.baseY(f, p.x, p.z, floor) + 0.03, p.z);
     this.marker.material.color.set(res.ok ? 0x5fd35f : 0xe04a3a);
     HUD.setHint(res.ok ? STR.arrHint : '⚠ ' + STR[res.why]);

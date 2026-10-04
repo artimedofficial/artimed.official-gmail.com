@@ -121,7 +121,7 @@ out('plant', await page.evaluate(() => {
 // Indoor dark pot via a second install
 await page.evaluate(() => {
   const c = HH.Scene.pileNear(0, 2.8, 9.8, true).inv; HH.Inv.add(c, HH.Inv.makeItem('plant_pot_item', 1)); HH.Inv.add(c, HH.Inv.makeItem('seed_morning_glory', 1));
-  const slot = c.slots.find((s) => s.it.id === 'plant_pot_item'); HH.Arrange.installItem(c, slot); HH.Arrange.preview(-3.6, -5.4, 0, 0); HH.Arrange.confirm();
+  const slot = c.slots.find((s) => s.it.id === 'plant_pot_item'); HH.Arrange.installItem(c, slot); HH.Arrange.preview(-1.8, -3.0, 0, 0); if (!HH.Arrange.confirm()) throw new Error('indoor pot not placed: ' + (HH.Arrange.active && HH.Arrange.active.why));
   const pots = HH.S.home.furniture.filter((f) => f.type === 'plant_pot'); HH.Farm.plant(HH.activeChar(), pots[1], 0, 'morning_glory');
   for (const p of pots) HH.Farm.water(HH.activeChar(), p);
 });
