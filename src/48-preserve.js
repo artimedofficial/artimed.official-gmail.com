@@ -73,10 +73,10 @@ const Preserve = {
   /** Extras (salt, garlic, vinegar) needed for the whole batch: the largest single requirement per id. */
   extras(m, sel) {
     const need = {};
-    for (const id of Object.keys(sel)) if (sel[id] > 0) for (const [x, n] of PRESERVE[m].recipes[id].extras) need[x] = Math.max(need[x] || 0, n);
+    for (const id of Object.keys(sel)) if (sel[id] > 0 && PRESERVE[m].recipes[id]) for (const [x, n] of PRESERVE[m].recipes[id].extras) need[x] = Math.max(need[x] || 0, n);
     return Object.entries(need);
   },
-  hoursFor(m, sel) { return Math.max(0, ...Object.keys(sel).filter((id) => sel[id] > 0).map((id) => PRESERVE[m].recipes[id].h)); },
+  hoursFor(m, sel) { return Math.max(0, ...Object.keys(sel).filter((id) => sel[id] > 0 && PRESERVE[m].recipes[id]).map((id) => PRESERVE[m].recipes[id].h)); },
   start(ch, f, m, sel) {
     if (f.batch) { Toast.show(STR.presBusy, 'warn'); return false; }
     const probs = this.check(ch, f, m, sel);

@@ -24,7 +24,7 @@ out('setup', await page.evaluate(() => {
   let js = pile.inv.slots.find((s) => s.it.id === 'ferment_jar_item');
   HH.Arrange.installItem(pile.inv, js); HH.Arrange.preview(4.6, -5.6, 0, 0); const t3 = HH.Arrange.confirm();
   js = pile.inv.slots.find((s) => s.it.id === 'ferment_jar_item');
-  HH.Arrange.installItem(pile.inv, js); HH.Arrange.preview(2.2, -5.6, 0, 0); const t4 = HH.Arrange.confirm();
+  HH.Arrange.installItem(pile.inv, js); HH.Arrange.preview(2.0, -3.8, 0, 0); const t4 = HH.Arrange.confirm();
   return { tray: t1, smoker: t2, jar1: t3, jar2: t4, stations: HH.Preserve.stations().map((f) => f.type) };
 }));
 
