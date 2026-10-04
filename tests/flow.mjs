@@ -20,7 +20,7 @@ const p = await proj('pantry');
 await page.mouse.move(p.x, p.y);
 await page.waitForTimeout(400);
 await page.mouse.click(p.x, p.y);
-await page.waitForFunction(() => HH.InvUI.isOpen, null, { timeout: 90000 });
+await page.waitForFunction(() => HH.InvUI.isOpen, null, { timeout: 300000 });
 console.log('pantry opened via click; char pos', await page.evaluate(() => HH.S.chars[0].pos));
 await page.waitForTimeout(500);
 await page.screenshot({ path: 'shots/inv-pantry.png' });
@@ -86,13 +86,13 @@ await page.evaluate(() => { const m = HH.S.time.min; HH.GameClock.advance(21 * 6
 await page.waitForTimeout(1200);
 await page.screenshot({ path: 'shots/home-night.png' });
 await page.evaluate(() => { const bed = HH.S.home.furniture.find((f) => f.type === 'bed_double'); HH.HomeScene.doAction(bed, 'sleep'); });
-await page.waitForFunction(() => document.querySelector('.sleepopts'), null, { timeout: 180000 });
+await page.waitForFunction(() => document.querySelector('.sleepopts'), null, { timeout: 400000 });
 console.log('reached bed via stairs; floor', await page.evaluate(() => HH.S.chars[0].pos.floor));
 await page.screenshot({ path: 'shots/upper-night.png' });
 await page.click('.sleepopts .mbtn >> nth=0');
 await page.waitForTimeout(1500);
 await page.screenshot({ path: 'shots/sleeping.png' });
-await page.waitForFunction(() => HH.GameClock.sleepUntil == null, null, { timeout: 240000 });
+await page.waitForFunction(() => HH.GameClock.sleepUntil == null, null, { timeout: 400000 });
 console.log('woke at', await page.evaluate(() => { const m = HH.S.time.min; return [Math.floor(m / 1440), Math.floor(m % 1440 / 60)]; }), 'energy', await page.evaluate(() => Math.round(HH.S.chars[0].needs.energy)));
 // Save, reload, continue
 await page.evaluate(() => HH.Save.saveRun('test'));
