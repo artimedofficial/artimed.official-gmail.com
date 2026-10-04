@@ -5039,8 +5039,8 @@ const HOME = {
     // Upper floor doors
     { floor: 1, kind: 'door', axis: 'z', at: -1, a: -2.2, b: -1.3 },
     { floor: 1, kind: 'door', axis: 'x', at: -2.5, a: -4.2, b: -3.3 },
-    { floor: 1, kind: 'door', axis: 'x', at: 1, a: -2.4, b: -1.5 },
-    { floor: 1, kind: 'door', axis: 'x', at: 1, a: -5.2, b: -4.3 },
+    { floor: 1, kind: 'door', axis: 'x', at: 1, a: -1.92, b: -1.04 },
+    { floor: 1, kind: 'door', axis: 'z', at: -2.5, a: 3.0, b: 3.9 },   // bed2 → upstairs storage (hall side is taken by the stairwell)
     // Upper floor windows
     { floor: 1, kind: 'window', axis: 'z', at: 3, a: -5.0, b: -3.0 },
     { floor: 1, kind: 'window', axis: 'z', at: 3, a: -1.6, b: -0.2 },
@@ -12019,12 +12019,25 @@ const Arrange = {
       }
       if (!q.length && !linked && Nav.stair) { const cb = Nav.cellOf(0, Nav.stair.bottom.x, Nav.stair.bottom.z); if (cb && seen[0][cb.i]) { linked = true; push(1, Nav.stair.top.x, Nav.stair.top.z); } }
     }
-    const ok = (floor, p) => { if (!p) return false; const c = Nav.cellOf(floor, p.x, p.z); return !!c && !!seen[floor][c.i]; };
     if (!linked) return { ok: false, what: STR.arrStairsName };
+    // A piece is usable if some reached cell lies within arm's reach of its footprint, on the same side of the walls.
+    const usable = (g) => {
+      const r = this.rect(g.type, g.x, g.z, g.rot), reach = 0.75, grid = Nav.grids[g.floor];
+      const inside = this.indoor(g.floor, g.x, g.z), room = inside ? HomeWorld.roomAt(g.floor, g.x, g.z) : null;
+      for (let z = r.z0 - reach; z <= r.z1 + reach; z += Nav.cell) for (let x = r.x0 - reach; x <= r.x1 + reach; x += Nav.cell) {
+        const c = Nav.cellOf(g.floor, x, z);
+        if (!c || !seen[g.floor][c.i] || grid.block[c.i]) continue;
+        const p = Nav.center(g.floor, c.ix, c.iz);
+        if (inside) { if (HomeWorld.roomAt(g.floor, p.x, p.z) !== room) continue; }
+        else if (this.indoor(g.floor, p.x, p.z)) continue;
+        return true;
+      }
+      return false;
+    };
     for (const g of S.home.furniture) {
       const def = FURNITURE[g.type];
       if (!(g.inv || def.act || def.store || def.farm) || g.onTop != null) continue;
-      if (!ok(g.floor, Scene.accessPoint(g))) return { ok: false, what: g.label };
+      if (!usable(g)) return { ok: false, what: g.label };
     }
     return { ok: true };
   },

@@ -20,14 +20,20 @@ out('rules', await page.evaluate(() => {
     acrossWall: A.check(pantry, 1.0, 0.5, 0, 0).why,
     bedOutside: A.check(F.find((f) => f.type === 'bed_single'), -8.5, 2, 0, 0).why,
     fixedCar: A.movable(F.find((f) => f.type === 'car')),
-    okSpot: A.check(pantry, 2.0, -1.9, 0, 0).ok,
+    startReach: A.reachable(),
   };
 }));
 // Move the pantry with the mouse: start mode, hover a target, click
 const proj = (x, y, z) => page.evaluate(([x, y, z]) => { const v = new THREE.Vector3(x, y, z).project(HH.Render.camera); const r = HH.Render.renderer.domElement.getBoundingClientRect(); return { x: (v.x + 1) / 2 * r.width, y: (1 - v.y) / 2 * r.height }; }, [x, y, z]);
-await page.evaluate(() => { const p = HH.S.home.furniture.find((f) => f.type === 'pantry'); HH.Render.cam.follow = false; HH.Render.cam.tx = 3; HH.Render.cam.tz = -1; HH.Arrange.start(p); });
+const spot = await page.evaluate(() => {
+  const p = HH.S.home.furniture.find((f) => f.type === 'pantry');
+  for (let z = 2.5; z > -2.4; z -= 0.25) for (let x = 1.5; x < 5.5; x += 0.25) if (HH.Arrange.check(p, x, z, 2, 0).ok) return { x, z };
+  return null;
+});
+out('free spot for pantry (rot 2)', spot);
+await page.evaluate(() => { const p = HH.S.home.furniture.find((f) => f.type === 'pantry'); HH.Render.cam.follow = false; HH.Render.cam.tx = 3; HH.Render.cam.tz = 0.5; HH.Arrange.start(p); HH.Arrange.active.pos.rot = 1; });
 await page.waitForTimeout(600);
-let t = await proj(3.3, 0, -1.9);
+let t = await proj(spot.x, 0, spot.z);
 await page.mouse.move(t.x, t.y); await page.waitForTimeout(300);
 await page.keyboard.press('KeyR'); await page.waitForTimeout(400);
 await page.screenshot({ path: 'shots/arrange-ghost.png' });
@@ -46,20 +52,20 @@ out('block test', await page.evaluate(() => {
 
 // ---- 2. Install items + build furniture in the yard ----
 out('install', await page.evaluate(() => {
-  const ch = HH.activeChar(), c = ch.d.pockets;
+  const ch = HH.activeChar();
+  const pile = HH.Scene.pileNear(0, 2.8, 9.8, true), c = pile.inv;
   HH.Inv.add(c, HH.Inv.makeItem('plant_pot_item', 1));
   const slot = c.slots.find((s) => s.it.id === 'plant_pot_item');
   HH.Arrange.installItem(c, slot); HH.Arrange.preview(-3.0, 4.6, 0, 0); const ok1 = HH.Arrange.confirm();
   // Water drum: one by the house wall (gutter), one in the open yard
-  const pile = HH.Scene.pileNear(0, 2.8, 9.8, true);
   HH.Inv.add(pile.inv, HH.Inv.makeItem('water_drum_item', 1)); HH.Inv.add(pile.inv, HH.Inv.makeItem('water_drum_item', 1));
   let s2 = pile.inv.slots.find((s) => s.it.id === 'water_drum_item');
   HH.Arrange.installItem(pile.inv, s2); HH.Arrange.preview(-6.6, 1.0, 0, 0); const ok2 = HH.Arrange.confirm();
   s2 = pile.inv.slots.find((s) => s.it.id === 'water_drum_item');
   HH.Arrange.installItem(pile.inv, s2); HH.Arrange.preview(-9.5, 7.5, 0, 0); const ok3 = HH.Arrange.confirm();
   // Planter box from materials
-  for (const [id, n] of [['plank', 3], ['nails_1kg', 1], ['potting_soil', 2], ['hammer', 1]]) HH.Inv.add(ch.d.pockets.slots.length < 20 ? ch.d.pockets : pile.inv, HH.Inv.makeItem(id, n));
-  HH.Inv.add(pile.inv, HH.Inv.makeItem('plank', 3));
+  const bag = HH.Inv.makeItem('backpack_medium'); ch.d.equip.back = ch.d.equip.back || bag;
+  for (const [id, n] of [['plank', 3], ['nails_1kg', 1], ['potting_soil', 2]]) HH.Inv.add(ch.d.equip.back.inv, HH.Inv.makeItem(id, n));
   const recipe = CRAFT_FURN.find((r) => r.type === 'planter_box');
   const miss = HH.Arrange.missing(ch, recipe);
   HH.Arrange.build(recipe); HH.Arrange.preview(-4.6, 4.6, 0, 0); const ok4 = HH.Arrange.confirm();
@@ -114,7 +120,7 @@ out('plant', await page.evaluate(() => {
 }));
 // Indoor dark pot via a second install
 await page.evaluate(() => {
-  const c = HH.activeChar().d.pockets; HH.Inv.add(c, HH.Inv.makeItem('plant_pot_item', 1)); HH.Inv.add(c, HH.Inv.makeItem('seed_morning_glory', 1));
+  const c = HH.Scene.pileNear(0, 2.8, 9.8, true).inv; HH.Inv.add(c, HH.Inv.makeItem('plant_pot_item', 1)); HH.Inv.add(c, HH.Inv.makeItem('seed_morning_glory', 1));
   const slot = c.slots.find((s) => s.it.id === 'plant_pot_item'); HH.Arrange.installItem(c, slot); HH.Arrange.preview(-3.6, -5.4, 0, 0); HH.Arrange.confirm();
   const pots = HH.S.home.furniture.filter((f) => f.type === 'plant_pot'); HH.Farm.plant(HH.activeChar(), pots[1], 0, 'morning_glory');
   for (const p of pots) HH.Farm.water(HH.activeChar(), p);

@@ -96,8 +96,8 @@ const HOME = {
     // Upper floor doors
     { floor: 1, kind: 'door', axis: 'z', at: -1, a: -2.2, b: -1.3 },
     { floor: 1, kind: 'door', axis: 'x', at: -2.5, a: -4.2, b: -3.3 },
-    { floor: 1, kind: 'door', axis: 'x', at: 1, a: -2.4, b: -1.5 },
-    { floor: 1, kind: 'door', axis: 'x', at: 1, a: -5.2, b: -4.3 },
+    { floor: 1, kind: 'door', axis: 'x', at: 1, a: -1.92, b: -1.04 },
+    { floor: 1, kind: 'door', axis: 'z', at: -2.5, a: 3.0, b: 3.9 },   // bed2 → upstairs storage (hall side is taken by the stairwell)
     // Upper floor windows
     { floor: 1, kind: 'window', axis: 'z', at: 3, a: -5.0, b: -3.0 },
     { floor: 1, kind: 'window', axis: 'z', at: 3, a: -1.6, b: -0.2 },
